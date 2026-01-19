@@ -18,6 +18,7 @@ import com.rizwansayyed.zene.ui.main.ent.utils.LiveReadersCounter
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_BUZZ_NEWS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_DATING_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_DISCOVER_TRENDING_NEWS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_LIFESTYLE_API
 import com.rizwansayyed.zene.utils.safeLaunch
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
@@ -53,6 +54,7 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
 
     var discover by mutableStateOf<ResponseResult<EntertainmentDiscoverResponse>>(ResponseResult.Empty)
     var buzzNews by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
+    var discoverLifeStyle by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
     var dating by mutableStateOf<ResponseResult<List<WhoDatedWhoData>>>(ResponseResult.Empty)
 
 
@@ -93,6 +95,23 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
         }.collectLatest {
             cacheHelper.save(ZENE_ENT_BUZZ_NEWS_API, it)
             buzzNews = ResponseResult.Success(it)
+        }
+    }
+
+    fun entDiscoverLifeStyle() = viewModelScope.safeLaunch {
+//        val data: ZeneMusicDataList? = cacheHelper.get(ZENE_ENT_LIFESTYLE_API)
+//        if ((data?.size ?: 0) > 0) {
+//            discoverLifeStyle = ResponseResult.Success(data!!)
+//            return@safeLaunch
+//        }
+
+        zeneAPI.entDiscoverLifeStyle().onStart {
+            discoverLifeStyle = ResponseResult.Loading
+        }.catch {
+            discoverLifeStyle = ResponseResult.Error(it)
+        }.collectLatest {
+            cacheHelper.save(ZENE_ENT_LIFESTYLE_API, it)
+            discoverLifeStyle = ResponseResult.Success(it)
         }
     }
 

@@ -7,12 +7,11 @@ import com.rizwansayyed.zene.R
 data class EntertainmentDiscoverResponse(
     val isExpire: Boolean?,
     val featuredTrailer: ZeneMusicData?,
-    val trailers:List<ZeneMusicData>?,
-    val news: List<ZeneMusicData>?,
-    val trends: List<ZeneMusicData>?,
-    val movies: List<ZeneMusicData>?,
+    val trailers: ZeneMusicDataList?,
+    val news: ZeneMusicDataList?,
+    val trends: ZeneMusicDataList?,
+    val movies: ZeneMusicDataList?,
     val dated: List<WhoDatedWhoData>?,
-    val lifestyle: List<ZeneMusicData>?,
 )
 
 data class WhoDatedWhoData(

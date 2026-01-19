@@ -64,6 +64,8 @@ fun EntertainmentView(viewModel: NavigationViewModel) {
                 ProcessPhoenix.triggerRebirth(context)
             }
         }
+
+        entViewModel.entDiscoverLifeStyle()
         context?.let { InterstitialAdsUtils(it) }
     }
 

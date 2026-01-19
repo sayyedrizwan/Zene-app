@@ -33,9 +33,41 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.ui.view.ShimmerEffect
 import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 
+
+@Composable
+fun EntLifestyleLoadingView() {
+    val pagerState = rememberPagerState { 9 }
+
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .padding(top = 40.dp)
+    ) {
+        Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+            Spacer(Modifier.height(20.dp))
+            TextViewLight(stringResource(R.string.celebrity_lifestyle), 17, center = true)
+            Spacer(Modifier.height(16.dp))
+
+            HorizontalPager(
+                pagerState,
+                Modifier.fillMaxWidth(),
+                PaddingValues(horizontal = 34.dp),
+                pageSpacing = 16.dp,
+            ) {
+                ShimmerEffect(Modifier
+                    .clip(RoundedCornerShape(15.dp))
+                    .size(350.dp, 500.dp))
+            }
+            Spacer(Modifier.height(12.dp))
+            PagerDots(pagerState.pageCount, pagerState.currentPage)
+            Spacer(Modifier.height(24.dp))
+        }
+    }
+}
 
 @Composable
 fun EntLifestyleView(data: List<ZeneMusicData>) {

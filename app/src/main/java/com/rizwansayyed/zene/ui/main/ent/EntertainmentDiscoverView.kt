@@ -18,6 +18,7 @@ import com.rizwansayyed.zene.ui.main.ent.discoverview.EntCelebDatingView
 import com.rizwansayyed.zene.ui.main.ent.discoverview.EntCelebStoriesView
 import com.rizwansayyed.zene.ui.main.ent.discoverview.EntDiscoverTopView
 import com.rizwansayyed.zene.ui.main.ent.discoverview.EntLatestTrailerView
+import com.rizwansayyed.zene.ui.main.ent.discoverview.EntLifestyleLoadingView
 import com.rizwansayyed.zene.ui.main.ent.discoverview.EntLifestyleView
 import com.rizwansayyed.zene.ui.main.ent.discoverview.EntTrendingMoviesView
 import com.rizwansayyed.zene.ui.main.ent.discoverview.EntTrendingTopicsView
@@ -76,8 +77,13 @@ fun EntertainmentDiscoverView(
 
             item(key = "trailer") { EntLatestTrailerView(v.data) }
 
-            if (v.data.lifestyle?.isNotEmpty() == true)
-                item(key = "lifestyle") { EntLifestyleView(v.data.lifestyle) }
+            when (val lifestyle = entViewModel.discoverLifeStyle) {
+                ResponseResult.Empty -> {}
+                is ResponseResult.Error -> {}
+                ResponseResult.Loading -> item(key = "lifestyle_loading") { EntLifestyleLoadingView() }
+                is ResponseResult.Success -> if (lifestyle.data.isNotEmpty())
+                    item(key = "lifestyle") { EntLifestyleView(lifestyle.data) }
+            }
 
 
             item(key = "lifestyle_space") {
