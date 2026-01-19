@@ -15,6 +15,7 @@ import com.rizwansayyed.zene.data.model.EntertainmentDiscoverResponse
 import com.rizwansayyed.zene.data.model.WhoDatedWhoData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.ui.main.ent.utils.LiveReadersCounter
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_ALL_TRAILERS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_BUZZ_NEWS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_DATING_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_DISCOVER_TRENDING_NEWS_API
@@ -56,6 +57,7 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
     var buzzNews by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
     var discoverLifeStyle by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
     var dating by mutableStateOf<ResponseResult<List<WhoDatedWhoData>>>(ResponseResult.Empty)
+    var trailers by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
 
 
     fun entDiscoverNews(expireToken: () -> Unit) = viewModelScope.safeLaunch {
@@ -99,11 +101,11 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
     }
 
     fun entDiscoverLifeStyle() = viewModelScope.safeLaunch {
-//        val data: ZeneMusicDataList? = cacheHelper.get(ZENE_ENT_LIFESTYLE_API)
-//        if ((data?.size ?: 0) > 0) {
-//            discoverLifeStyle = ResponseResult.Success(data!!)
-//            return@safeLaunch
-//        }
+        val data: ZeneMusicDataList? = cacheHelper.get(ZENE_ENT_LIFESTYLE_API)
+        if ((data?.size ?: 0) > 0) {
+            discoverLifeStyle = ResponseResult.Success(data!!)
+            return@safeLaunch
+        }
 
         zeneAPI.entDiscoverLifeStyle().onStart {
             discoverLifeStyle = ResponseResult.Loading
@@ -114,7 +116,6 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
             discoverLifeStyle = ResponseResult.Success(it)
         }
     }
-
 
 
     fun entDating() = viewModelScope.safeLaunch {
@@ -131,6 +132,23 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
         }.collectLatest {
             cacheHelper.save(ZENE_ENT_DATING_API, it)
             dating = ResponseResult.Success(it ?: emptyList())
+        }
+    }
+
+    fun entTrailers() = viewModelScope.safeLaunch {
+//        val data: List<WhoDatedWhoData>? = cacheHelper.get(ZENE_ENT_ALL_TRAILERS_API)
+//        if ((data?.size ?: 0) > 0) {
+//            dating = ResponseResult.Success(data!!)
+//            return@safeLaunch
+//        }
+
+        zeneAPI.entAllTrailers().onStart {
+            trailers = ResponseResult.Loading
+        }.catch {
+            trailers = ResponseResult.Error(it)
+        }.collectLatest {
+            cacheHelper.save(ZENE_ENT_ALL_TRAILERS_API, it)
+            trailers = ResponseResult.Success(it)
         }
     }
 }

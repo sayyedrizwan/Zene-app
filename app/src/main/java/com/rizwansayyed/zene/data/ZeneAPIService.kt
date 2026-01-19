@@ -69,6 +69,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_SHARE_VIBE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USERS_SEARCH_VIA_PHONE_NUMBER_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USER_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_CONNECT_USER_SETTINGS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_ALL_TRAILERS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_BUZZ_NEWS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_DATING_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_DISCOVER_TRENDING_NEWS_API
@@ -801,4 +802,11 @@ interface ZeneAPIService {
     suspend fun entDating(
         @Header("token") token: String, @Body data: RequestBody
     ): List<WhoDatedWhoData>?
+
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_ENT_ALL_TRAILERS_API)
+    suspend fun entAllTrailers(
+        @Header("token") token: String, @Body data: RequestBody
+    ): ZeneMusicDataList
 }

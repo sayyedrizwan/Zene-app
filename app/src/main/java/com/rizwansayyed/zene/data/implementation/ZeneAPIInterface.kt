@@ -198,4 +198,5 @@ interface ZeneAPIInterface {
     suspend fun entDiscoverLifeStyle(): Flow<ZeneMusicDataList>
 
     suspend fun entDating(): Flow<List<WhoDatedWhoData>?>
+    suspend fun entAllTrailers(): Flow<ZeneMusicDataList>
 }

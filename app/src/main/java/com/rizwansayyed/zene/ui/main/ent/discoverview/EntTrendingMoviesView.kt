@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -48,23 +49,25 @@ import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 fun EntLoadingTrendingMoviesView() {
     val name by ipDB.collectAsState(null)
 
-    Spacer(Modifier.height(20.dp))
-    Box(Modifier.padding(horizontal = 6.dp)) {
-        TextViewBold(stringResource(R.string.trending_movies_shows_in, name?.country ?: ""), 23)
-    }
-    Spacer(Modifier.height(12.dp))
+    Column(Modifier.fillMaxWidth()) {
+        Spacer(Modifier.height(20.dp))
+        Box(Modifier.padding(horizontal = 6.dp)) {
+            TextViewBold(stringResource(R.string.trending_movies_shows_in, name?.country ?: ""), 23)
+        }
+        Spacer(Modifier.height(12.dp))
 
-    LazyRow(
-        contentPadding = PaddingValues(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        items(6) {
-            ShimmerEffect(
-                Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(15.dp))
-                    .size(300.dp, 450.dp)
-            )
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(6) {
+                ShimmerEffect(
+                    Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(15.dp))
+                        .size(300.dp, 450.dp)
+                )
+            }
         }
     }
 }
@@ -74,18 +77,20 @@ fun EntLoadingTrendingMoviesView() {
 fun EntTrendingMoviesView(data: EntertainmentDiscoverResponse) {
     val name by ipDB.collectAsState(null)
 
-    Spacer(Modifier.height(20.dp))
-    Box(Modifier.padding(horizontal = 6.dp)) {
-        TextViewBold(stringResource(R.string.trending_movies_shows_in, name?.country ?: ""), 23)
-    }
-    Spacer(Modifier.height(12.dp))
+    Column(Modifier.fillMaxWidth()) {
+        Spacer(Modifier.height(20.dp))
+        Box(Modifier.padding(horizontal = 6.dp)) {
+            TextViewBold(stringResource(R.string.trending_movies_shows_in, name?.country ?: ""), 23)
+        }
+        Spacer(Modifier.height(12.dp))
 
-    LazyRow(
-        contentPadding = PaddingValues(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        itemsIndexed(data.movies ?: emptyList()) { i, v ->
-            TrendingPosterCard(v, i)
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            itemsIndexed(data.movies ?: emptyList()) { i, v ->
+                TrendingPosterCard(v, i)
+            }
         }
     }
 }

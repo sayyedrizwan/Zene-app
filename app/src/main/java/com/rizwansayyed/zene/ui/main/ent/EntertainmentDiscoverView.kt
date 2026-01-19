@@ -72,9 +72,10 @@ fun EntertainmentDiscoverView(
                 EntCelebDatingView(v.data)
             }
 
-            if (v.data.movies?.isNotEmpty() == true)
+            if (v.data.movies?.isNotEmpty() == true) {
+                item(key = "movies_") { Spacer(Modifier.height(30.dp)) }
                 item(key = "movies") { EntTrendingMoviesView(v.data) }
-
+            }
             item(key = "trailer") { EntLatestTrailerView(v.data) }
 
             when (val lifestyle = entViewModel.discoverLifeStyle) {

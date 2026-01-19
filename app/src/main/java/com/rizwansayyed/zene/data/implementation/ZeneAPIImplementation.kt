@@ -1721,12 +1721,25 @@ class ZeneAPIImplementation @Inject constructor(
     override suspend fun entDating() = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
-
         val json = JSONObject().apply {
             put("email", email)
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
         emit(zeneAPI.entDating(token, body))
+    }
+
+    override suspend fun entAllTrailers() = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+        val country = ipDB.firstOrNull()?.countryCode
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("country", country)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.entAllTrailers(token, body))
     }
 }
