@@ -527,6 +527,7 @@
     <string name="view_all_buzz">View All Buzz</string>
     <string name="ago">ago</string>
     <string name="trending_movies_shows_in">Trending Movies/Shows in %s</string>
+    <string name="upcoming_movies_in">Upcoming Movies in %s</string>
     <string name="latest_trailers">Latest Trailers</string>
     <string name="play_trailer">Play Trailer</string>
     <string name="top_deals_on_amazon">Top Deals on Amazon</string>
@@ -536,6 +537,10 @@
     <string name="hot_buzz">Hot Buzz</string>
     <string name="latest_buzz">Latest Buzz</string>
     <string name="today_s_top_streaming">Today\'s top streaming</string>
+    <string name="top_movies_on_box_office">Top movies on box office</string>
+    <string name="weekend_gross">Weekend Gross: %s</string>
+    <string name="total_gross">Total Gross: %s</string>
+    <string name="weeks_released">Weeks Released: %s</string>
 
     <!--    notification channels-->
     <string name="connect_updates_name">Connect Update Alerts</string>

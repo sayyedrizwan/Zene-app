@@ -95,6 +95,11 @@ data class StreamingTrendingResponse(
     val icon: String?
 )
 
+typealias UpcomingMoviesList = List<UpcomingMoviesResponse>
+data class UpcomingMoviesResponse(
+    val list: ZeneMusicDataList, val date: String?
+)
+
 data class MediaPathResponse(val urlPath: String?)
 
 data class PlayerVideoForSongsResponse(val videoID: ZeneMusicData?, val lyricsID: ZeneMusicData?)

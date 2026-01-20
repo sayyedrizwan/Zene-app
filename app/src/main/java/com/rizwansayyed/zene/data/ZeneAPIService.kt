@@ -34,6 +34,7 @@ import com.rizwansayyed.zene.data.model.SponsorAdsResponse
 import com.rizwansayyed.zene.data.model.StatusCouponResponse
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.StreamingTrendingList
+import com.rizwansayyed.zene.data.model.UpcomingMoviesList
 import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.data.model.UserPlaylistResponse
 import com.rizwansayyed.zene.data.model.VibesCommentsResponse
@@ -76,6 +77,8 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_DATING_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_DISCOVER_TRENDING_NEWS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_LIFESTYLE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_STREAMING_TRENDING_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_TOP_BOX_OFFICE_MOVIES_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_UPCOMING_MOVIES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_FEED_ARTISTS_UPDATES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_FEED_FOLLOWED_ARTISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_ARTIST_API
@@ -818,4 +821,16 @@ interface ZeneAPIService {
     suspend fun entStreamingTrending(
         @Header("token") token: String, @Body data: RequestBody
     ): StreamingTrendingList
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_ENT_TOP_BOX_OFFICE_MOVIES_API)
+    suspend fun entBoxOfficeMovie(
+        @Header("token") token: String, @Body data: RequestBody
+    ): ZeneMusicDataList
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_ENT_UPCOMING_MOVIES_API)
+    suspend fun entUpcomingMovie(
+        @Header("token") token: String, @Body data: RequestBody
+    ): UpcomingMoviesList
 }

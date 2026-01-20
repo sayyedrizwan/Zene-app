@@ -34,6 +34,7 @@ import com.rizwansayyed.zene.data.model.SponsorAdsResponse
 import com.rizwansayyed.zene.data.model.StatusCouponResponse
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.StreamingTrendingList
+import com.rizwansayyed.zene.data.model.UpcomingMoviesList
 import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.data.model.UserPlaylistResponse
 import com.rizwansayyed.zene.data.model.VibesCommentsResponse
@@ -201,4 +202,6 @@ interface ZeneAPIInterface {
     suspend fun entDating(): Flow<List<WhoDatedWhoData>?>
     suspend fun entAllTrailers(): Flow<ZeneMusicDataList>
     suspend fun entStreamingTrending(): Flow<StreamingTrendingList>
+    suspend fun entBoxOfficeMovie(): Flow<ZeneMusicDataList>
+    suspend fun entUpcomingMovie(): Flow<UpcomingMoviesList>
 }

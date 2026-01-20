@@ -8,11 +8,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -63,14 +64,20 @@ fun EntStreamingTodayItems(data: StreamingTrendingResponse) {
             contentPadding = PaddingValues(horizontal = 13.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(data.items) {
-                GlideImage(
-                    it.thumbnail, it.name,
-                    Modifier
-                        .clip(RoundedCornerShape(15.dp))
-                        .height(250.dp),
-                    contentScale = ContentScale.Fit
-                )
+            itemsIndexed(data.items) { i, v ->
+                Box {
+                    GlideImage(
+                        v.thumbnail, v.name,
+                        Modifier
+                            .clip(RoundedCornerShape(15.dp))
+                            .height(250.dp),
+                        contentScale = ContentScale.Fit
+                    )
+
+                    Box(Modifier.align(Alignment.BottomStart).offset(y = (9).dp)) {
+                        TextViewBold("${i + 1}", 45)
+                    }
+                }
             }
         }
 
