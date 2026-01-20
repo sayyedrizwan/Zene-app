@@ -165,7 +165,7 @@ fun EntertainmentMoviesView(viewModel: EntertainmentViewModel) {
 
                     v.data.forEachIndexed { i, item ->
                         if (i != 0) {
-                            item {
+                            item(span = { GridItemSpan(2) }) {
                                 Row(
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -182,7 +182,7 @@ fun EntertainmentMoviesView(viewModel: EntertainmentViewModel) {
                             }
                         }
 
-                        item {
+                        item(span = { GridItemSpan(2) }) {
                             Row(
                                 Modifier
                                     .padding(horizontal = 6.dp)

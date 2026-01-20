@@ -82,10 +82,8 @@ fun EntUpcomingMoviesItemView(data: ZeneMusicData) {
             Spacer(modifier = Modifier.height(8.dp))
 
             TextViewNormal(data.artists.orEmpty(), 14)
-            Spacer(modifier = Modifier.height(5.dp))
+            Spacer(modifier = Modifier.height(10.dp))
             TextViewNormal(data.extra.orEmpty(), 14)
-
-            Spacer(modifier = Modifier.height(12.dp))
         }
     }
 

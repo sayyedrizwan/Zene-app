@@ -89,8 +89,7 @@ fun EntBoxOfficeMoviesItemView(data: ZeneMusicData) {
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    Icons.Default.Star, null,
-                    tint = Color(0xFFFFC107)
+                    Icons.Default.Star, null, Modifier.size(20.dp), Color(0xFFFFC107)
                 )
 
                 Spacer(modifier = Modifier.width(4.dp))
