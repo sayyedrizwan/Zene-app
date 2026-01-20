@@ -12,6 +12,7 @@ import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.cache.CacheHelper
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.EntertainmentDiscoverResponse
+import com.rizwansayyed.zene.data.model.StreamingTrendingList
 import com.rizwansayyed.zene.data.model.WhoDatedWhoData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.ui.main.ent.utils.LiveReadersCounter
@@ -20,6 +21,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_BUZZ_NEWS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_DATING_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_DISCOVER_TRENDING_NEWS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_LIFESTYLE_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_STREAMING_TRENDING_API
 import com.rizwansayyed.zene.utils.safeLaunch
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
@@ -58,6 +60,7 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
     var discoverLifeStyle by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
     var dating by mutableStateOf<ResponseResult<List<WhoDatedWhoData>>>(ResponseResult.Empty)
     var trailers by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
+    var streaming by mutableStateOf<ResponseResult<StreamingTrendingList>>(ResponseResult.Empty)
 
 
     fun entDiscoverNews(expireToken: () -> Unit) = viewModelScope.safeLaunch {
@@ -149,6 +152,24 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
         }.collectLatest {
             cacheHelper.save(ZENE_ENT_ALL_TRAILERS_API, it)
             trailers = ResponseResult.Success(it)
+        }
+    }
+
+
+    fun entStreamingTrending() = viewModelScope.safeLaunch {
+        val data: StreamingTrendingList? = cacheHelper.get(ZENE_ENT_STREAMING_TRENDING_API)
+        if ((data?.size ?: 0) > 0) {
+            streaming = ResponseResult.Success(data!!)
+            return@safeLaunch
+        }
+
+        zeneAPI.entStreamingTrending().onStart {
+            streaming = ResponseResult.Loading
+        }.catch {
+            streaming = ResponseResult.Error(it)
+        }.collectLatest {
+            cacheHelper.save(ZENE_ENT_STREAMING_TRENDING_API, it)
+            streaming = ResponseResult.Success(it)
         }
     }
 }

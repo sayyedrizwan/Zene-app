@@ -535,6 +535,7 @@
     <string name="celebrity_lifestyle">Celebrity Lifestyle</string>
     <string name="hot_buzz">Hot Buzz</string>
     <string name="latest_buzz">Latest Buzz</string>
+    <string name="today_s_top_streaming">Today\'s top streaming</string>
 
     <!--    notification channels-->
     <string name="connect_updates_name">Connect Update Alerts</string>

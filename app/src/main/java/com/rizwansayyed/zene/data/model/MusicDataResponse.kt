@@ -88,6 +88,13 @@ data class ArtistsResponse(
     val isExpire: Boolean?
 )
 
+typealias StreamingTrendingList = List<StreamingTrendingResponse>
+data class StreamingTrendingResponse(
+    val items: ZeneMusicDataList,
+    val name: String?,
+    val icon: String?
+)
+
 data class MediaPathResponse(val urlPath: String?)
 
 data class PlayerVideoForSongsResponse(val videoID: ZeneMusicData?, val lyricsID: ZeneMusicData?)
