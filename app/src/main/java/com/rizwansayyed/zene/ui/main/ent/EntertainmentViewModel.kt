@@ -22,6 +22,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_ALL_TRAILERS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_BUZZ_NEWS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_DATING_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_DISCOVER_TRENDING_NEWS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_LIFESTYLES_EVENTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_LIFESTYLE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_STREAMING_TRENDING_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_TOP_BOX_OFFICE_MOVIES_API
@@ -198,11 +199,11 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
     }
 
     fun entUpcomingMovie() = viewModelScope.safeLaunch {
-//        val data: ZeneMusicDataList? = cacheHelper.get(ZENE_ENT_TOP_BOX_OFFICE_MOVIES_API)
-//        if ((data?.size ?: 0) > 0) {
-//            upcomingMovies = ResponseResult.Success(data!!)
-//            return@safeLaunch
-//        }
+        val data: UpcomingMoviesList? = cacheHelper.get(ZENE_ENT_UPCOMING_MOVIES_API)
+        if ((data?.size ?: 0) > 0) {
+            upcomingMovies = ResponseResult.Success(data!!)
+            return@safeLaunch
+        }
 
         zeneAPI.entUpcomingMovie().onStart {
             upcomingMovies = ResponseResult.Loading
@@ -211,6 +212,24 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
         }.collectLatest {
             cacheHelper.save(ZENE_ENT_UPCOMING_MOVIES_API, it)
             upcomingMovies = ResponseResult.Success(it)
+        }
+    }
+
+    fun entLifeStyle() = viewModelScope.safeLaunch {
+        val data: UpcomingMoviesList? = cacheHelper.get(ZENE_ENT_LIFESTYLES_EVENTS_API)
+        if ((data?.size ?: 0) > 0) {
+            upcomingMovies = ResponseResult.Success(data!!)
+            return@safeLaunch
+        }
+
+        zeneAPI.entUpcomingMovie().onStart {
+            upcomingMovies = ResponseResult.Loading
+        }.catch {
+            upcomingMovies = ResponseResult.Error(it)
+        }.collectLatest {
+            cacheHelper.save(ZENE_ENT_LIFESTYLES_EVENTS_API, it)
+            upcomingMovies = ResponseResult.Success(it)
+            Log.d("TAG", "entLifeStyle: data ${it.size}")
         }
     }
 }

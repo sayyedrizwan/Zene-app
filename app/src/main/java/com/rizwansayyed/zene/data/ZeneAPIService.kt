@@ -75,6 +75,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_ALL_TRAILERS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_BUZZ_NEWS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_DATING_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_DISCOVER_TRENDING_NEWS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_LIFESTYLES_EVENTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_LIFESTYLE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_STREAMING_TRENDING_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_TOP_BOX_OFFICE_MOVIES_API
@@ -833,4 +834,10 @@ interface ZeneAPIService {
     suspend fun entUpcomingMovie(
         @Header("token") token: String, @Body data: RequestBody
     ): UpcomingMoviesList
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_ENT_LIFESTYLES_EVENTS_API)
+        suspend fun entLifestyleEvents(
+        @Header("token") token: String, @Body data: RequestBody
+    ): ZeneMusicDataList
 }

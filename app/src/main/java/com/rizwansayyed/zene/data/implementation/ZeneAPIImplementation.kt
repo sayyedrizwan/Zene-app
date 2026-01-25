@@ -1784,4 +1784,16 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.entUpcomingMovie(token, body))
     }
 
+    override suspend fun entLifestyleEvents() = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.entLifestyleEvents(token, body))
+    }
+
 }

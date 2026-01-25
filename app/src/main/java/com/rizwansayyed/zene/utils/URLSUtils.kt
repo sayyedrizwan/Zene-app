@@ -162,6 +162,7 @@ object URLSUtils {
     const val ZENE_ENT_STREAMING_TRENDING_API = "entertainment/streaming-trending"
     const val ZENE_ENT_TOP_BOX_OFFICE_MOVIES_API = "entertainment/top-box-office-movies"
     const val ZENE_ENT_UPCOMING_MOVIES_API = "entertainment/upcoming-movies"
+    const val ZENE_ENT_LIFESTYLES_EVENTS_API = "entertainment/lifestyles-events"
 
 
     const val ZENE_NOTIFICATION_RECOMMENDATION_API = "notification/notification-recommendation"

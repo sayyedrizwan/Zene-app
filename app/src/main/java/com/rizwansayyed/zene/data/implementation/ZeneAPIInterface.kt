@@ -204,4 +204,6 @@ interface ZeneAPIInterface {
     suspend fun entStreamingTrending(): Flow<StreamingTrendingList>
     suspend fun entBoxOfficeMovie(): Flow<ZeneMusicDataList>
     suspend fun entUpcomingMovie(): Flow<UpcomingMoviesList>
+
+    suspend fun entLifestyleEvents(): Flow<ZeneMusicDataList>
 }
