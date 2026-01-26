@@ -1,8 +1,8 @@
 package com.rizwansayyed.zene.ui.main.ent
 
+import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -13,6 +13,7 @@ import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.cache.CacheHelper
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.EntertainmentDiscoverResponse
+import com.rizwansayyed.zene.data.model.EventsResponsesItems
 import com.rizwansayyed.zene.data.model.StreamingTrendingList
 import com.rizwansayyed.zene.data.model.UpcomingMoviesList
 import com.rizwansayyed.zene.data.model.WhoDatedWhoData
@@ -29,6 +30,8 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_TOP_BOX_OFFICE_MOVIES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_UPCOMING_MOVIES_API
 import com.rizwansayyed.zene.utils.safeLaunch
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onStart
@@ -231,5 +234,18 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
             cacheHelper.save(ZENE_ENT_LIFESTYLES_EVENTS_API, it)
             lifeStylesEvents = ResponseResult.Success(it)
         }
+    }
+
+    private val _clusterItems = MutableStateFlow<List<EventsResponsesItems>>(emptyList())
+    val clusterItems = _clusterItems.asStateFlow()
+
+    fun loadMapsEvents(context: Context, events: List<EventsResponsesItems>) {
+//        viewModelScope.launch {
+//            val items = events.map { event ->
+//                val bitmap = loadBitmapFromUrl(context, event.thumbnail.orEmpty())
+//                event.copy(thumbnailBitmap = bitmap)
+//            }
+//            _clusterItems.value = items
+//        }
     }
 }

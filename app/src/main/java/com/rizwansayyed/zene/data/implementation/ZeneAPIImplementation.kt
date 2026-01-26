@@ -1684,7 +1684,6 @@ class ZeneAPIImplementation @Inject constructor(
         val country = ipDB.firstOrNull()?.countryCode
         val city = ipDB.firstOrNull()?.city
 
-        Log.d("TAG", "entDiscoverNews: data ${city}")
         val json = JSONObject().apply {
             put("email", email)
             put("country", country)

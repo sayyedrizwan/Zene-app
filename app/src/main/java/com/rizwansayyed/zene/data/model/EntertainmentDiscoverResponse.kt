@@ -1,6 +1,9 @@
 package com.rizwansayyed.zene.data.model
 
+import android.graphics.Bitmap
 import androidx.compose.ui.graphics.Color
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.clustering.ClusterItem
 import com.rizwansayyed.zene.R
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -37,6 +40,7 @@ data class EventsResponsesItems(
     val address: String?,
     val geo: EventsGeo?,
 ) {
+
     data class EventsGeo(
         val lat: Double, val lng: Double
     )
@@ -51,7 +55,6 @@ data class EventsResponsesItems(
         val localDate = LocalDate.parse(date, formatter)
         return localDate.dayOfMonth.toString()
     }
-
 }
 
 data class WhoDatedWhoData(

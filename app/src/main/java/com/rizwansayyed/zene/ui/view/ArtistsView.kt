@@ -379,7 +379,7 @@ fun ArtistsDetailsInfo(data: ArtistsResponse, viewModel: HomeViewModel) {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun GlideFullImage(data: ZeneMusicData?, height: Int, modifier: Modifier) {
+private fun GlideFullImage(data: ZeneMusicData?, height: Int, modifier: Modifier) {
     GlideImage(
         data?.thumbnail,
         data?.name,
