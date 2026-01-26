@@ -2,6 +2,10 @@ package com.rizwansayyed.zene.data.model
 
 import androidx.compose.ui.graphics.Color
 import com.rizwansayyed.zene.R
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
+import java.util.Locale
 
 
 data class EntertainmentDiscoverResponse(
@@ -12,7 +16,43 @@ data class EntertainmentDiscoverResponse(
     val trends: ZeneMusicDataList?,
     val movies: ZeneMusicDataList?,
     val dated: List<WhoDatedWhoData>?,
+    val events: EventsResponses?,
 )
+
+data class EventsResponses(
+    val thisWeek: List<EventsResponsesItems>?,
+    val city: List<EventsResponsesItems>?,
+    val all: List<EventsResponsesItems>?,
+)
+
+data class EventsResponsesItems(
+    val name: String?,
+    val date: String?,
+    val timezone: String?,
+    val duration: Double?,
+    val dateWithTime: String?,
+    val ticket: String?,
+    val id: String?,
+    val thumbnail: String?,
+    val address: String?,
+    val geo: EventsGeo?,
+) {
+    data class EventsGeo(
+        val lat: Double, val lng: Double
+    )
+
+    fun getMonth(): String {
+        val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.ENGLISH)
+        val localDate = LocalDate.parse(date, formatter)
+        return localDate.month.getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
+    }
+    fun getDay(): String {
+        val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.ENGLISH)
+        val localDate = LocalDate.parse(date, formatter)
+        return localDate.dayOfMonth.toString()
+    }
+
+}
 
 data class WhoDatedWhoData(
     val bannerImage: String?,

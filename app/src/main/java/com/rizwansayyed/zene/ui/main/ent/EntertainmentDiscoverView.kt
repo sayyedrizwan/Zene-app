@@ -23,6 +23,7 @@ import com.rizwansayyed.zene.ui.main.ent.discoverview.EntLifestyleView
 import com.rizwansayyed.zene.ui.main.ent.discoverview.EntTrendingMoviesView
 import com.rizwansayyed.zene.ui.main.ent.discoverview.EntTrendingTopicsView
 import com.rizwansayyed.zene.ui.main.ent.discoverview.ViewAllButton
+import com.rizwansayyed.zene.ui.main.ent.view.EntertainmentNearByEventsView
 import com.rizwansayyed.zene.ui.main.home.EntSectionSelector
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.view.ShimmerEffect
@@ -77,6 +78,11 @@ fun EntertainmentDiscoverView(
                 item(key = "movies") { EntTrendingMoviesView(v.data) }
             }
             item(key = "trailer") { EntLatestTrailerView(v.data) }
+
+            if (v.data.events?.thisWeek?.isNotEmpty() == true) {
+                item(key = "events_") { Spacer(Modifier.height(30.dp)) }
+                item(key = "events") { EntertainmentNearByEventsView(v.data.events) }
+            }
 
             when (val lifestyle = entViewModel.discoverLifeStyle) {
                 ResponseResult.Empty -> {}

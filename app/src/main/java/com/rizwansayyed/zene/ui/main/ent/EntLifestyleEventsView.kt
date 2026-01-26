@@ -4,18 +4,24 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.ui.main.ent.view.EntLifestyleLatestItemView
 import com.rizwansayyed.zene.ui.main.ent.view.EntLifestyleLatestView
 import com.rizwansayyed.zene.ui.main.ent.view.EntLifestyleTrendingLoadingView
 import com.rizwansayyed.zene.ui.main.ent.view.EntLifestyleTrendingView
+import com.rizwansayyed.zene.ui.view.ShimmerEffect
 
 @Composable
 fun EntLifestyleEventsView(viewModel: EntertainmentViewModel) {
@@ -43,10 +49,20 @@ fun EntLifestyleEventsView(viewModel: EntertainmentViewModel) {
         when (val lifestyle = viewModel.lifeStylesEvents) {
             ResponseResult.Empty -> {}
             is ResponseResult.Error -> {}
-            ResponseResult.Loading -> item(key = "latest_lifestyle_loading") {
-//                EntLifestyleTrendingLoadingView()
+            ResponseResult.Loading -> {
+                item(key = "latest_lifestyle_loading_header") {
+                    EntLifestyleLatestView()
+                }
+                items(10) {
+                    ShimmerEffect(
+                        Modifier
+                            .padding(horizontal = 10.dp)
+                            .clip(RoundedCornerShape(15.dp))
+                            .fillMaxWidth()
+                            .height(200.dp)
+                    )
+                }
             }
-
             is ResponseResult.Success -> {
                 if (lifestyle.data.isNotEmpty()) item(key = "latest_lifestyle") {
                     EntLifestyleLatestView()

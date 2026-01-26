@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.data.implementation
 
 import android.net.Uri
+import android.util.Log
 import com.rizwansayyed.zene.data.IPAPIService
 import com.rizwansayyed.zene.data.ZeneAPIService
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
@@ -1681,10 +1682,13 @@ class ZeneAPIImplementation @Inject constructor(
         val token = userInfo.firstOrNull()?.authToken ?: ""
 
         val country = ipDB.firstOrNull()?.countryCode
+        val city = ipDB.firstOrNull()?.city
 
+        Log.d("TAG", "entDiscoverNews: data ${city}")
         val json = JSONObject().apply {
             put("email", email)
             put("country", country)
+            put("city", city)
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
