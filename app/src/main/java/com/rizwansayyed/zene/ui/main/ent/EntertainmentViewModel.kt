@@ -68,6 +68,7 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
     var streaming by mutableStateOf<ResponseResult<StreamingTrendingList>>(ResponseResult.Empty)
     var boxOfficeMovie by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
     var upcomingMovies by mutableStateOf<ResponseResult<UpcomingMoviesList>>(ResponseResult.Empty)
+    var lifeStylesEvents by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
 
 
     fun entDiscoverNews(expireToken: () -> Unit) = viewModelScope.safeLaunch {
@@ -216,20 +217,19 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
     }
 
     fun entLifeStyle() = viewModelScope.safeLaunch {
-        val data: UpcomingMoviesList? = cacheHelper.get(ZENE_ENT_LIFESTYLES_EVENTS_API)
+        val data: ZeneMusicDataList? = cacheHelper.get(ZENE_ENT_LIFESTYLES_EVENTS_API)
         if ((data?.size ?: 0) > 0) {
-            upcomingMovies = ResponseResult.Success(data!!)
+            lifeStylesEvents = ResponseResult.Success(data!!)
             return@safeLaunch
         }
 
-        zeneAPI.entUpcomingMovie().onStart {
-            upcomingMovies = ResponseResult.Loading
+        zeneAPI.entLifestyleEvents().onStart {
+            lifeStylesEvents = ResponseResult.Loading
         }.catch {
-            upcomingMovies = ResponseResult.Error(it)
+            lifeStylesEvents = ResponseResult.Error(it)
         }.collectLatest {
             cacheHelper.save(ZENE_ENT_LIFESTYLES_EVENTS_API, it)
-            upcomingMovies = ResponseResult.Success(it)
-            Log.d("TAG", "entLifeStyle: data ${it.size}")
+            lifeStylesEvents = ResponseResult.Success(it)
         }
     }
 }

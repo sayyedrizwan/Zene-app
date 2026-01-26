@@ -59,12 +59,11 @@ fun EntertainmentScreenTopView(viewModel: NavigationViewModel) {
             viewModel.setEntNavigation(EntSectionSelector.MOVIES)
         }
 
-//        TextSimpleCards(
-//            viewModel.entNavSection == EntSectionSelector.EVENTS,
-//            stringResource(R.string.events)
-//        ) {
-//            viewModel.setEntNavigation(EntSectionSelector.EVENTS)
-//        }
+        TextSimpleCards(
+            viewModel.entNavSection == EntSectionSelector.EVENTS, stringResource(R.string.events)
+        ) {
+            viewModel.setEntNavigation(EntSectionSelector.EVENTS)
+        }
 
         TextSimpleCards(
             viewModel.entNavSection == EntSectionSelector.LIFESTYLE,

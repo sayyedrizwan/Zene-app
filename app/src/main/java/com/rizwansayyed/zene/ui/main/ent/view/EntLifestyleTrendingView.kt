@@ -5,14 +5,20 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -31,12 +37,32 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.ui.theme.proximanOverFamily
+import com.rizwansayyed.zene.ui.view.ShimmerEffect
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 
 @Composable
 fun EntLifestyleTrendingLoadingView() {
+    Column(Modifier.fillMaxWidth()) {
+        Spacer(Modifier.height(5.dp))
+        Box(Modifier.padding(horizontal = 6.dp)) {
+            TextViewBold(stringResource(R.string.trending_looks), 23)
+        }
+        Spacer(Modifier.height(12.dp))
 
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(6) {
+                ShimmerEffect(
+                    Modifier
+                        .clip(RoundedCornerShape(15.dp))
+                        .size(260.dp, 360.dp)
+                )
+            }
+        }
+    }
 }
 
 @Composable
@@ -58,7 +84,6 @@ fun EntLifestyleTrendingView(data: ZeneMusicDataList) {
         }
     }
 }
-
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun LifestyleLookCard(item: ZeneMusicData) {
@@ -97,6 +122,62 @@ fun LifestyleLookCard(item: ZeneMusicData) {
         TextViewNormal(extractDate(item.artists.orEmpty()), 14)
     }
 }
+
+
+@Composable
+fun EntLifestyleLatestView() {
+    Column(Modifier.fillMaxWidth()) {
+        Spacer(Modifier.height(5.dp))
+        Box(Modifier.padding(horizontal = 6.dp)) {
+            TextViewBold(stringResource(R.string.latest_looks), 23)
+        }
+        Spacer(Modifier.height(12.dp))
+    }
+}
+
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun EntLifestyleLatestItemView(data: ZeneMusicData) {
+    Card(
+        Modifier
+            .padding(horizontal = 10.dp)
+            .fillMaxWidth()
+            .height(180.dp),
+        RoundedCornerShape(24.dp),
+        CardDefaults.cardColors(Color.Black),
+        CardDefaults.cardElevation(8.dp)
+    ) {
+        Row(
+            Modifier
+                .fillMaxSize()
+                .padding(16.dp), Arrangement.SpaceBetween
+        ) {
+            Column(Modifier.weight(1f), Arrangement.Center) {
+                Column(Modifier.fillMaxHeight(), Arrangement.Center) {
+                    Spacer(modifier = Modifier.height(6.dp))
+                    TextViewBold(data.name.orEmpty(), 20)
+                    Spacer(modifier = Modifier.height(5.dp))
+                    TextViewNormal(data.artists.orEmpty(), 15)
+                }
+            }
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            GlideImage(
+                data.thumbnail,
+                data.name,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .width(150.dp)
+                    .fillMaxHeight()
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color.White)
+            )
+        }
+    }
+}
+
 
 private fun removeDate(text: String): String {
     return text.replace(

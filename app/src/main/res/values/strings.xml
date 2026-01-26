@@ -542,6 +542,7 @@
     <string name="total_gross">Total Gross: %s</string>
     <string name="weeks_released">Weeks Released: %s</string>
     <string name="trending_looks">Trending Looks</string>
+    <string name="latest_looks">Latest Looks</string>
 
     <!--    notification channels-->
     <string name="connect_updates_name">Connect Update Alerts</string>

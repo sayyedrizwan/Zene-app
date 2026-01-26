@@ -51,7 +51,7 @@ fun EntertainmentView(viewModel: NavigationViewModel) {
                 DATING -> EntertainmentDatingView(entViewModel)
                 MOVIES -> EntertainmentMoviesView(entViewModel)
                 EVENTS -> {}
-                LIFESTYLE -> EntLifestyleView(entViewModel)
+                LIFESTYLE -> EntLifestyleEventsView(entViewModel)
             }
 
         }
