@@ -46,7 +46,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
@@ -82,19 +81,20 @@ suspend fun getCircularMarkerBitmap(context: Context, url: String?): BitmapDescr
                 Glide.with(context).asBitmap().load(url).centerCrop().submit(110, 110).get()
             val output = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(output)
-            val paint = Paint().apply { isAntiAlias = true }
+            val paint = Paint().apply {
+                isAntiAlias = true
+            }
             canvas.drawCircle(bitmap.width / 2f, bitmap.height / 2f, bitmap.width / 2f, paint)
             paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
             canvas.drawBitmap(bitmap, 0f, 0f, paint)
-
             val border = Paint().apply {
                 style = Paint.Style.STROKE; strokeWidth = 4f; color =
                 Color.White.toArgb(); isAntiAlias = true
             }
+
             canvas.drawCircle(
                 bitmap.width / 2f, bitmap.height / 2f, (bitmap.width / 2f) - 2f, border
             )
-
             BitmapDescriptorFactory.fromBitmap(output)
         } catch (_: Exception) {
             BitmapDescriptorFactory.defaultMarker()
@@ -113,7 +113,6 @@ fun EntertainmentEventsView(viewModel: EntertainmentViewModel) {
             is ResponseResult.Success -> {
                 val allEvents =
                     (v.data.events?.thisWeek.orEmpty() + v.data.events?.city.orEmpty() + v.data.events?.all.orEmpty()).distinctBy { it.id }
-
                 EventsMapScreen(allEvents)
             }
         }
@@ -128,13 +127,10 @@ fun EventsMapScreen(events: List<EventsResponsesItems>) {
     val scope = rememberCoroutineScope()
     val configuration = LocalConfiguration.current
     val screenHeightDp = configuration.screenHeightDp.dp
-
     var latLong by remember { mutableStateOf<LatLng?>(null) }
     var zoom by remember { mutableFloatStateOf(11f) }
-
     LaunchedEffect(Unit) {
         val location = getCurrentLocationSuspend(context)
-
         if (location != null) {
             zoom = 12f
             latLong = location
@@ -149,21 +145,11 @@ fun EventsMapScreen(events: List<EventsResponsesItems>) {
         }
     }
 
+
     if (latLong != null) {
-        val clusterItems = remember(events) {
-            // We group events by their exact Lat/Lng string
-            val grouped = events.groupBy { "${it.geo?.lat},${it.geo?.lng}" }
-
-            grouped.map { (_, eventList) ->
-                // If there are multiple events at this spot, we can pass the whole list
-                // or just ensure the cluster manager treats them as a group
-                EventClusterItem(eventList.first(), eventList)
-            }
-        }
-
+        val clusterItems = remember(events) { events.map { EventClusterItem(it) } }
         var selectedEvents by remember { mutableStateOf<List<EventsResponsesItems>>(emptyList()) }
         var showSheet by remember { mutableStateOf(false) }
-
         val cameraPositionState = rememberCameraPositionState {
             position = CameraPosition.fromLatLngZoom(latLong!!, zoom)
         }
@@ -184,6 +170,7 @@ fun EventsMapScreen(events: List<EventsResponsesItems>) {
                 )
             ) {
                 val clusterManager = rememberClusterManager<EventClusterItem>()
+
                 MapEffect(clusterManager) { map ->
                     try {
                         map.setMapStyle(
@@ -198,7 +185,8 @@ fun EventsMapScreen(events: List<EventsResponsesItems>) {
                         clusterManager.renderer = object :
                             DefaultClusterRenderer<EventClusterItem>(context, map, clusterManager) {
                             override fun onClusterItemRendered(
-                                clusterItem: EventClusterItem, marker: Marker
+                                clusterItem: EventClusterItem,
+                                marker: Marker
                             ) {
                                 super.onClusterItemRendered(clusterItem, marker)
                                 scope.launch {
@@ -211,38 +199,22 @@ fun EventsMapScreen(events: List<EventsResponsesItems>) {
                         }
 
                         clusterManager.setOnClusterClickListener { cluster ->
-                            val currentZoom = cameraPositionState.position.zoom
-
-                            if (currentZoom >= 16f) {
-                                selectedEvents = cluster.items.map { it.event }
-                                showSheet = true
-                            } else {
-                                scope.launch {
-                                    cameraPositionState.animate(
-                                        CameraUpdateFactory.newLatLngZoom(
-                                            cluster.position, currentZoom + 2f
-                                        )
-                                    )
-                                }
-                            }
+                            selectedEvents = cluster.items.map { it.event }
+                            showSheet = true
                             true
                         }
 
                         clusterManager.setOnClusterItemClickListener { item ->
-                            selectedEvents = item.allEventsAtThisSpot
+                            selectedEvents = listOf(item.event)
                             showSheet = true
                             true
                         }
                     }
                 }
-
                 if (clusterManager != null) {
-                    Clustering(
-                        items = clusterItems, clusterManager = clusterManager
-                    )
+                    Clustering(items = clusterItems, clusterManager = clusterManager)
                 }
             }
-
             if (showSheet) {
                 EventListOverlay(events = selectedEvents, onClose = { showSheet = false })
             }
@@ -264,12 +236,13 @@ fun EventListOverlay(events: List<EventsResponsesItems>, onClose: () -> Unit) {
                 .background(Color.Black),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            items(events) { event ->
-                EventItemRow(event)
-            }
-
+            items(events) { event -> EventItemRow(event) }
             item {
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(
+                    modifier = Modifier.height(
+                        24.dp
+                    )
+                )
             }
         }
     }
@@ -283,7 +256,6 @@ fun EventItemRow(event: EventsResponsesItems) {
             .padding(8.dp)
             .fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
     ) {
-
         GlideImage(
             event.thumbnail, null, modifier = Modifier
                 .size(100.dp)
@@ -291,11 +263,10 @@ fun EventItemRow(event: EventsResponsesItems) {
         )
 
         Column(
-            modifier = Modifier
+             Modifier
                 .padding(start = 8.dp)
                 .weight(1f)
-                .fillMaxHeight(),
-            verticalArrangement = Arrangement.Center
+                .fillMaxHeight(), verticalArrangement = Arrangement.Center
         ) {
             TextViewBold(event.name ?: "Unnamed Event", 16)
             TextViewNormal(event.address ?: "Unnamed Event", 14, line = 1)
@@ -312,30 +283,25 @@ suspend fun getCurrentLocationSuspend(context: Context): LatLng? =
         ) == PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(
             context, Manifest.permission.ACCESS_COARSE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
-
         if (!hasPermission) {
             cont.resume(null)
             return@suspendCancellableCoroutine
         }
 
         val fusedClient = LocationServices.getFusedLocationProviderClient(context)
-
         fusedClient.lastLocation.addOnSuccessListener { location ->
             if (location != null) {
                 cont.resume(LatLng(location.latitude, location.longitude))
             } else {
                 cont.resume(null)
             }
-        }.addOnFailureListener {
-            cont.resume(null)
-        }
+        }.addOnFailureListener { cont.resume(null) }
     }
 
-data class EventClusterItem(
-    val event: EventsResponsesItems,
-    val allEventsAtThisSpot: List<EventsResponsesItems> = listOf(event)
-) : ClusterItem {
+
+data class EventClusterItem(val event: EventsResponsesItems) : ClusterItem {
     override fun getPosition() = LatLng(event.geo?.lat ?: 0.0, event.geo?.lng ?: 0.0)
+
     override fun getTitle(): String? = event.name
     override fun getSnippet(): String? = event.address
     override fun getZIndex(): Float? = null
