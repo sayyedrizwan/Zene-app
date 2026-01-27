@@ -183,7 +183,7 @@ dependencies {
     implementation(libs.process.phoenix)
 
     implementation(libs.maps.compose)
-    implementation(libs.maps.utils)
+    implementation(libs.maps.compose.utils)
 
     implementation(libs.emoji)
     implementation(libs.emoji.picker)

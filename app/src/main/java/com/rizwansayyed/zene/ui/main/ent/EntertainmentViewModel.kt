@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.ui.main.ent
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -91,6 +92,19 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
                 expireToken()
                 return@collectLatest
             }
+
+            it.events?.all?.forEach {
+                Log.d("TAG", "entDiscoverNews: ${it.name} == ${it.geo?.lat} == ${it.geo?.lng}")
+            }
+
+            it.events?.city?.forEach {
+                Log.d("TAG", "entDiscoverNews: ${it.name} == ${it.geo?.lat} == ${it.geo?.lng}")
+            }
+
+            it.events?.thisWeek?.forEach {
+                Log.d("TAG", "entDiscoverNews: ${it.name} == ${it.geo?.lat} == ${it.geo?.lng}")
+            }
+
             cacheHelper.save(ZENE_ENT_DISCOVER_TRENDING_NEWS_API, it)
             discover = ResponseResult.Success(it)
         }

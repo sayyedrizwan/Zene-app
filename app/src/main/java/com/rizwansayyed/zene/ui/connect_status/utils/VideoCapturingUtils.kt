@@ -121,6 +121,7 @@ class VideoCapturingUtils(
         }
     }
 
+    @Suppress("DEPRECATION")
     @OptIn(androidx.camera.camera2.interop.ExperimentalCamera2Interop::class)
     @SuppressLint("ClickableViewAccessibility")
     fun generateVideoPreview() {

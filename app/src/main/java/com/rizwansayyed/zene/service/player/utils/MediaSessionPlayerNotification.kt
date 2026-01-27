@@ -169,6 +169,7 @@ class MediaSessionPlayerNotification(private val context: PlayerForegroundServic
     }
 
     private val callback = object : MediaSessionCompat.Callback() {
+        @Suppress("DEPRECATION")
         override fun onMediaButtonEvent(mediaButtonEvent: Intent?): Boolean {
             val intentAction = mediaButtonEvent?.action
             if (Intent.ACTION_MEDIA_BUTTON == intentAction) {

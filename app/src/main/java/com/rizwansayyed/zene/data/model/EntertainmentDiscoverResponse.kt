@@ -1,13 +1,9 @@
 package com.rizwansayyed.zene.data.model
 
-import android.graphics.Bitmap
 import androidx.compose.ui.graphics.Color
-import com.google.android.gms.maps.model.LatLng
-import com.google.maps.android.clustering.ClusterItem
 import com.rizwansayyed.zene.R
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.TextStyle
+import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
 
 
@@ -46,14 +42,19 @@ data class EventsResponsesItems(
     )
 
     fun getMonth(): String {
-        val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.ENGLISH)
-        val localDate = LocalDate.parse(date, formatter)
-        return localDate.month.getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
+        val sdf = SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH)
+        val parsedDate = sdf.parse(date ?: "") ?: return ""
+        val calendar = Calendar.getInstance()
+        calendar.time = parsedDate
+        return calendar.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.ENGLISH) ?: ""
     }
+
     fun getDay(): String {
-        val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy", Locale.ENGLISH)
-        val localDate = LocalDate.parse(date, formatter)
-        return localDate.dayOfMonth.toString()
+        val sdf = SimpleDateFormat("MMM dd, yyyy", Locale.ENGLISH)
+        val parsedDate = sdf.parse(date ?: "") ?: return ""
+        val calendar = Calendar.getInstance()
+        calendar.time = parsedDate
+        return calendar.get(Calendar.DAY_OF_MONTH).toString()
     }
 }
 

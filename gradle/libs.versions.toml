@@ -35,7 +35,6 @@ activityCompose = "1.12.2"
 composeBom = "2025.12.01"
 googleid = "1.1.1"
 mapsCompose = "7.0.0"
-mapsUtils = "3.19.0"
 media3Exoplayer = "1.9.0"
 moshiKotlin = "1.15.2"
 okhttpBom = "5.3.2"
@@ -123,7 +122,8 @@ glance-appwidget = { module = "androidx.glance:glance-appwidget", version.ref = 
 
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor" }
 maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
-maps-utils = { module = "com.google.maps.android:android-maps-utils", version.ref = "mapsUtils" }
+maps-compose-utils = { module = "com.google.maps.android:maps-compose-utils", version.ref = "mapsCompose" }
+
 okhttp = { module = "com.squareup.okhttp3:okhttp" }
 okhttp-bom = { module = "com.squareup.okhttp3:okhttp-bom", version.ref = "okhttpBom" }
 
