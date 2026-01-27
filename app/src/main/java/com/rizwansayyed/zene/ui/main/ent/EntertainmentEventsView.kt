@@ -52,7 +52,9 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Marker
+import com.google.maps.android.clustering.Cluster
 import com.google.maps.android.clustering.ClusterItem
+import com.google.maps.android.clustering.algo.NonHierarchicalDistanceBasedAlgorithm
 import com.google.maps.android.clustering.view.DefaultClusterRenderer
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapEffect
@@ -77,8 +79,7 @@ import kotlin.coroutines.resume
 suspend fun getCircularMarkerBitmap(context: Context, url: String?): BitmapDescriptor {
     return withContext(Dispatchers.IO) {
         try {
-            val bitmap =
-                Glide.with(context).asBitmap().load(url).centerCrop().submit(110, 110).get()
+            val bitmap = Glide.with(context).asBitmap().load(url).centerCrop().submit(80, 80).get()
             val output = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
             val canvas = Canvas(output)
             val paint = Paint().apply {
@@ -129,6 +130,7 @@ fun EventsMapScreen(events: List<EventsResponsesItems>) {
     val screenHeightDp = configuration.screenHeightDp.dp
     var latLong by remember { mutableStateOf<LatLng?>(null) }
     var zoom by remember { mutableFloatStateOf(11f) }
+
     LaunchedEffect(Unit) {
         val location = getCurrentLocationSuspend(context)
         if (location != null) {
@@ -148,6 +150,7 @@ fun EventsMapScreen(events: List<EventsResponsesItems>) {
 
     if (latLong != null) {
         val clusterItems = remember(events) { events.map { EventClusterItem(it) } }
+
         var selectedEvents by remember { mutableStateOf<List<EventsResponsesItems>>(emptyList()) }
         var showSheet by remember { mutableStateOf(false) }
         val cameraPositionState = rememberCameraPositionState {
@@ -182,11 +185,16 @@ fun EventsMapScreen(events: List<EventsResponsesItems>) {
                     }
 
                     if (clusterManager != null) {
-                        clusterManager.renderer = object :
-                            DefaultClusterRenderer<EventClusterItem>(context, map, clusterManager) {
+                        clusterManager.algorithm =
+                            NonHierarchicalDistanceBasedAlgorithm<EventClusterItem>().apply {
+                                maxDistanceBetweenClusteredItems = 100
+                            }
+
+                        clusterManager.renderer = object : DefaultClusterRenderer<EventClusterItem>(
+                            context, map, clusterManager
+                        ) {
                             override fun onClusterItemRendered(
-                                clusterItem: EventClusterItem,
-                                marker: Marker
+                                clusterItem: EventClusterItem, marker: Marker
                             ) {
                                 super.onClusterItemRendered(clusterItem, marker)
                                 scope.launch {
@@ -195,6 +203,10 @@ fun EventsMapScreen(events: List<EventsResponsesItems>) {
                                     )
                                     marker.setIcon(icon)
                                 }
+                            }
+
+                            override fun shouldRenderAsCluster(cluster: Cluster<EventClusterItem>): Boolean {
+                                return cluster.size > 1
                             }
                         }
 
@@ -212,11 +224,11 @@ fun EventsMapScreen(events: List<EventsResponsesItems>) {
                     }
                 }
                 if (clusterManager != null) {
-                    Clustering(items = clusterItems, clusterManager = clusterManager)
+                    Clustering(clusterItems, clusterManager)
                 }
             }
             if (showSheet) {
-                EventListOverlay(events = selectedEvents, onClose = { showSheet = false })
+                EventListOverlay(selectedEvents, { showSheet = false })
             }
         }
     }
@@ -237,12 +249,9 @@ fun EventListOverlay(events: List<EventsResponsesItems>, onClose: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             items(events) { event -> EventItemRow(event) }
+
             item {
-                Spacer(
-                    modifier = Modifier.height(
-                        24.dp
-                    )
-                )
+                Spacer(Modifier.height(24.dp))
             }
         }
     }
@@ -263,10 +272,11 @@ fun EventItemRow(event: EventsResponsesItems) {
         )
 
         Column(
-             Modifier
+            Modifier
                 .padding(start = 8.dp)
                 .weight(1f)
-                .fillMaxHeight(), verticalArrangement = Arrangement.Center
+                .fillMaxHeight(),
+            verticalArrangement = Arrangement.Center
         ) {
             TextViewBold(event.name ?: "Unnamed Event", 16)
             TextViewNormal(event.address ?: "Unnamed Event", 14, line = 1)
@@ -298,9 +308,11 @@ suspend fun getCurrentLocationSuspend(context: Context): LatLng? =
         }.addOnFailureListener { cont.resume(null) }
     }
 
+data class EventClusterItem(
+    val event: EventsResponsesItems
+) : ClusterItem {
 
-data class EventClusterItem(val event: EventsResponsesItems) : ClusterItem {
-    override fun getPosition() = LatLng(event.geo?.lat ?: 0.0, event.geo?.lng ?: 0.0)
+    override fun getPosition(): LatLng = LatLng(event.geo?.lat ?: 0.0, event.geo?.lng ?: 0.0)
 
     override fun getTitle(): String? = event.name
     override fun getSnippet(): String? = event.address
