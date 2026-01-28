@@ -93,18 +93,6 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
                 return@collectLatest
             }
 
-            it.events?.all?.forEach {
-                Log.d("TAG", "entDiscoverNews: ${it.name} == ${it.geo?.lat} == ${it.geo?.lng}")
-            }
-
-            it.events?.city?.forEach {
-                Log.d("TAG", "entDiscoverNews: ${it.name} == ${it.geo?.lat} == ${it.geo?.lng}")
-            }
-
-            it.events?.thisWeek?.forEach {
-                Log.d("TAG", "entDiscoverNews: ${it.name} == ${it.geo?.lat} == ${it.geo?.lng}")
-            }
-
             cacheHelper.save(ZENE_ENT_DISCOVER_TRENDING_NEWS_API, it)
             discover = ResponseResult.Success(it)
         }
