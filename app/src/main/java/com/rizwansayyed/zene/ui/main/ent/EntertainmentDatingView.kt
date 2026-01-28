@@ -103,7 +103,7 @@ fun CoupleCardFull(dated: WhoDatedWhoData) {
 
             OverlappingAvatars(dated)
 
-            Spacer(modifier = Modifier.height(18.dp))
+            Spacer( Modifier.height(18.dp))
 
             TextViewSemiBold(dated.coupleComparison?.personA?.name ?: "", size = 14, line = 1)
             TextViewSemiBold("&", size = 14, line = 1)

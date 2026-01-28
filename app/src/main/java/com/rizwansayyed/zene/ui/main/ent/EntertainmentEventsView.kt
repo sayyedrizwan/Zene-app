@@ -44,7 +44,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
@@ -58,7 +57,6 @@ import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.resume
@@ -120,7 +118,7 @@ fun EntertainmentEventsView(viewModel: EntertainmentViewModel) {
                     sheetContainerColor = MainColor,
                     sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
                     sheetContent = {
-                        EventAllEventsLists()
+                        EventAllEventsLists(v.data)
 //                        LazyColumn {
 //                            items(allEvents) { event ->
 //                                EventItemRow(event) {
@@ -137,6 +135,8 @@ fun EntertainmentEventsView(viewModel: EntertainmentViewModel) {
 //                                    }
 //                                }
 //                            }
+//
+//
 //                            item { Spacer(Modifier.height(32.dp)) }
 //                        }
                     }) { }

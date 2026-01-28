@@ -16,6 +16,7 @@ data class EntertainmentDiscoverResponse(
     val movies: ZeneMusicDataList?,
     val dated: List<WhoDatedWhoData>?,
     val events: EventsResponses?,
+    val eventsNews: ZeneMusicDataList?,
 )
 
 data class EventsResponses(

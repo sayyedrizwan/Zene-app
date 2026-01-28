@@ -1,7 +1,21 @@
 package com.rizwansayyed.zene.ui.main.ent.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -11,8 +25,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
@@ -29,20 +51,102 @@ import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.clustering.Clustering
 import com.google.maps.android.compose.clustering.rememberClusterManager
 import com.rizwansayyed.zene.R
+import com.rizwansayyed.zene.data.model.EntertainmentDiscoverResponse
 import com.rizwansayyed.zene.data.model.EventsResponsesItems
+import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.ui.main.ent.EventListOverlay
 import com.rizwansayyed.zene.ui.main.ent.getCircularMarkerBitmap
 import com.rizwansayyed.zene.ui.main.ent.getCurrentLocationSuspend
+import com.rizwansayyed.zene.ui.theme.BlackGray
+import com.rizwansayyed.zene.ui.view.TextViewBold
+import com.rizwansayyed.zene.ui.view.TextViewLight
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 
 @Composable
-fun EventAllEventsLists() {
+fun EventAllEventsLists(data: EntertainmentDiscoverResponse) {
+    LazyColumn(Modifier.fillMaxSize()) {
+        item {
+            Box(Modifier.fillMaxWidth()) {
+                LazyRow(Modifier.fillMaxWidth()) {
+                    items(data.eventsNews ?: emptyList()) {
+                        TrendingRestaurantCard(it)
+                    }
+                }
 
+                TrendingBadge(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(12.dp)
+                )
+            }
+        }
+    }
 }
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun TrendingRestaurantCard(data: ZeneMusicData?, modifier: Modifier = Modifier) {
+    Card(
+        modifier = modifier
+            .padding(horizontal = 10.dp)
+            .width(260.dp)
+            .height(360.dp),
+        shape = RoundedCornerShape(24.dp),
+        elevation = CardDefaults.cardElevation(6.dp)
+    ) {
+        Box {
+            GlideImage(
+                model = data?.thumbnail,
+                contentDescription = data?.name,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color.Transparent,
+                                Color.Black.copy(alpha = 0.75f)
+                            )
+                        )
+                    )
+            )
+
+            Column(
+                Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(12.dp)
+            ) {
+                TextViewBold(data?.name ?: "", 16)
+                Spacer(modifier = Modifier.height(5.dp))
+                TextViewLight(data?.artists ?: "", 13, Color.LightGray)
+            }
+        }
+    }
+}
+
+@Composable
+fun TrendingBadge(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier
+            .background(BlackGray, RoundedCornerShape(50))
+            .padding(horizontal = 12.dp, vertical = 6.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        TextViewBold("\uD83D\uDDDE\uFE0F", 15)
+        Spacer(Modifier.width(6.dp))
+        TextViewBold(stringResource(R.string.events_news), 15)
+    }
+}
+
+
 
 @Suppress("COMPOSE_APPLIER_CALL_MISMATCH")
 @OptIn(MapsComposeExperimentalApi::class, ExperimentalMaterial3Api::class)

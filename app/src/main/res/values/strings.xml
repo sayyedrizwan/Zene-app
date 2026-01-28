@@ -544,6 +544,7 @@
     <string name="trending_looks">Trending Looks</string>
     <string name="latest_looks">Latest Looks</string>
     <string name="events_near_you_this_week">Events near you this week</string>
+    <string name="events_news">Events News</string>
 
     <!--    notification channels-->
     <string name="connect_updates_name">Connect Update Alerts</string>
