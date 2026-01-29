@@ -128,8 +128,8 @@ fun ViewMoreCard(onClick: () -> Unit) {
                 .background(Color.Black)
                 .height(480.dp), Arrangement.Center, Alignment.CenterHorizontally
         ) {
-            ImageIcon(R.drawable.ic_arrow_right, 25)
-            Spacer(Modifier.height(8.dp))
+            ImageIcon(R.drawable.ic_arrow_right, 35)
+            Spacer(Modifier.height(10.dp))
             TextViewBold(stringResource(R.string.view_more), 19)
         }
     }

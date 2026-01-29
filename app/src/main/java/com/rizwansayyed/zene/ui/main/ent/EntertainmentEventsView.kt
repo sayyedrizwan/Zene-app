@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,6 +35,7 @@ import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
@@ -53,6 +55,7 @@ import com.rizwansayyed.zene.data.model.EventsResponsesItems
 import com.rizwansayyed.zene.ui.main.ent.view.EventAllEventsLists
 import com.rizwansayyed.zene.ui.main.ent.view.EventsMapScreen
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.view.ShimmerEffect
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import kotlinx.coroutines.Dispatchers
@@ -94,9 +97,10 @@ fun EntertainmentEventsView(viewModel: EntertainmentViewModel) {
 
     when (val v = viewModel.discover) {
         ResponseResult.Empty -> {}
-        ResponseResult.Loading -> {}
+        ResponseResult.Loading -> {
+            ShimmerEffect(Modifier.fillMaxSize())
+        }
         is ResponseResult.Error -> {}
-
         is ResponseResult.Success -> {
             val allEvents =
                 (v.data.events?.thisWeek.orEmpty() + v.data.events?.city.orEmpty() + v.data.events?.all.orEmpty()).distinctBy { it.id }
@@ -117,26 +121,6 @@ fun EntertainmentEventsView(viewModel: EntertainmentViewModel) {
                     sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
                     sheetContent = {
                         EventAllEventsLists(v.data, scaffoldState, cameraPositionState)
-//                        LazyColumn {
-//                            items(allEvents) { event ->
-//                                EventItemRow(event) {
-//                                    scope.launch {
-//                                        scaffoldState.bottomSheetState.partialExpand()
-//                                        val latLong =
-//                                            LatLng(event.geo?.lat ?: 0.0, event.geo?.lng ?: 0.0)
-//                                        cameraPositionState.animate(
-//                                            CameraUpdateFactory.newLatLngZoom(
-//                                                latLong,
-//                                                16f
-//                                            ), 800
-//                                        )
-//                                    }
-//                                }
-//                            }
-//
-//
-//                            item { Spacer(Modifier.height(32.dp)) }
-//                        }
                     }) { }
             }
         }
