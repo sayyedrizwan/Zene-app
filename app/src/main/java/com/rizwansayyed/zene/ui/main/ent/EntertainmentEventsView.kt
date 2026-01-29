@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.PorterDuff
@@ -33,13 +32,13 @@ import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.createBitmap
 import com.bumptech.glide.Glide
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -65,7 +64,7 @@ suspend fun getCircularMarkerBitmap(context: Context, url: String?): BitmapDescr
     return withContext(Dispatchers.IO) {
         try {
             val bitmap = Glide.with(context).asBitmap().load(url).centerCrop().submit(80, 80).get()
-            val output = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
+            val output = createBitmap(bitmap.width, bitmap.height)
             val canvas = Canvas(output)
             val paint = Paint().apply {
                 isAntiAlias = true
@@ -91,7 +90,6 @@ suspend fun getCircularMarkerBitmap(context: Context, url: String?): BitmapDescr
 @OptIn(ExperimentalMaterial3Api::class, MapsComposeExperimentalApi::class)
 @Composable
 fun EntertainmentEventsView(viewModel: EntertainmentViewModel) {
-    val scope = rememberCoroutineScope()
     val cameraPositionState = rememberCameraPositionState()
 
     when (val v = viewModel.discover) {
@@ -118,7 +116,7 @@ fun EntertainmentEventsView(viewModel: EntertainmentViewModel) {
                     sheetContainerColor = MainColor,
                     sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
                     sheetContent = {
-                        EventAllEventsLists(v.data)
+                        EventAllEventsLists(v.data, scaffoldState, cameraPositionState)
 //                        LazyColumn {
 //                            items(allEvents) { event ->
 //                                EventItemRow(event) {
