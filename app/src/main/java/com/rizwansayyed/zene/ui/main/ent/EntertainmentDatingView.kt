@@ -24,6 +24,10 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,6 +40,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.WhoDatedWhoData
+import com.rizwansayyed.zene.ui.main.ent.discoverview.DatedInfoSheet
 import com.rizwansayyed.zene.ui.theme.LoveBuzzBg
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.ImageIcon
@@ -79,11 +84,13 @@ fun EntertainmentDatingView(viewModel: EntertainmentViewModel) {
 
 @Composable
 fun CoupleCardFull(dated: WhoDatedWhoData) {
+    var fullInfoSheet by remember { mutableStateOf(false) }
+
     Card(
         modifier = Modifier
             .padding(horizontal = 7.dp)
             .fillMaxWidth()
-            .clickable { },
+            .clickable { fullInfoSheet = true },
         shape = RoundedCornerShape(28.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
     ) {
@@ -109,6 +116,10 @@ fun CoupleCardFull(dated: WhoDatedWhoData) {
             TextViewSemiBold("&", size = 14, line = 1)
             TextViewSemiBold(dated.coupleComparison?.personB?.name ?: "", size = 14, line = 1)
         }
+    }
+
+    if (fullInfoSheet) DatedInfoSheet(dated) {
+        fullInfoSheet = false
     }
 }
 

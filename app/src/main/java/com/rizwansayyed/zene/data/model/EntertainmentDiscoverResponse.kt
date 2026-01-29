@@ -145,5 +145,16 @@ data class WhoDatedWhoData(
         val title: String?,
         val event: String?,
         val image: String?,
-    )
+    ) {
+        fun getStatus(): String {
+            return event?.split("-")
+                ?.firstOrNull()
+                ?.trim()
+                ?: ""
+        }
+
+        fun getDate(): String {
+            return event?.substringAfter(" -")?.trim() ?: ""
+        }
+    }
 }
