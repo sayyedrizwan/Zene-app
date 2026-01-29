@@ -255,6 +255,7 @@
     <string name="recent">Recent</string>
     <string name="resend">Resend</string>
     <string name="view">View</string>
+    <string name="view_more">View More</string>
     <string name="reorder_playlist_songs">Reorder Playlist Songs</string>
     <string name="song_s_playback_queue">Playback Queue</string>
     <string name="upgrade">Upgrade</string>

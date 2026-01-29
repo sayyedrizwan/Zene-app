@@ -35,20 +35,32 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.EventsResponses
 import com.rizwansayyed.zene.data.model.EventsResponsesItems
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.ui.main.home.EntSectionSelector
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
+import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 
 @Composable
-fun EntertainmentNearByEventsView(events: EventsResponses) {
+fun EntertainmentNearByEventsView(events: EventsResponses, viewModel: NavigationViewModel) {
     Column(Modifier.fillMaxWidth()) {
         Spacer(Modifier.height(20.dp))
-        Box(Modifier.padding(horizontal = 6.dp)) {
+
+        Row(Modifier.padding(horizontal = 6.dp), verticalAlignment = Alignment.CenterVertically) {
             TextViewBold(stringResource(R.string.events_near_you_this_week), 23)
+
+            Spacer(Modifier.weight(1f))
+
+            Box(Modifier.clickable {
+                viewModel.setEntNavigation(EntSectionSelector.EVENTS)
+            }) {
+                ImageIcon(R.drawable.ic_arrow_right, 29, Color.White)
+            }
         }
+
         Spacer(Modifier.height(12.dp))
 
         LazyRow(

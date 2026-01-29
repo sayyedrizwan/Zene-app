@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.main.ent.discoverview
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,11 +39,14 @@ import com.rizwansayyed.zene.data.model.EntertainmentDiscoverResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
 import com.rizwansayyed.zene.service.notification.NavigationUtils
+import com.rizwansayyed.zene.ui.main.home.EntSectionSelector
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ShimmerEffect
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
+import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -63,7 +67,6 @@ fun EntLoadingTrendingMoviesView() {
             items(6) {
                 ShimmerEffect(
                     Modifier
-                        .fillMaxWidth()
                         .clip(RoundedCornerShape(15.dp))
                         .size(300.dp, 450.dp)
                 )
@@ -74,13 +77,21 @@ fun EntLoadingTrendingMoviesView() {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun EntTrendingMoviesView(data: EntertainmentDiscoverResponse) {
+fun EntTrendingMoviesView(data: EntertainmentDiscoverResponse, viewModel: NavigationViewModel?) {
     val name by ipDB.collectAsState(null)
 
     Column(Modifier.fillMaxWidth()) {
         Spacer(Modifier.height(20.dp))
-        Box(Modifier.padding(horizontal = 6.dp)) {
+        Row(Modifier.padding(horizontal = 6.dp), verticalAlignment = Alignment.CenterVertically) {
             TextViewBold(stringResource(R.string.trending_movies_shows_in, name?.country ?: ""), 23)
+
+            Spacer(Modifier.weight(1f))
+
+            if (viewModel != null) Box(Modifier.clickable {
+                viewModel.setEntNavigation(EntSectionSelector.MOVIES)
+            }) {
+                ImageIcon(R.drawable.ic_arrow_right, 29, Color.White)
+            }
         }
         Spacer(Modifier.height(12.dp))
 

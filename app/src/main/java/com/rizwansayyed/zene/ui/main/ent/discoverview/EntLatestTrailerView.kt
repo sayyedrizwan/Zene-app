@@ -35,20 +35,33 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.EntertainmentDiscoverResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.ui.main.home.EntSectionSelector
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
+import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 
 @Composable
-fun EntLatestTrailerView(data: EntertainmentDiscoverResponse) {
-    Spacer(Modifier.height(50.dp))
-    Box(Modifier.padding(horizontal = 6.dp)) {
-        TextViewBold(stringResource(R.string.latest_trailers), 23)
-    }
-    Spacer(Modifier.height(6.dp))
+fun EntLatestTrailerView(data: EntertainmentDiscoverResponse, viewModel: NavigationViewModel) {
+    if (data.featuredTrailer?.id != null || data.trailers?.isNotEmpty() == true) {
+        Spacer(Modifier.height(50.dp))
 
+        Row(Modifier.padding(horizontal = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+            TextViewBold(stringResource(R.string.latest_trailers), 23)
+
+            Spacer(Modifier.weight(1f))
+
+            Box(Modifier.clickable {
+                viewModel.setEntNavigation(EntSectionSelector.MOVIES)
+            }) {
+                ImageIcon(R.drawable.ic_arrow_right, 29, Color.White)
+            }
+        }
+
+        Spacer(Modifier.height(6.dp))
+    }
     if (data.featuredTrailer?.id != null) FeaturedTrailerCard(data.featuredTrailer)
     if (data.trailers?.isNotEmpty() == true) TrailerRow(data.trailers)
 }

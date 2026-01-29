@@ -55,7 +55,7 @@ fun EntertainmentMoviesView(viewModel: EntertainmentViewModel) {
                 if (v.data.movies?.isNotEmpty() == true) item(
                     key = "movies",
                     span = { GridItemSpan(2) }) {
-                    EntTrendingMoviesView(v.data)
+                    EntTrendingMoviesView(v.data, null)
                 }
             }
         }
@@ -68,7 +68,7 @@ fun EntertainmentMoviesView(viewModel: EntertainmentViewModel) {
                     EntTrailerView()
                 }
 
-                items(6) {
+                items(6, span = { GridItemSpan(2) }) {
                     ShimmerEffect(
                         Modifier
                             .padding(5.dp)

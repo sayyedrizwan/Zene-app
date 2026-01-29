@@ -33,17 +33,27 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.EntertainmentDiscoverResponse
 import com.rizwansayyed.zene.data.model.WhoDatedWhoData
+import com.rizwansayyed.zene.ui.main.home.EntSectionSelector
 import com.rizwansayyed.zene.ui.theme.LoveBuzzBg
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 
 
 @Composable
-fun EntCelebDatingView(data: EntertainmentDiscoverResponse) {
+fun EntCelebDatingView(data: EntertainmentDiscoverResponse, viewModel: NavigationViewModel) {
     Spacer(Modifier.height(50.dp))
-    Box(Modifier.padding(horizontal = 6.dp)) {
+    Row(Modifier.padding(horizontal = 6.dp), verticalAlignment = Alignment.CenterVertically) {
         TextViewBold(stringResource(R.string.love_buzz), 23)
+
+        Spacer(Modifier.weight(1f))
+
+        Box(Modifier.clickable {
+            viewModel.setEntNavigation(EntSectionSelector.DATING)
+        }) {
+            ImageIcon(R.drawable.ic_arrow_right, 29, Color.White)
+        }
     }
     Spacer(Modifier.height(12.dp))
 

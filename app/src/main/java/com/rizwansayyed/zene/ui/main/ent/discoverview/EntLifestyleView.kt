@@ -17,6 +17,9 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,9 +36,14 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.data.model.ZeneMusicDataList
+import com.rizwansayyed.zene.ui.main.home.EntSectionSelector
+import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ShimmerEffect
+import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 
 
 @Composable
@@ -70,8 +78,9 @@ fun EntLifestyleLoadingView() {
 }
 
 @Composable
-fun EntLifestyleView(data: List<ZeneMusicData>) {
-    val pagerState = rememberPagerState { data.size }
+fun EntLifestyleView(data: ZeneMusicDataList, viewModel: NavigationViewModel) {
+    val totalPages = data.size + 1
+    val pagerState = rememberPagerState { totalPages }
 
     Box(
         Modifier
@@ -84,19 +93,48 @@ fun EntLifestyleView(data: List<ZeneMusicData>) {
             Spacer(Modifier.height(16.dp))
 
             HorizontalPager(
-                pagerState,
-                Modifier.fillMaxWidth(),
-                PaddingValues(horizontal = 34.dp),
-                pageSpacing = 16.dp,
+                pagerState, Modifier.fillMaxWidth(),
+                PaddingValues(horizontal = 34.dp), pageSpacing = 16.dp,
             ) { page ->
+                if (page == data.size) {
+                    ViewMoreCard {
+                        viewModel.setEntNavigation(EntSectionSelector.LIFESTYLE)
+                    }
+                } else {
                 CelebrityCard(data[page])
             }
+            }
             Spacer(Modifier.height(12.dp))
-            PagerDots(data.size, pagerState.currentPage)
+            PagerDots(totalPages, pagerState.currentPage)
             Spacer(Modifier.height(24.dp))
         }
     }
 }
+
+@Composable
+fun ViewMoreCard(onClick: () -> Unit) {
+    Box(
+        Modifier
+            .fillMaxWidth()
+            .height(500.dp)
+            .clickable { onClick() },
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            Modifier
+                .align(Alignment.TopCenter)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(15.dp))
+                .background(Color.Black)
+                .height(480.dp), Arrangement.Center, Alignment.CenterHorizontally
+        ) {
+            ImageIcon(R.drawable.ic_arrow_right, 25)
+            Spacer(Modifier.height(8.dp))
+            TextViewBold(stringResource(R.string.view_more), 19)
+        }
+    }
+}
+
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
