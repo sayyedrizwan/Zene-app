@@ -152,7 +152,7 @@ class MainActivity : FragmentActivity() {
 
                                         SEARCH -> SearchView(homeViewModel)
                                         NONE -> {}
-                                        HomeNavSelector.STORE -> StoreView()
+                                        HomeNavSelector.STORE -> StoreView(homeViewModel)
                                     }
                                 }
                                 composable(NAV_SETTINGS_PAGE) {

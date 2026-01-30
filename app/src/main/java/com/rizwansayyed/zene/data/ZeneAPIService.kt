@@ -33,6 +33,8 @@ import com.rizwansayyed.zene.data.model.SearchTrendingResponse
 import com.rizwansayyed.zene.data.model.SponsorAdsResponse
 import com.rizwansayyed.zene.data.model.StatusCouponResponse
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
+import com.rizwansayyed.zene.data.model.StoreDealResponse
+import com.rizwansayyed.zene.data.model.StoreDealResponseList
 import com.rizwansayyed.zene.data.model.StreamingTrendingList
 import com.rizwansayyed.zene.data.model.UpcomingMoviesList
 import com.rizwansayyed.zene.data.model.UserInfoResponse
@@ -118,6 +120,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_TRENDING_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SEARCH_TRENDING_GIF_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SIMILAR_PODCASTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_SPONSOR_ADS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_STORE_TOP_DEALS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_HISTORY_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_LIKE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_USER_ADD_TO_PLAYLISTS_API
@@ -840,4 +843,11 @@ interface ZeneAPIService {
         suspend fun entLifestyleEvents(
         @Header("token") token: String, @Body data: RequestBody
     ): ZeneMusicDataList
+
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_STORE_TOP_DEALS_API)
+        suspend fun storeTopDeals(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StoreDealResponseList
 }

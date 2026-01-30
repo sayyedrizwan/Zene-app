@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.main.store
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -11,47 +12,25 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
-import com.rizwansayyed.zene.ui.main.store.view.RecommendedItemCard
-import com.rizwansayyed.zene.ui.main.store.view.StoreBannerAdsView
+import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.ui.main.store.view.StoreChipsTypeView
-import com.rizwansayyed.zene.ui.main.store.view.StoreDiscoverListView
 import com.rizwansayyed.zene.ui.main.store.view.StoreTopDealsView
-import com.rizwansayyed.zene.ui.main.store.view.itemsShopLists
-import com.rizwansayyed.zene.ui.main.store.view.storeChips
-import com.rizwansayyed.zene.ui.view.ImageIcon
+import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.TextViewBold
-import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun StoreView() {
-    var searchQuery by remember { mutableStateOf("") }
-    val selectedCategory = remember { mutableStateOf(storeChips[0]) }
-    val focusManager = LocalFocusManager.current
-
+fun StoreView(viewModel: HomeViewModel) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(top = 60.dp, bottom = 250.dp)
@@ -65,75 +44,42 @@ fun StoreView() {
                 }
                 Spacer(Modifier.weight(1f))
             }
-            Spacer(modifier = Modifier.height(20.dp))
         }
 
         item {
-            TextField(
-                searchQuery,
-                { if (it.length <= 20) searchQuery = it },
-                Modifier
-                    .padding(10.dp)
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions {
-                    focusManager.clearFocus()
-//                    if (searchQuery.length > 3) viewModel.searchZene(searchQuery)
-                },
-                placeholder = {
-                    TextViewNormal(stringResource(R.string.search_product), 16, Color.Black)
-                },
-                textStyle = TextStyle(fontSize = 16.sp, color = Color.Black),
-                trailingIcon = {
-                    if (searchQuery.length > 3) {
-                        IconButton({
-                            focusManager.clearFocus()
-//                            viewModel.searchZene(search)
-                        }) {
-                            ImageIcon(R.drawable.ic_search, 24)
-                        }
+            StoreChipsTypeView()
+        }
+
+        item {
+//            Spacer(modifier = Modifier.height(5.dp))
+//            StoreBannerAdsView()
+        }
+
+        when(val v = viewModel.topStoreDeals) {
+            ResponseResult.Empty -> {}
+            is ResponseResult.Error -> {}
+            ResponseResult.Loading -> item {
+                Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                    CircularLoadingView()
+                }
+            }
+            is ResponseResult.Success -> {
+                item {
+                    Spacer(Modifier.height(20.dp))
+                    Box(Modifier.padding(horizontal = 6.dp)) {
+                        TextViewBold(stringResource(R.string.top_deals_on_amazon), 23)
                     }
-                },
-                shape = RoundedCornerShape(8.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    cursorColor = Color.Black
-                ),
-                singleLine = true
-            )
-            Spacer(modifier = Modifier.height(5.dp))
-        }
+                    Spacer(Modifier.height(12.dp))
+                }
 
-        item {
-            StoreChipsTypeView(selectedCategory)
+                items(v.data) { v ->
+                    StoreTopDealsView(v)
+                }
+            }
         }
+    }
 
-        item {
-            Spacer(modifier = Modifier.height(5.dp))
-            StoreBannerAdsView()
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(5.dp))
-            StoreTopDealsView()
-        }
-
-
-        item {
-            Spacer(modifier = Modifier.height(15.dp))
-            StoreDiscoverListView()
-        }
-
-        items(itemsShopLists) {
-            RecommendedItemCard(it)
-        }
-
-        items(itemsShopLists) {
-            RecommendedItemCard(it)
-        }
+    LaunchedEffect(Unit) {
+        viewModel.storeTopDeals()
     }
 }

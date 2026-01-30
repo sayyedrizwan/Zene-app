@@ -41,44 +41,9 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.MainUtils
 
-val storeChips = listOf(
-    "Explore",
-    "Headphones & Earbuds",
-    "Speakers",
-    "Artist / Movie Merchandise",
-    "Turntables & Records",
-    "Audio Accessories",
-    "Books & Biographies",
-    "Smart Home / Lighting",
-    "Phones / Cases",
-    "Fashion & Beauty",
-    "Gifts & Bundles"
-)
-
-
 @Composable
-fun StoreChipsTypeView(category: MutableState<String>) {
-    Row(
-        Modifier
-            .horizontalScroll(rememberScrollState())
-            .fillMaxWidth(),
-        Arrangement.Center,
-        Alignment.CenterVertically
-    ) {
-        Spacer(Modifier.width(10.dp))
-
-        storeChips.forEach { chip ->
-            TextSimpleCards(chip == category.value, chip) {
-                category.value = chip
-            }
-
-            Spacer(Modifier.width(5.dp))
-        }
-
-        Spacer(Modifier.width(5.dp))
-    }
-
-    Spacer(Modifier.height(15.dp))
+fun StoreChipsTypeView() {
+    Spacer(Modifier.height(10.dp))
     SupportArtistCard()
 }
 
