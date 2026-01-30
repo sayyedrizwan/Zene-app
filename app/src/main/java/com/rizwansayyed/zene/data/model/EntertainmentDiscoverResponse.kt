@@ -38,6 +38,8 @@ data class EventsResponsesItems(
     val geo: EventsGeo?,
 ) {
 
+    fun toMusicData() = ZeneMusicData(address, id, name, "", thumbnail, MusicDataTypes.EVENTS.name)
+
     data class EventsGeo(
         val lat: Double, val lng: Double
     )

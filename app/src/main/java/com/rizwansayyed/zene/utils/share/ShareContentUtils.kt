@@ -39,6 +39,7 @@ import com.rizwansayyed.zene.utils.MainUtils.toast
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ARTIST
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_EVENTS
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_LIFESTYLE
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_LOVE_BUZZ
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_M
@@ -163,6 +164,10 @@ object ShareContentUtils {
             MusicDataTypes.DATING -> String.format(
                 context.resources.getString(R.string.enjoy_latest_relationship_buzz_on_zene), data.name
             )
+
+            MusicDataTypes.EVENTS -> String.format(
+                context.resources.getString(R.string.enjoy_event_info_about_on_zene), data.name
+            )
         }
 
         val url = generateShareUrl(data)
@@ -251,6 +256,7 @@ object ShareContentUtils {
             TEXT -> ZENE_URL
             null -> ZENE_URL
             MusicDataTypes.DATING -> "$ZENE_URL$ZENE_LOVE_BUZZ${data.id}"
+            MusicDataTypes.EVENTS -> "$ZENE_URL$ZENE_EVENTS${data.id}"
         }
     }
 

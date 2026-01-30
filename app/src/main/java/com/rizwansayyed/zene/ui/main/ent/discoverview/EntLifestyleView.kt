@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.ui.main.ent.discoverview
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,9 +18,6 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,12 +35,14 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
+import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.ui.main.home.EntSectionSelector
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ShimmerEffect
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 
 
@@ -66,9 +66,11 @@ fun EntLifestyleLoadingView() {
                 PaddingValues(horizontal = 34.dp),
                 pageSpacing = 16.dp,
             ) {
-                ShimmerEffect(Modifier
-                    .clip(RoundedCornerShape(15.dp))
-                    .size(350.dp, 500.dp))
+                ShimmerEffect(
+                    Modifier
+                        .clip(RoundedCornerShape(15.dp))
+                        .size(350.dp, 500.dp)
+                )
             }
             Spacer(Modifier.height(12.dp))
             PagerDots(pagerState.pageCount, pagerState.currentPage)
@@ -101,8 +103,8 @@ fun EntLifestyleView(data: ZeneMusicDataList, viewModel: NavigationViewModel) {
                         viewModel.setEntNavigation(EntSectionSelector.LIFESTYLE)
                     }
                 } else {
-                CelebrityCard(data[page])
-            }
+                    CelebrityCard(data[page])
+                }
             }
             Spacer(Modifier.height(12.dp))
             PagerDots(totalPages, pagerState.currentPage)
@@ -139,11 +141,12 @@ fun ViewMoreCard(onClick: () -> Unit) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun CelebrityCard(item: ZeneMusicData) {
-    var fullInfoSheet by remember { mutableStateOf(false) }
     Column(
-        Modifier.clickable {
-            fullInfoSheet = true
-        }, horizontalAlignment = Alignment.CenterHorizontally
+        Modifier
+            .combinedClickable(
+                onLongClick = { NavigationUtils.triggerInfoSheet(item) },
+                onClick = { startMedia(item) }
+            ), horizontalAlignment = Alignment.CenterHorizontally
     ) {
         GlideImage(
             model = item.thumbnail,

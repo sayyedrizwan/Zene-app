@@ -166,6 +166,7 @@ fun ConnectVibeItemView(item: ConnectFeedDataResponse?, isFeedView: Boolean = tr
                             VIDEOS -> ImageIcon(R.drawable.ic_video_replay, 18)
                             RADIO -> ImageIcon(R.drawable.ic_radio, 18)
                             MusicDataTypes.DATING -> ImageIcon(R.drawable.ic_romance_couple, 18)
+                            MusicDataTypes.EVENTS -> ImageIcon(R.drawable.ic_ticket, 18)
                         }
                         Spacer(Modifier.width(4.dp))
                         TextViewNormal("${item.jam_name} - ${item.jam_artists}", 14, line = 1)
@@ -291,6 +292,9 @@ fun ConnectVibeItemOnlyCaption(
                         null -> {}
                         MusicDataTypes.DATING ->
                             TextViewNormal(stringResource(R.string.love_buzz), 14, center = true)
+
+                        MusicDataTypes.EVENTS ->
+                            TextViewNormal(stringResource(R.string.event), 14, center = true)
                     }
                     Spacer(Modifier.height(20.dp))
                 }

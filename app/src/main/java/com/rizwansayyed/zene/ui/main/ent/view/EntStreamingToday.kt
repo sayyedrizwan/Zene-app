@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.main.ent.view
 
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,9 +27,11 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.StreamingTrendingResponse
+import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.ui.view.ShimmerEffect
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 
 @Composable
 fun EntStreamingToday() {
@@ -65,7 +68,11 @@ fun EntStreamingTodayItems(data: StreamingTrendingResponse) {
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             itemsIndexed(data.items) { i, v ->
-                Box {
+                Box(
+                    Modifier.combinedClickable(
+                        onLongClick = { NavigationUtils.triggerInfoSheet(v) },
+                        onClick = { startMedia(v) })
+                ) {
                     GlideImage(
                         v.thumbnail, v.name,
                         Modifier
@@ -74,7 +81,9 @@ fun EntStreamingTodayItems(data: StreamingTrendingResponse) {
                         contentScale = ContentScale.Fit
                     )
 
-                    Box(Modifier.align(Alignment.BottomStart).offset(y = (9).dp)) {
+                    Box(Modifier
+                        .align(Alignment.BottomStart)
+                        .offset(y = (9).dp)) {
                         TextViewBold("${i + 1}", 45)
                     }
                 }

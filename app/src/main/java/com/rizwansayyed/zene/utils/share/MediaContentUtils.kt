@@ -28,6 +28,8 @@ import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_ARTIST_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_EVENTS_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_LIFESTYLE_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_LOVE_BUZZ_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MOVIES_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PLAYLIST_PAGE
@@ -87,8 +89,9 @@ object MediaContentUtils {
 
             TEXT -> {}
             null -> {}
-            CELEB_LIFESTYLE -> {}
+            CELEB_LIFESTYLE -> NavigationUtils.triggerHomeNav("$NAV_LIFESTYLE_PAGE${data.id}")
             MusicDataTypes.DATING -> NavigationUtils.triggerHomeNav("$NAV_LOVE_BUZZ_PAGE${data.id}")
+            MusicDataTypes.EVENTS -> NavigationUtils.triggerHomeNav("$NAV_EVENTS_PAGE${data.id}")
         }
     }
 

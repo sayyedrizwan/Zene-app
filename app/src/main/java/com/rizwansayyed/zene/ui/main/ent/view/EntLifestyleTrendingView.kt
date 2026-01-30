@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.main.ent.view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,10 +37,12 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
+import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.ui.theme.proximanOverFamily
 import com.rizwansayyed.zene.ui.view.ShimmerEffect
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 
 @Composable
 fun EntLifestyleTrendingLoadingView() {
@@ -87,7 +90,13 @@ fun EntLifestyleTrendingView(data: ZeneMusicDataList) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun LifestyleLookCard(item: ZeneMusicData) {
-    Column(Modifier.width(260.dp)) {
+    Column(
+        Modifier
+            .width(260.dp)
+            .combinedClickable(
+                onLongClick = { NavigationUtils.triggerInfoSheet(item) },
+                onClick = { startMedia(item) }
+            )) {
         Box {
             GlideImage(
                 item.thumbnail,

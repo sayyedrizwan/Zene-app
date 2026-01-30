@@ -45,6 +45,7 @@ import com.rizwansayyed.zene.service.location.BackgroundLocationTracking
 import com.rizwansayyed.zene.service.notification.HomeNavigationListener
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_ARTIST_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_CONNECT_PROFILE_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_EVENTS_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_GO_BACK
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_LOVE_BUZZ_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
@@ -89,6 +90,7 @@ import com.rizwansayyed.zene.utils.MainUtils.clearCacheIfSizeIsMoreThen200MB
 import com.rizwansayyed.zene.utils.MainUtils.configClarity
 import com.rizwansayyed.zene.utils.MainUtils.isNotificationEnabled
 import com.rizwansayyed.zene.utils.SnackBarManager
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_LIFESTYLE
 import com.rizwansayyed.zene.utils.ads.OpenAppAdsUtils
 import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.utils.share.GenerateShortcuts.generateMainShortcuts
@@ -188,6 +190,16 @@ class MainActivity : FragmentActivity() {
                                 }
 
                                 composable("$NAV_LOVE_BUZZ_PAGE{id}") { backStackEntry ->
+                                    val id = backStackEntry.arguments?.getString("id")
+//                                    if (id != null) MoviesView(id)
+                                }
+
+                                composable("$NAV_EVENTS_PAGE{id}") { backStackEntry ->
+                                    val id = backStackEntry.arguments?.getString("id")
+//                                    if (id != null) MoviesView(id)
+                                }
+
+                                composable("$ZENE_LIFESTYLE{id}") { backStackEntry ->
                                     val id = backStackEntry.arguments?.getString("id")
 //                                    if (id != null) MoviesView(id)
                                 }

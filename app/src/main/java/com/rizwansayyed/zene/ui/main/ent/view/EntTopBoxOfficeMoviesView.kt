@@ -62,7 +62,7 @@ fun EntBoxOfficeMoviesItemView(data: ZeneMusicData) {
             .fillMaxWidth()
             .padding(16.dp)
             .clickable {
-                val name = getSearchOnGoogle("${data.name}")
+                val name = getSearchOnGoogle("${data.name} Movie")
                 MediaContentUtils.openCustomBrowser(name)
             },
         verticalAlignment = Alignment.CenterVertically

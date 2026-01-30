@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.ui.main.ent.view
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,6 +36,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.EventsResponses
 import com.rizwansayyed.zene.data.model.EventsResponsesItems
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.ui.main.home.EntSectionSelector
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
@@ -42,6 +44,7 @@ import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
+import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 
 @Composable
@@ -171,6 +174,10 @@ fun EventTopCard(data: EventsResponsesItems, openLocation: () -> Unit) {
             .fillMaxWidth()
             .clip(RoundedCornerShape(28.dp))
             .background(Color.Black)
+            .combinedClickable(
+                onLongClick = { NavigationUtils.triggerInfoSheet(data.toMusicData()) },
+                onClick = { startMedia(data.toMusicData()) }
+            )
     ) {
         GlideImage(
             data.thumbnail, data.name,
@@ -215,7 +222,11 @@ fun EventsFullCard(data: EventsResponsesItems?, openLocation: () -> Unit) {
         Modifier
             .fillMaxWidth()
             .padding(horizontal = 10.dp)
-            .padding(6.dp),
+            .padding(6.dp)
+            .combinedClickable(
+                onLongClick = { NavigationUtils.triggerInfoSheet(data?.toMusicData()) },
+                onClick = { startMedia(data?.toMusicData()) }
+            ),
         verticalAlignment = Alignment.CenterVertically
     ) {
         GlideImage(
@@ -260,10 +271,15 @@ fun EventsFullCard(data: EventsResponsesItems?, openLocation: () -> Unit) {
 @Composable
 fun TrendingEventsCard(data: ZeneMusicData?) {
     Card(
-        modifier = Modifier
+        Modifier
             .padding(horizontal = 10.dp)
             .width(260.dp)
-            .height(360.dp),
+            .height(360.dp)
+            .clickable {
+                data?.id?.let {
+                    MediaContentUtils.openCustomBrowser(it)
+                }
+            },
         shape = RoundedCornerShape(24.dp),
         elevation = CardDefaults.cardElevation(6.dp)
     ) {
