@@ -160,7 +160,11 @@ fun EntLifestyleLatestItemView(data: ZeneMusicData) {
         Row(
             Modifier
                 .fillMaxSize()
-                .padding(16.dp), Arrangement.SpaceBetween
+                .padding(16.dp)
+                .combinedClickable(
+                    onLongClick = { NavigationUtils.triggerInfoSheet(data) },
+                    onClick = { startMedia(data) }
+                ), Arrangement.SpaceBetween
         ) {
             Column(Modifier.weight(1f), Arrangement.Center) {
                 Column(Modifier.fillMaxHeight(), Arrangement.Center) {

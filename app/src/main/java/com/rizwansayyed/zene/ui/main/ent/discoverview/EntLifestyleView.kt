@@ -137,7 +137,6 @@ fun ViewMoreCard(onClick: () -> Unit) {
     }
 }
 
-
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun CelebrityCard(item: ZeneMusicData) {
