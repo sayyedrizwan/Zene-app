@@ -13,6 +13,7 @@ object NavigationUtils {
     const val NAV_MAIN_PAGE = "main_page"
     const val NAV_SETTINGS_PAGE = "settings_page"
     const val NAV_PODCAST_PAGE = "podcast/"
+    const val NAV_LOVE_BUZZ_PAGE = "love-buzz/"
     const val NAV_PLAYLIST_PAGE = "playlist/"
     const val NAV_MY_PLAYLIST_PAGE = "my-playlist/"
     const val NAV_ARTIST_PAGE = "artist/"

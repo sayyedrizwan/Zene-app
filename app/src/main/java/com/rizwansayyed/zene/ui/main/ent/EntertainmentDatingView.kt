@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.ui.main.ent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,6 +41,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.WhoDatedWhoData
+import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.ui.main.ent.discoverview.DatedInfoSheet
 import com.rizwansayyed.zene.ui.theme.LoveBuzzBg
 import com.rizwansayyed.zene.ui.view.CircularLoadingView
@@ -90,7 +92,11 @@ fun CoupleCardFull(dated: WhoDatedWhoData) {
         modifier = Modifier
             .padding(horizontal = 7.dp)
             .fillMaxWidth()
-            .clickable { fullInfoSheet = true },
+            .combinedClickable(onLongClick = {
+                NavigationUtils.triggerInfoSheet(dated.toMusicData())
+            }, onClick = {
+                fullInfoSheet = true
+            }),
         shape = RoundedCornerShape(28.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
     ) {

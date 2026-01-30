@@ -46,6 +46,7 @@ import com.rizwansayyed.zene.service.notification.HomeNavigationListener
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_ARTIST_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_CONNECT_PROFILE_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_GO_BACK
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_LOVE_BUZZ_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MOVIES_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MY_PLAYLIST_PAGE
@@ -184,6 +185,11 @@ class MainActivity : FragmentActivity() {
                                 composable("$NAV_MOVIES_PAGE{id}") { backStackEntry ->
                                     val id = backStackEntry.arguments?.getString("id")
                                     if (id != null) MoviesView(id)
+                                }
+
+                                composable("$NAV_LOVE_BUZZ_PAGE{id}") { backStackEntry ->
+                                    val id = backStackEntry.arguments?.getString("id")
+//                                    if (id != null) MoviesView(id)
                                 }
                             }
 

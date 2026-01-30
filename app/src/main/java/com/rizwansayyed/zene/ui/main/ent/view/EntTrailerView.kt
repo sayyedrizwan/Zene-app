@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.ui.main.ent.view
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,12 +28,14 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ZeneMusicData
+import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
+import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 
 @Composable
 fun EntTrailerView() {
@@ -54,7 +57,11 @@ fun EntTrailerItemsView(trailer: ZeneMusicData) {
             .padding(horizontal = 9.dp, vertical = 10.dp)
             .fillMaxWidth()
             .height(280.dp)
-            .clickable { MediaContentUtils.startMedia(trailer) },
+            .combinedClickable(onLongClick = {
+                NavigationUtils.triggerInfoSheet(trailer)
+            }, onClick = {
+                startMedia(trailer)
+            }),
         shape = RoundedCornerShape(26.dp),
         elevation = CardDefaults.cardElevation(8.dp)
     ) {

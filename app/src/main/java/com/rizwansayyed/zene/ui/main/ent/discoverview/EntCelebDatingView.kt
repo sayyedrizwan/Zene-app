@@ -1,8 +1,8 @@
 package com.rizwansayyed.zene.ui.main.ent.discoverview
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,7 +27,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -47,6 +46,7 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.EntertainmentDiscoverResponse
 import com.rizwansayyed.zene.data.model.WhoDatedWhoData
+import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.ui.main.home.EntSectionSelector
 import com.rizwansayyed.zene.ui.theme.LoveBuzzBg
 import com.rizwansayyed.zene.ui.theme.MainColor
@@ -55,6 +55,7 @@ import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 
 
@@ -92,9 +93,11 @@ fun CoupleCard(dated: WhoDatedWhoData) {
         modifier = Modifier
             .clip(RoundedCornerShape(28.dp))
             .background(LoveBuzzBg)
-            .clickable {
+            .combinedClickable(onLongClick = {
+                NavigationUtils.triggerInfoSheet(dated.toMusicData())
+            }, onClick = {
                 fullInfoSheet = true
-            }
+            })
             .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -266,7 +269,10 @@ fun DatedInfoSheet(data: WhoDatedWhoData, close: () -> Unit) {
                     Spacer(modifier = Modifier.height(24.dp))
 
                     Button(
-                        onClick = { },
+                        onClick = {
+                            startMedia(data.toMusicData())
+                            close()
+                        },
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(56.dp),

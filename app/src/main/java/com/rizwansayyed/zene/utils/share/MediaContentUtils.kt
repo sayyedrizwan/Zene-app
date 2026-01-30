@@ -8,10 +8,11 @@ import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.net.toUri
-import com.rizwansayyed.zene.data.model.MusicDataTypes.*
+import com.rizwansayyed.zene.data.model.MusicDataTypes
 import com.rizwansayyed.zene.data.model.MusicDataTypes.AI_MUSIC
 import com.rizwansayyed.zene.data.model.MusicDataTypes.ALBUMS
 import com.rizwansayyed.zene.data.model.MusicDataTypes.ARTISTS
+import com.rizwansayyed.zene.data.model.MusicDataTypes.CELEB_LIFESTYLE
 import com.rizwansayyed.zene.data.model.MusicDataTypes.MOVIES_SHOW
 import com.rizwansayyed.zene.data.model.MusicDataTypes.NEWS
 import com.rizwansayyed.zene.data.model.MusicDataTypes.NONE
@@ -27,6 +28,7 @@ import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
 import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_ARTIST_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_LOVE_BUZZ_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MOVIES_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PLAYLIST_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PODCAST_PAGE
@@ -86,6 +88,7 @@ object MediaContentUtils {
             TEXT -> {}
             null -> {}
             CELEB_LIFESTYLE -> {}
+            MusicDataTypes.DATING -> NavigationUtils.triggerHomeNav("$NAV_LOVE_BUZZ_PAGE${data.id}")
         }
     }
 

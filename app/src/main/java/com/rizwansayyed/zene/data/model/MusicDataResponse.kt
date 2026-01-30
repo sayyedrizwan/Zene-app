@@ -8,7 +8,7 @@ import java.util.Date
 import java.util.Locale
 
 enum class MusicDataTypes {
-    NONE, SONGS, RADIO, VIDEOS, PLAYLISTS, ALBUMS, ARTISTS, PODCAST, PODCAST_AUDIO, PODCAST_CATEGORIES, NEWS, MOVIES_SHOW, AI_MUSIC, CELEB_LIFESTYLE, TEXT
+    NONE, SONGS, RADIO, VIDEOS, PLAYLISTS, ALBUMS, ARTISTS, PODCAST, PODCAST_AUDIO, PODCAST_CATEGORIES, NEWS, MOVIES_SHOW, AI_MUSIC, CELEB_LIFESTYLE, TEXT, DATING
 }
 
 enum class MyLibraryTypes(val names: Int) {
@@ -171,6 +171,8 @@ fun musicMediaType(type: String?): MusicDataTypes {
         "MOVIES_SHOW" -> MusicDataTypes.MOVIES_SHOW
         "AI_MUSIC" -> MusicDataTypes.AI_MUSIC
         "TEXT" -> MusicDataTypes.TEXT
+        "CELEB_LIFESTYLE" -> MusicDataTypes.CELEB_LIFESTYLE
+        "DATING" -> MusicDataTypes.DATING
         else -> MusicDataTypes.NONE
     }
 }

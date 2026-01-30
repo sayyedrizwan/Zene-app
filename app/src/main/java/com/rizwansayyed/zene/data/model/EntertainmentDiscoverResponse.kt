@@ -69,6 +69,12 @@ data class WhoDatedWhoData(
     val meta: Meta?
 ) {
 
+    fun toMusicData(): ZeneMusicData {
+        val id = meta?.url?.substringAfterLast("/dating/")
+        val name = "${coupleComparison?.personA?.name} & ${coupleComparison?.personB?.name}"
+        return ZeneMusicData(relationshipSummary, id, name, "", bannerImage, MusicDataTypes.DATING.name)
+    }
+
     data class RelationshipBadge(
         val color: Color,
         val icon: Int
