@@ -7,6 +7,8 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.media.AudioAttributes
+import android.media.RingtoneManager
 import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -22,10 +24,8 @@ import com.rizwansayyed.zene.utils.ChatTempDataUtils.getNameGroupName
 import com.rizwansayyed.zene.utils.safeLaunch
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.absoluteValue
-
 
 class NotificationUtils(
     private val title: String, private val desc: String
@@ -86,16 +86,23 @@ class NotificationUtils(
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        val channelId = channelName.lowercase().replace(" ", "_")
+        val channelId = "${channelName.lowercase().replace(" ", "_")}_v2"
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId, channelName, NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = channelDesc
+                enableVibration(true)
+                enableLights(true)
+                setSound(
+                    RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION),
+                    AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build()
+                )
             }
             notificationManager.createNotificationChannel(channel)
         }
-
         val smallIconBitmap = loadImageFromURL(loadSmallImage)
 
         val builder =

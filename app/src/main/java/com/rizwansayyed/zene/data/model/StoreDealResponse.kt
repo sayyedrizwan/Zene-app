@@ -3,6 +3,8 @@ package com.rizwansayyed.zene.data.model
 
 typealias StoreDealResponseList = List<StoreDealResponse>
 
+data class StoreStripeResponse(val url: String?)
+
 data class StoreDealResponse(
     val name: String?,
     val items: List<StoreDealResponseItem>?,
@@ -14,7 +16,7 @@ data class StoreDealResponse(
         val mrp: Double?,
         val currency: String?,
         val brand: String?,
-        val discountPercent: String?,
+        val discountPercent: Int?,
         val link: String?,
     )
 }

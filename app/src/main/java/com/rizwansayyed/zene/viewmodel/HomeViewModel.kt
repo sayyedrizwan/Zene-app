@@ -2,7 +2,6 @@ package com.rizwansayyed.zene.viewmodel
 
 import android.annotation.SuppressLint
 import android.net.Uri
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -92,6 +91,7 @@ class HomeViewModel @Inject constructor(
     var feedUpdates by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
 
     var topStoreDeals by mutableStateOf<ResponseResult<StoreDealResponseList>>(ResponseResult.Empty)
+    var storeStripeLink by mutableStateOf<ResponseResult<String?>>(ResponseResult.Empty)
 
     var playlistsData by mutableStateOf<ResponseResult<PodcastPlaylistResponse>>(ResponseResult.Empty)
     var playlistSimilarList by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
@@ -590,6 +590,16 @@ class HomeViewModel @Inject constructor(
         }.collectLatest {
             cacheHelper.save(ZENE_STORE_TOP_DEALS_API, it)
             topStoreDeals = ResponseResult.Success(it)
+        }
+    }
+
+    fun storeStripeLink(url: String) = viewModelScope.safeLaunch {
+        zeneAPI.storeStripeLink(url).onStart {
+            storeStripeLink = ResponseResult.Loading
+        }.catch {
+            storeStripeLink = ResponseResult.Error(it)
+        }.collectLatest {
+            storeStripeLink = ResponseResult.Success(it.url)
         }
     }
 

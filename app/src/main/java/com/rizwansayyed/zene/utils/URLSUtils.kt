@@ -167,6 +167,7 @@ object URLSUtils {
     const val ZENE_ENT_LIFESTYLES_EVENTS_API = "entertainment/lifestyles-events"
 
     const val ZENE_STORE_TOP_DEALS_API = "store/top-deals"
+    const val ZENE_STORE_STRIPE_LINK_API = "store/get-stripe-link"
 
     const val ZENE_NOTIFICATION_RECOMMENDATION_API = "notification/notification-recommendation"
 

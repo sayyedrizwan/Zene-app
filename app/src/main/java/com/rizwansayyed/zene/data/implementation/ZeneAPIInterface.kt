@@ -34,6 +34,7 @@ import com.rizwansayyed.zene.data.model.SponsorAdsResponse
 import com.rizwansayyed.zene.data.model.StatusCouponResponse
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.StoreDealResponseList
+import com.rizwansayyed.zene.data.model.StoreStripeResponse
 import com.rizwansayyed.zene.data.model.StreamingTrendingList
 import com.rizwansayyed.zene.data.model.UpcomingMoviesList
 import com.rizwansayyed.zene.data.model.UserInfoResponse
@@ -208,4 +209,5 @@ interface ZeneAPIInterface {
     suspend fun entLifestyleEvents(): Flow<ZeneMusicDataList>
 
     suspend fun storeTopDeals(): Flow<StoreDealResponseList>
+    suspend fun storeStripeLink(url: String): Flow<StoreStripeResponse>
 }

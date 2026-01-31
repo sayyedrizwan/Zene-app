@@ -1814,4 +1814,17 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.storeTopDeals(token, body))
     }
 
+    override suspend fun storeStripeLink(url: String) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("url", url)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.storeStripeLink(token, body))
+    }
+
 }
