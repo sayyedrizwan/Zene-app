@@ -103,9 +103,7 @@ fun StoreView(viewModel: HomeViewModel) {
         }
         LaunchedEffect(viewModel.storeStripeLink) {
             val result = viewModel.storeStripeLink
-            Log.d("TAG", "StoreView: data $result")
             if (result is ResponseResult.Success) {
-                Log.d("TAG", "StoreView: data 111 ${result.data}")
                 openCustomBrowser(result.data)
             }
         }
