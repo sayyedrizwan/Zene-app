@@ -2,6 +2,8 @@ package com.rizwansayyed.zene.ui.main.ent.nav
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,43 +14,59 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccessTime
-import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.maps.android.compose.GoogleMap
+import com.google.maps.android.compose.MapProperties
+import com.google.maps.android.compose.MapUiSettings
+import com.google.maps.android.compose.MarkerComposable
+import com.google.maps.android.compose.rememberCameraPositionState
+import com.google.maps.android.compose.rememberUpdatedMarkerState
+import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.EventInfoResponse
+import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.ui.main.ent.EntertainmentViewModel
+import com.rizwansayyed.zene.ui.theme.DarkCharcoal
+import com.rizwansayyed.zene.ui.theme.LoveBuzzBg
 import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.view.ButtonArrowBack
+import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ShimmerEffect
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.MainUtils.openGoogleMapLocation
+import com.rizwansayyed.zene.utils.addEventToCalendar
+import com.rizwansayyed.zene.utils.getEventTimeToMS
+import com.rizwansayyed.zene.utils.share.MediaContentUtils.openCustomBrowser
+import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 
 @Composable
 fun EventNavLoading() {
@@ -115,6 +133,8 @@ fun EventNavView(id: String) {
     val viewModel: EntertainmentViewModel = hiltViewModel()
     val scrollState = rememberScrollState()
 
+    val context = LocalContext.current.applicationContext
+
     Box(
         Modifier
             .background(Color.Black)
@@ -131,24 +151,130 @@ fun EventNavView(id: String) {
                         .fillMaxSize()
                         .verticalScroll(scrollState)
                 ) {
-                    HeaderSection(v.data)
+                    HeaderSection(v.data, id)
 
-                    EventInfoCard()
+                    EventInfoCard(v.data)
 
-                    ActionButtons()
+                    OutlinedButton(
+                        onClick = {
+                            val startMS = getEventTimeToMS(v.data.date)
+                            val endMS = getEventTimeToMS(v.data.endDate)
 
-                    ConcertGuideSection()
+                            val location = if (v.data.venue.orEmpty()
+                                    .trim().length > 3
+                            ) "${v.data.venue}, ${v.data.city}, ${v.data.state}"
+                            else "${v.data.city}, ${v.data.state}"
 
-                    UpcomingConcertsSection()
+                            addEventToCalendar(
+                                context, "${v.data.artistName} Concert", location, startMS, endMS
+                            )
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 45.dp)
+                            .padding(horizontal = 10.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        border = BorderStroke(1.dp, Color.DarkGray),
+                        contentPadding = PaddingValues(16.dp)
+                    ) {
+                        ImageIcon(R.drawable.ic_calendar, 19)
+                        Spacer(Modifier.width(8.dp))
+                        TextViewSemiBold(stringResource(R.string.add_to_calendar), 15)
+                    }
+
+                    val location =
+                        remember { LatLng(v.data.latitude ?: 0.0, v.data.longitude ?: 0.0) }
+                    val markerState = rememberUpdatedMarkerState(position = location)
+
+                    val cameraPositionState = rememberCameraPositionState {
+                        position = CameraPosition.fromLatLngZoom(location, 13f)
+                    }
+
+                    val mapStyleOptions = remember {
+                        MapStyleOptions.loadRawResourceStyle(context, R.raw.dark_map_style)
+                    }
+
+
+                    GoogleMap(
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .clip(RoundedCornerShape(15.dp))
+                            .height(300.dp)
+                            .fillMaxWidth(),
+                        onMapClick = {
+                            openGoogleMapLocation(
+                                false,
+                                location.latitude,
+                                location.longitude,
+                                v.data.artistName ?: "Event"
+                            )
+                        },
+                        cameraPositionState = cameraPositionState,
+                        uiSettings = MapUiSettings(
+                            zoomControlsEnabled = false,
+                            zoomGesturesEnabled = false,
+                            scrollGesturesEnabled = false,
+                            tiltGesturesEnabled = false,
+                            compassEnabled = false,
+                            myLocationButtonEnabled = false,
+                            mapToolbarEnabled = false
+                        ),
+                        properties = MapProperties(
+                            isMyLocationEnabled = false, mapStyleOptions = mapStyleOptions
+                        )
+                    ) {
+                        MarkerComposable(state = markerState) {
+                            Box(
+                                Modifier
+                                    .padding(5.dp)
+                                    .clip(RoundedCornerShape(100))
+                                    .background(Color.Black)
+                                    .padding(5.dp)
+                            ) {
+                                ImageIcon(R.drawable.ic_location, 25)
+                            }
+                        }
+                    }
+
+                    if (v.data.upcomingConcerts?.isNotEmpty() == true) {
+                        Spacer(Modifier.height(90.dp))
+                        Box(Modifier.padding(horizontal = 6.dp)) {
+                            TextViewBold(stringResource(R.string.upcoming_concerts), 23)
+                        }
+                        Spacer(Modifier.height(15.dp))
+
+                        v.data.upcomingConcerts.forEach { item ->
+                            UpcomingConcertCard(item, v.data.eventImage)
+                        }
+                    }
 
                     Spacer(Modifier.height(224.dp))
                 }
-                GetTicketsButton(Modifier.align(Alignment.BottomCenter))
+
+                Button(
+                    onClick = {
+                        openCustomBrowser(v.data.ticketUrl)
+                    },
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 50.dp)
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .height(56.dp),
+                    shape = RoundedCornerShape(18.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = LoveBuzzBg
+                    )
+                ) {
+                    TextViewBold(stringResource(R.string.get_tickets_now))
+                }
             }
         }
+
+        ButtonArrowBack(Modifier.align(Alignment.TopStart))
     }
     LaunchedEffect(Unit) {
-        if (viewModel.eventsFullInfo is ResponseResult.Success) {
+        if (viewModel.eventsFullInfo !is ResponseResult.Success) {
             viewModel.eventFullInfo(id)
         }
     }
@@ -156,7 +282,7 @@ fun EventNavView(id: String) {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun HeaderSection(data: EventInfoResponse) {
+fun HeaderSection(data: EventInfoResponse, id: String) {
     Box {
         GlideImage(
             data.eventImage, data.artistName,
@@ -185,164 +311,109 @@ fun HeaderSection(data: EventInfoResponse) {
         )
 
 
-        Column(
+        Row(
             Modifier
                 .align(Alignment.BottomStart)
-                .padding(10.dp)
+                .padding(10.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            if (data.happeningIn.orEmpty()
-                    .trim().length > 3
-            ) TextViewLight(data.happeningIn.orEmpty(), 25, Color.Red)
+            Column(
+                Modifier
+                    .padding(10.dp)
+                    .weight(1f)
+            ) {
+                if (data.happeningIn.orEmpty()
+                        .trim().length > 3
+                ) TextViewLight(data.happeningIn.orEmpty(), 16, Color.Red)
 
-            TextViewBold(data.artistName.orEmpty(), 25)
+                TextViewBold(data.artistName.orEmpty(), 25)
 
-            if (data.venue.orEmpty()
-                    .trim().length > 3
-            ) TextViewSemiBold("${data.venue}, ${data.city}, ${data.state}", 14)
-            else TextViewSemiBold("${data.city}, ${data.state}", 14)
-        }
-    }
-}
+                if (data.venue.orEmpty()
+                        .trim().length > 3
+                ) TextViewSemiBold("${data.venue}, ${data.city}, ${data.state}", 14)
+                else TextViewSemiBold("${data.city}, ${data.state}", 14)
+            }
 
-@Composable
-fun EventInfoCard() {
-    Row(
-        Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        InfoChip(
-            Icons.Default.DateRange, "DATE", "Feb 2, 2026", Modifier
-                .weight(1f)
-        )
-        InfoChip(
-            Icons.Default.AccessTime, "STARTS AT", "7:00 PM", Modifier
-                .weight(1f)
-        )
-    }
-}
-
-@Composable
-fun InfoChip(icon: ImageVector, title: String, value: String, modifier: Modifier) {
-    Column(
-        modifier
-            .padding(10.dp)
-            .background(MainColor, RoundedCornerShape(16.dp))
-            .padding(16.dp)
-    ) {
-        Icon(icon, contentDescription = null, tint = Color.Cyan)
-        Spacer(Modifier.height(8.dp))
-        Text(title, color = Color.Gray, fontSize = 12.sp)
-        Text(value, color = Color.White, fontWeight = FontWeight.SemiBold)
-    }
-}
-
-@Composable
-fun ActionButtons() {
-    Column(
-        Modifier
-            .padding(vertical = 45.dp)
-            .padding(horizontal = 10.dp)
-    ) {
-        OutlinedButton(
-            onClick = {},
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
-            border = BorderStroke(1.dp, Color.DarkGray),
-            contentPadding = PaddingValues(16.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.CalendarToday, contentDescription = null
-            )
-            Spacer(Modifier.width(8.dp))
-            Text("Add to Calendar")
-        }
-
-    }
-}
-
-
-@Composable
-fun ConcertGuideSection() {
-    Column(modifier = Modifier.padding(10.dp)) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text("Concert Guide", color = Color.White, fontSize = 18.sp)
-            Text("Open Maps", color = Color.Cyan)
-        }
-
-        Spacer(Modifier.height(12.dp))
-
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(160.dp)
-                .background(Color(0xFF1A2238), RoundedCornerShape(16.dp)),
-            contentAlignment = Alignment.Center
-        ) {
-            Text("Map Preview", color = Color.Gray)
-        }
-
-        Spacer(Modifier.height(8.dp))
-        Text("Karan Enclave", color = Color.White)
-        Text("Ghaziabad, Uttar Pradesh, India", color = Color.Gray, fontSize = 12.sp)
-    }
-}
-
-@Composable
-fun UpcomingConcertsSection() {
-    Column(modifier = Modifier.padding(10.dp)) {
-        Spacer(modifier = Modifier.height(20.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text("Upcoming Concerts", color = Color.White, fontSize = 18.sp)
-            Text("View All", color = Color.Cyan)
-        }
-
-        Spacer(Modifier.height(12.dp))
-
-        LazyRow {
-            item {
-                UpcomingConcertCard()
+            Box(
+                Modifier
+                    .padding(horizontal = 7.dp)
+                    .clickable {
+                        NavigationUtils.triggerInfoSheet(data.toMusicData(id))
+                    }) {
+                ImageIcon(R.drawable.ic_share, 24)
             }
         }
     }
 }
 
 @Composable
-fun UpcomingConcertCard() {
+fun EventInfoCard(data: EventInfoResponse) {
+    val (date, time) = data.formatDateTime()
+
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+        InfoChip(
+            R.drawable.ic_calendar, R.string.date, date, Modifier.weight(1f)
+        )
+
+        InfoChip(
+            R.drawable.ic_time, R.string.starts_at, time, Modifier.weight(1f)
+        )
+    }
+}
+
+@Composable
+fun InfoChip(icon: Int, title: Int, value: String, modifier: Modifier) {
     Column(
-        modifier = Modifier
-            .width(180.dp)
-            .background(Color(0xFF141C2F), RoundedCornerShape(16.dp))
-            .padding(12.dp)
+        modifier
+            .padding(10.dp)
+            .background(MainColor, RoundedCornerShape(16.dp))
+            .padding(16.dp)
     ) {
-        Spacer(Modifier.height(8.dp))
-        Text("Feb 04, 2026", color = Color.White)
-        Text("Karan Enclave, Ghaziabad", color = Color.Gray, fontSize = 12.sp)
+        ImageIcon(icon, 22)
+        Spacer(Modifier.height(10.dp))
+        TextViewLight(stringResource(title).uppercase(), 11)
+        Spacer(Modifier.height(5.dp))
+        TextViewBold(value, 19)
     }
 }
 
 
 @Composable
-fun GetTicketsButton(modifier: Modifier) {
-    Button(
-        onClick = {},
-        modifier = modifier
-            .padding(bottom = 50.dp)
-            .fillMaxWidth()
-            .padding(16.dp)
-            .height(56.dp),
-        shape = RoundedCornerShape(18.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFF4FC3F7)
-        )
+fun UpcomingConcertCard(v: EventInfoResponse.UpcomingConcerts, eventImage: String?) {
+    Row(
+        Modifier
+            .padding(bottom = 15.dp)
+            .padding(horizontal = 15.dp)
+            .fillMaxSize()
+            .combinedClickable(onLongClick = {
+                NavigationUtils.triggerInfoSheet(v.toMusicData(eventImage))
+            }, onClick = {
+                startMedia(v.toMusicData(eventImage))
+            })
+            .background(MainColor, RoundedCornerShape(16.dp))
+            .padding(12.dp), verticalAlignment = Alignment.CenterVertically
     ) {
-        Text("GET TICKETS NOW", fontWeight = FontWeight.Bold)
+        Card(
+            Modifier.size(69.dp), RoundedCornerShape(12.dp),
+            CardDefaults.cardColors(containerColor = DarkCharcoal, contentColor = DarkCharcoal),
+            elevation = CardDefaults.cardElevation(6.dp),
+        ) {
+            Column(
+                Modifier.fillMaxSize(), Arrangement.Center, Alignment.CenterHorizontally
+            ) {
+                TextViewSemiBold(v.month.orEmpty(), 13, Color.Red)
+                TextViewSemiBold(v.day.orEmpty(), 22, Color.White)
+            }
+        }
+
+        Spacer(Modifier.width(16.dp))
+
+        Column(Modifier.weight(1f)) {
+            TextViewLight(v.date.orEmpty(), 12, Color.White)
+            Spacer(Modifier.height(4.dp))
+            TextViewSemiBold(v.title.orEmpty())
+            Spacer(modifier = Modifier.height(4.dp))
+            TextViewLight("${v.venue.orEmpty()}, ${v.location.orEmpty()}", 12, Color.White)
+        }
     }
 }
-
-
-

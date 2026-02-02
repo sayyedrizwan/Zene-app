@@ -239,8 +239,6 @@ class MainActivity : FragmentActivity() {
                                 configClarity(this@MainActivity)
                             }
 
-                            EventNavView("72f00b90-f161-4de0-88b1-523e4820c454")
-
                         } else if (showLogin) LoginView(loginViewModel)
                     }
 

@@ -129,7 +129,7 @@ class AppleFacebookLoginHandler @Inject constructor(private val zeneAPI: ZeneAPI
         zeneAPI.loginUser(id, type.type).catch { loginManager?.setLoading(false) }.collectLatest {
             loginManager?.setLoading(false)
             if (it.isError == true) SnackBarManager.showMessage(
-                ZeneBaseApplication.Companion.context.resources.getString(
+                ZeneBaseApplication.context.resources.getString(
                     R.string.error_login
                 )
             )

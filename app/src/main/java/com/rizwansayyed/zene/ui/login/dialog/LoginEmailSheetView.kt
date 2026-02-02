@@ -53,8 +53,6 @@ fun LoginEmailSheet(viewModel: LoginManagerViewModel, close: () -> Unit) {
 
         val coroutine = rememberCoroutineScope()
 
-        val loginViaEmail by remember { derivedStateOf { viewModel.loginViaEmail } }
-
         Column(
             Modifier
                 .fillMaxWidth()

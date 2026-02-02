@@ -79,7 +79,6 @@ fun AddToPlaylistsView(info: ZeneMusicData?, close: () -> Unit) {
         var addNewPlaylists by remember { mutableStateOf(false) }
         val playerViewModel: PlayerViewModel = hiltViewModel(key = info?.id)
 
-        val state = rememberLazyListState()
         var lastCallTime by remember { mutableLongStateOf(0L) }
 
         LazyColumn(

@@ -554,6 +554,12 @@
     <string name="events_in_your_city">Events in your city</string>
     <string name="view_full_relationship_profile">View Full Relationship Profile</string>
 
+    <string name="date">Date</string>
+    <string name="starts_at">Starts At</string>
+    <string name="add_to_calendar">Add to Calendar</string>
+    <string name="upcoming_concerts">Upcoming Concerts</string>
+    <string name="get_tickets_now">Get Tickets Now</string>
+
     <!--    notification channels-->
     <string name="connect_updates_name">Connect Update Alerts</string>
     <string name="connect_updates_name_desc">Connect Alerts are notifications you receive about activity on Connect. They\'re designed to keep you informed about what\'s happening with your friends, feeds, location sharing, etc.</string>

@@ -28,8 +28,8 @@ class PartyServiceReceiver : BroadcastReceiver() {
         c ?: return
         i ?: return
         val email = i.getStringExtra(Intent.EXTRA_EMAIL) ?: ""
-        val profilePhoto = i.getStringExtra(Intent.EXTRA_USER) ?: ""
-        val name = i.getStringExtra(Intent.EXTRA_PACKAGE_NAME) ?: ""
+        i.getStringExtra(Intent.EXTRA_USER) ?: ""
+        i.getStringExtra(Intent.EXTRA_PACKAGE_NAME) ?: ""
 
         CoroutineScope(Dispatchers.IO).safeLaunch {
             zeneAPI.declinePartyCall(email).catch { }.collectLatest { }

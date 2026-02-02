@@ -167,7 +167,7 @@ fun MusicPlayerSortView(close: () -> Unit) {
         }
 
         LaunchedEffect(Unit) {
-            val musicList = DataStorageManager.musicPlayerDB.firstOrNull()
+            val musicList = musicPlayerDB.firstOrNull()
             list.addAll(musicList?.lists?.toList() ?: emptyList())
         }
     }

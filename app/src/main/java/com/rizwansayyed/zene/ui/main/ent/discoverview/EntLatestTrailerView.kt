@@ -121,7 +121,7 @@ fun FeaturedTrailerCard(trailer: ZeneMusicData) {
             Spacer(modifier = Modifier.height(15.dp))
 
             PlayTrailerButton {
-                MediaContentUtils.startMedia(trailer)
+                startMedia(trailer)
             }
         }
     }
