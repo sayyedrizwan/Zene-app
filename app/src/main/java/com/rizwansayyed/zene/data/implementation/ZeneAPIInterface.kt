@@ -10,6 +10,7 @@ import com.rizwansayyed.zene.data.model.ConnectUserResponse
 import com.rizwansayyed.zene.data.model.CountResponse
 import com.rizwansayyed.zene.data.model.DeleteAccountInfoResponse
 import com.rizwansayyed.zene.data.model.EntertainmentDiscoverResponse
+import com.rizwansayyed.zene.data.model.EventInfoResponse
 import com.rizwansayyed.zene.data.model.MediaLikedResponse
 import com.rizwansayyed.zene.data.model.MediaPathResponse
 import com.rizwansayyed.zene.data.model.MediaStatusTypeResponse
@@ -210,4 +211,5 @@ interface ZeneAPIInterface {
 
     suspend fun storeTopDeals(): Flow<StoreDealResponseList>
     suspend fun storeStripeLink(url: String): Flow<StoreStripeResponse>
+    suspend fun eventFullInfo(id: String): Flow<EventInfoResponse>
 }

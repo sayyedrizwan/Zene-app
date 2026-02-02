@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,11 +25,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -36,50 +38,132 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.rizwansayyed.zene.data.ResponseResult
+import com.rizwansayyed.zene.data.model.EventInfoResponse
+import com.rizwansayyed.zene.ui.main.ent.EntertainmentViewModel
+import com.rizwansayyed.zene.ui.theme.MainColor
+import com.rizwansayyed.zene.ui.view.ShimmerEffect
 import com.rizwansayyed.zene.ui.view.TextViewBold
+import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 
 @Composable
-fun EventNavView(id: String) {
-    val scrollState = rememberScrollState()
-
-    Box(Modifier.fillMaxSize()) {
-        Column(
+fun EventNavLoading() {
+    Column(Modifier.fillMaxSize()) {
+        ShimmerEffect(
             modifier = Modifier
-                .background(Color.Black)
-                .fillMaxSize()
-                .verticalScroll(scrollState)
-        ) {
-            HeaderSection()
+                .fillMaxWidth()
+                .height(500.dp)
+        )
 
-            EventInfoCard()
+        Spacer(Modifier.height(16.dp))
 
-            ActionButtons()
-
-            ConcertGuideSection()
-
-            UpcomingConcertsSection()
-
-            Spacer(modifier = Modifier.height(224.dp))
+        Row(Modifier.fillMaxWidth()) {
+            repeat(2) {
+                ShimmerEffect(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(10.dp)
+                        .height(90.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                )
+            }
         }
 
-        GetTicketsButton(Modifier.align(Alignment.BottomCenter))
+        Spacer(Modifier.height(24.dp))
+
+        ShimmerEffect(
+            modifier = Modifier
+                .padding(horizontal = 10.dp)
+                .fillMaxWidth()
+                .height(56.dp)
+                .clip(RoundedCornerShape(16.dp))
+        )
+
+        Spacer(Modifier.height(45.dp))
+
+        ShimmerEffect(
+            modifier = Modifier
+                .padding(horizontal = 10.dp)
+                .width(160.dp)
+                .height(20.dp)
+                .clip(RoundedCornerShape(6.dp))
+        )
+
+        Spacer(Modifier.height(12.dp))
+
+        ShimmerEffect(
+            modifier = Modifier
+                .padding(horizontal = 10.dp)
+                .fillMaxWidth()
+                .height(160.dp)
+                .clip(RoundedCornerShape(16.dp))
+        )
+
+        Spacer(Modifier.height(12.dp))
+
+
+        Spacer(modifier = Modifier.height(224.dp))
+    }
+}
+
+@Composable
+fun EventNavView(id: String) {
+    val viewModel: EntertainmentViewModel = hiltViewModel()
+    val scrollState = rememberScrollState()
+
+    Box(
+        Modifier
+            .background(Color.Black)
+            .fillMaxSize()
+    ) {
+        when (val v = viewModel.eventsFullInfo) {
+            ResponseResult.Empty -> {}
+            is ResponseResult.Error -> {}
+            ResponseResult.Loading -> EventNavLoading()
+            is ResponseResult.Success -> {
+                Column(
+                    Modifier
+                        .background(Color.Black)
+                        .fillMaxSize()
+                        .verticalScroll(scrollState)
+                ) {
+                    HeaderSection(v.data)
+
+                    EventInfoCard()
+
+                    ActionButtons()
+
+                    ConcertGuideSection()
+
+                    UpcomingConcertsSection()
+
+                    Spacer(Modifier.height(224.dp))
+                }
+                GetTicketsButton(Modifier.align(Alignment.BottomCenter))
+            }
+        }
+    }
+    LaunchedEffect(Unit) {
+        if (viewModel.eventsFullInfo is ResponseResult.Success) {
+            viewModel.eventFullInfo(id)
+        }
     }
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun HeaderSection() {
+fun HeaderSection(data: EventInfoResponse) {
     Box {
         GlideImage(
-            "https://is1-ssl.mzstatic.com/image/thumb/Music116/v4/92/d0/a2/92d0a247-dd68-d0c0-54a8-f0411b8cc935/pr_source.png/840x840bb.webp",
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
+            data.eventImage, data.artistName,
+            Modifier
                 .fillMaxWidth()
-                .height(500.dp)
+                .height(500.dp),
+            contentScale = ContentScale.Crop,
         )
 
         Box(
@@ -106,8 +190,16 @@ fun HeaderSection() {
                 .align(Alignment.BottomStart)
                 .padding(10.dp)
         ) {
-            TextViewBold("Harshit Vatya", 25)
-            TextViewSemiBold("Karan Enclave, Ghaziabad", 14)
+            if (data.happeningIn.orEmpty()
+                    .trim().length > 3
+            ) TextViewLight(data.happeningIn.orEmpty(), 25, Color.Red)
+
+            TextViewBold(data.artistName.orEmpty(), 25)
+
+            if (data.venue.orEmpty()
+                    .trim().length > 3
+            ) TextViewSemiBold("${data.venue}, ${data.city}, ${data.state}", 14)
+            else TextViewSemiBold("${data.city}, ${data.state}", 14)
         }
     }
 }
@@ -115,12 +207,8 @@ fun HeaderSection() {
 @Composable
 fun EventInfoCard() {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(10.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+        Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
     ) {
-
         InfoChip(
             Icons.Default.DateRange, "DATE", "Feb 2, 2026", Modifier
                 .weight(1f)
@@ -137,7 +225,7 @@ fun InfoChip(icon: ImageVector, title: String, value: String, modifier: Modifier
     Column(
         modifier
             .padding(10.dp)
-            .background(Color(0xFF131B2A), RoundedCornerShape(16.dp))
+            .background(MainColor, RoundedCornerShape(16.dp))
             .padding(16.dp)
     ) {
         Icon(icon, contentDescription = null, tint = Color.Cyan)
@@ -149,34 +237,32 @@ fun InfoChip(icon: ImageVector, title: String, value: String, modifier: Modifier
 
 @Composable
 fun ActionButtons() {
-    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+    Column(
+        Modifier
+            .padding(vertical = 45.dp)
+            .padding(horizontal = 10.dp)
+    ) {
         OutlinedButton(
             onClick = {},
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            border = BorderStroke(1.dp, Color.DarkGray)
+            border = BorderStroke(1.dp, Color.DarkGray),
+            contentPadding = PaddingValues(16.dp)
         ) {
-            Icon(Icons.Default.CalendarToday, contentDescription = null)
+            Icon(
+                imageVector = Icons.Default.CalendarToday, contentDescription = null
+            )
             Spacer(Modifier.width(8.dp))
             Text("Add to Calendar")
         }
 
-        Spacer(Modifier.height(12.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text("Ticket Alerts", color = Color.White, modifier = Modifier.weight(1f))
-            Switch(checked = true, onCheckedChange = {})
-        }
     }
 }
 
 
 @Composable
 fun ConcertGuideSection() {
-    Column(modifier = Modifier.padding(16.dp)) {
+    Column(modifier = Modifier.padding(10.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
@@ -205,8 +291,8 @@ fun ConcertGuideSection() {
 
 @Composable
 fun UpcomingConcertsSection() {
-    Column(modifier = Modifier.padding(start = 16.dp)) {
-
+    Column(modifier = Modifier.padding(10.dp)) {
+        Spacer(modifier = Modifier.height(20.dp))
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween

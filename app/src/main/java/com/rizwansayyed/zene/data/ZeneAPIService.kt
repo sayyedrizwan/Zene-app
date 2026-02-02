@@ -10,6 +10,7 @@ import com.rizwansayyed.zene.data.model.CountResponse
 import com.rizwansayyed.zene.data.model.DeleteAccountInfoResponse
 import com.rizwansayyed.zene.data.model.EntertainmentDataResponse
 import com.rizwansayyed.zene.data.model.EntertainmentDiscoverResponse
+import com.rizwansayyed.zene.data.model.EventInfoResponse
 import com.rizwansayyed.zene.data.model.MediaLikedResponse
 import com.rizwansayyed.zene.data.model.MediaPathResponse
 import com.rizwansayyed.zene.data.model.MediaStatusTypeResponse
@@ -78,6 +79,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_ALL_TRAILERS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_BUZZ_NEWS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_DATING_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_DISCOVER_TRENDING_NEWS_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_EVENT_FULL_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_LIFESTYLES_EVENTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_LIFESTYLE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_STREAMING_TRENDING_API
@@ -858,4 +860,11 @@ interface ZeneAPIService {
         suspend fun storeStripeLink(
         @Header("token") token: String, @Body data: RequestBody
     ): StoreStripeResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_ENT_EVENT_FULL_INFO_API)
+        suspend fun eventFullInfo(
+        @Header("token") token: String, @Body data: RequestBody
+    ): EventInfoResponse
+
 }

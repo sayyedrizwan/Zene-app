@@ -60,6 +60,7 @@ import com.rizwansayyed.zene.ui.login.LoginView
 import com.rizwansayyed.zene.ui.main.connect.HomeConnectView
 import com.rizwansayyed.zene.ui.main.connect.profile.ConnectUserProfileView
 import com.rizwansayyed.zene.ui.main.ent.EntertainmentView
+import com.rizwansayyed.zene.ui.main.ent.nav.EventNavLoading
 import com.rizwansayyed.zene.ui.main.ent.nav.EventNavView
 import com.rizwansayyed.zene.ui.main.ent.nav.LifeStyleNavView
 import com.rizwansayyed.zene.ui.main.ent.nav.LoveBuzzNavView
@@ -238,7 +239,8 @@ class MainActivity : FragmentActivity() {
                                 configClarity(this@MainActivity)
                             }
 
-                            EventNavView("dhvdgdbhnd")
+                            EventNavView("72f00b90-f161-4de0-88b1-523e4820c454")
+
                         } else if (showLogin) LoginView(loginViewModel)
                     }
 

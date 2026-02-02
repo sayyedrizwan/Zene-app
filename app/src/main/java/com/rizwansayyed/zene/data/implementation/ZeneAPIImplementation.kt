@@ -1827,4 +1827,17 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.storeStripeLink(token, body))
     }
 
+    override suspend fun eventFullInfo(id: String) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("id", id)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.eventFullInfo(token, body))
+    }
+
 }

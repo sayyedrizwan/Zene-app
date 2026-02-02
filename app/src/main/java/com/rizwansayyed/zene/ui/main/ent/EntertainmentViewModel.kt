@@ -14,6 +14,7 @@ import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.cache.CacheHelper
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.EntertainmentDiscoverResponse
+import com.rizwansayyed.zene.data.model.EventInfoResponse
 import com.rizwansayyed.zene.data.model.EventsResponsesItems
 import com.rizwansayyed.zene.data.model.StreamingTrendingList
 import com.rizwansayyed.zene.data.model.UpcomingMoviesList
@@ -73,6 +74,7 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
     var boxOfficeMovie by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
     var upcomingMovies by mutableStateOf<ResponseResult<UpcomingMoviesList>>(ResponseResult.Empty)
     var lifeStylesEvents by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
+    var eventsFullInfo by mutableStateOf<ResponseResult<EventInfoResponse>>(ResponseResult.Empty)
 
 
     fun entDiscoverNews(expireToken: () -> Unit) = viewModelScope.safeLaunch {
@@ -238,16 +240,15 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
         }
     }
 
-    private val _clusterItems = MutableStateFlow<List<EventsResponsesItems>>(emptyList())
-    val clusterItems = _clusterItems.asStateFlow()
 
-    fun loadMapsEvents(context: Context, events: List<EventsResponsesItems>) {
-//        viewModelScope.launch {
-//            val items = events.map { event ->
-//                val bitmap = loadBitmapFromUrl(context, event.thumbnail.orEmpty())
-//                event.copy(thumbnailBitmap = bitmap)
-//            }
-//            _clusterItems.value = items
-//        }
+    fun eventFullInfo(id: String) = viewModelScope.safeLaunch {
+        zeneAPI.eventFullInfo(id).onStart {
+            eventsFullInfo = ResponseResult.Loading
+        }.catch {
+            eventsFullInfo = ResponseResult.Error(it)
+        }.collectLatest {
+            eventsFullInfo = ResponseResult.Success(it)
+        }
     }
+
 }
