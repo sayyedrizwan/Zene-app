@@ -23,6 +23,7 @@ import com.rizwansayyed.zene.service.notification.NavigationUtils.LIKED_SONGS_ZE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.MY_PLAYLIST_ID
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_ARTIST_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_CONNECT_PROFILE_PAGE
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_LOVE_BUZZ_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MOVIES_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MY_PLAYLIST_PAGE
@@ -38,6 +39,7 @@ import com.rizwansayyed.zene.utils.ChatTempDataUtils.doOpenChatOnConnect
 import com.rizwansayyed.zene.utils.ChatTempDataUtils.doOpenPlaylistOnConnect
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ARTIST
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_LOVE_BUZZ
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_M
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_MIX
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_MOVIE_IF_ENC
@@ -183,6 +185,9 @@ class IntentCheckUtils(
                     triggerHomeNav("$NAV_MY_PLAYLIST_PAGE${replaceSlash(id)}")
                 else
                     triggerHomeNav("$NAV_PLAYLIST_PAGE${replaceSlash(id)}")
+            } else if (data.toString().contains(ZENE_LOVE_BUZZ)) {
+                val id = data.toString().substringAfterLast(replaceSlash(ZENE_LOVE_BUZZ))
+                triggerHomeNav("$NAV_LOVE_BUZZ_PAGE${replaceSlash(id)}")
             } else if (data.toString().contains(ZENE_ARTIST)) {
                 val id = data.toString().substringAfterLast(replaceSlash(ZENE_ARTIST))
                 triggerHomeNav("$NAV_ARTIST_PAGE${replaceSlash(id)}")
