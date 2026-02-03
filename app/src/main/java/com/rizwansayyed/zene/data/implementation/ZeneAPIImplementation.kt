@@ -1840,4 +1840,17 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.eventFullInfo(token, body))
     }
 
+    override suspend fun loveBuzzFullInfo(id: String) = flow {
+        val email = userInfo.firstOrNull()?.email ?: ""
+        val token = userInfo.firstOrNull()?.authToken ?: ""
+
+        val json = JSONObject().apply {
+            put("email", email)
+            put("id", id)
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.loveBuzzFullInfo(token, body))
+    }
+
 }

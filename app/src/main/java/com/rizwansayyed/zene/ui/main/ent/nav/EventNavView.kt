@@ -151,7 +151,7 @@ fun EventNavView(id: String) {
                         .fillMaxSize()
                         .verticalScroll(scrollState)
                 ) {
-                    HeaderSection(v.data, id)
+                    EventHeaderSection(v.data, id)
 
                     EventInfoCard(v.data)
 
@@ -282,7 +282,7 @@ fun EventNavView(id: String) {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun HeaderSection(data: EventInfoResponse, id: String) {
+fun EventHeaderSection(data: EventInfoResponse, id: String) {
     Box {
         GlideImage(
             data.eventImage, data.artistName,

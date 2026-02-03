@@ -559,6 +559,8 @@
     <string name="add_to_calendar">Add to Calendar</string>
     <string name="upcoming_concerts">Upcoming Concerts</string>
     <string name="get_tickets_now">Get Tickets Now</string>
+    <string name="in_relationship">In Relationship</string>
+    <string name="children">Children</string>
 
     <!--    notification channels-->
     <string name="connect_updates_name">Connect Update Alerts</string>

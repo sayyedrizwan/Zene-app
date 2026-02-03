@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.viewmodel
 
 import android.annotation.SuppressLint
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -602,5 +603,4 @@ class HomeViewModel @Inject constructor(
             storeStripeLink = ResponseResult.Success(it.url)
         }
     }
-
 }
