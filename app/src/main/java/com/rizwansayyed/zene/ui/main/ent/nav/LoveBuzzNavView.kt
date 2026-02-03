@@ -15,15 +15,17 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -35,7 +37,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,6 +56,7 @@ import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun LoveBuzzNavView(id: String) {
     val viewModel: EntertainmentViewModel = hiltViewModel()
@@ -64,8 +69,46 @@ fun LoveBuzzNavView(id: String) {
             ResponseResult.Empty -> {}
             is ResponseResult.Error -> {}
             ResponseResult.Loading -> {}
-            is ResponseResult.Success -> LoveBuzzSuccessContent(v.data)
+            is ResponseResult.Success -> LazyColumn(modifier = Modifier.fillMaxSize()) {
+                item {
+                    GlideImage(
+                        v.data.mainImage,
+                        v.data.title,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(350.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+                item { Spacer(Modifier.height(20.dp)) }
+                item { LoveBuzzHeader(v.data) }
+                item {
+                    Column(Modifier.padding(horizontal = 8.dp, vertical = 5.dp)) {
+                        TextViewNormal(v.data.summary.orEmpty(), 15)
+                    }
+                }
+                item { Spacer(Modifier.height(30.dp)) }
+                item { LoveBuzzStats(v.data) }
+                item { Spacer(Modifier.height(35.dp)) }
 
+                itemsIndexed(v.data.timeline ?: emptyList()) { index, item ->
+                    LoveBuzzTimeline(
+                        item,
+                        isLast = index == (v.data.timeline ?: emptyList()).lastIndex,
+                        isActive = index == 0
+                    )
+                }
+
+                item { Spacer(Modifier.height(35.dp)) }
+                item { LoveBuzzComparison(v.data.comparison) }
+                item { Spacer(Modifier.height(12.dp)) }
+                item { LoveBuzzChildren(v.data.children) }
+                item { Spacer(Modifier.height(12.dp)) }
+                item { LoveBuzzExFiles(v.data.otherRelationship) }
+                item { Spacer(Modifier.height(12.dp)) }
+                item { LoveBuzzGallery(v.data.photoGallery) }
+                item { Spacer(Modifier.height(40.dp)) }
+            }
         }
 
         ButtonArrowBack(Modifier.align(Alignment.TopStart))
@@ -75,59 +118,6 @@ fun LoveBuzzNavView(id: String) {
         if (viewModel.loveBuzzFullInfo !is ResponseResult.Success) {
             viewModel.loveBuzzFullInfo(id)
         }
-    }
-}
-
-
-@OptIn(ExperimentalGlideComposeApi::class)
-@Composable
-fun LoveBuzzSuccessContent(data: LoveBuzzFullInfoResponse) {
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        item {
-            GlideImage(
-                data.mainImage,
-                data.title,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(350.dp),
-                contentScale = ContentScale.Crop
-            )
-        }
-        item { Spacer(Modifier.height(20.dp)) }
-        item { LoveBuzzHeader(data) }
-        item {
-            Column(Modifier.padding(horizontal = 8.dp, vertical = 5.dp)) {
-                TextViewNormal(data.summary.orEmpty(), 15)
-            }
-        }
-        item { Spacer(Modifier.height(30.dp)) }
-        item { LoveBuzzStats(data) }
-        item { Spacer(Modifier.height(25.dp)) }
-
-        items(data.about ?: emptyList()) {
-            Column(Modifier.padding(horizontal = 8.dp, vertical = 5.dp)) {
-                TextViewNormal(it, 15)
-            }
-        }
-        item { Spacer(Modifier.height(35.dp)) }
-
-        itemsIndexed(data.timeline ?: emptyList()) { index, item ->
-            LoveBuzzTimeline(
-                item,
-                isLast = index == (data.timeline ?: emptyList()).lastIndex,
-                isActive = index == 0
-            )
-        }
-
-        item { Spacer(Modifier.height(35.dp)) }
-        item { LoveBuzzComparison(data.comparison) }
-        item { Spacer(Modifier.height(12.dp)) }
-        item { LoveBuzzChildren(data.children) }
-        item { Spacer(Modifier.height(12.dp)) }
-        item { LoveBuzzExFiles(data.otherRelationship) }
-        item { Spacer(Modifier.height(12.dp)) }
-        item { LoveBuzzGallery(data.photoGallery) }
-        item { Spacer(Modifier.height(40.dp)) }
     }
 }
 
@@ -232,8 +222,7 @@ private fun LoveBuzzTimeline(
                     .padding(top = 6.dp)
                     .size(if (isActive) 12.dp else 8.dp)
                     .background(
-                        color = if (isActive) Color(0xFFE53935) else Color.Gray,
-                        shape = CircleShape
+                        color = if (isActive) Color(0xFFE53935) else Color.Gray, shape = CircleShape
                     )
             )
         }
@@ -252,44 +241,141 @@ private fun LoveBuzzTimeline(
     }
 }
 
+val DarkBackground = Color(0xFF161616) // Main card background
+val CardBackground = Color(0xFF1E1E1E) // Slightly lighter if needed, or use black
+val RedAccent = Color(0xFFE94057)
+val GrayBorder = Color(0xFF484848)
+val TextWhite = Color.White
+val TextLabel = Color(0xFF666666)
+
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-private fun LoveBuzzComparison(comparison: LoveBuzzFullInfoResponse.Comparison?) {
-    Column(Modifier, horizontalAlignment = Alignment.CenterHorizontally) {
-        Box(
+fun ProfileItem(name: String, imageRes: String) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.width(100.dp)
+    ) {
+        GlideImage(
+            imageRes,
+            contentDescription = name,
+            contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(80.dp)
-                .padding(4.dp)
-        ) {
-            AsyncImage(
-                model = profile.imageUrl,
-                contentDescription = profile.name,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(CircleShape)
-            )
-        }
-
-        Spacer(Modifier.height(8.dp))
-
+                .padding(4.dp) // Gap between border and image
+                .clip(CircleShape)
+                .background(Color.Gray) // Placeholder bg
+        )
+        Spacer(modifier = Modifier.height(12.dp))
         Text(
-            text = profile.name,
-            color = Color.White,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 14.sp
+            text = name,
+            color = TextWhite,
+            fontWeight = FontWeight.Bold,
+            fontSize = 14.sp,
+            textAlign = TextAlign.Center,
+            lineHeight = 18.sp
         )
     }
 }
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-private fun PersonColumn(p: LoveBuzzFullInfoResponse.PersonsInfo?, modifier: Modifier) {
-    Column(modifier = modifier) {
-        Text(p?.name.orEmpty(), fontWeight = FontWeight.SemiBold)
-        Spacer(Modifier.height(6.dp))
-        Text("Age: ${p?.age}")
-        Text("Height: ${p?.height}")
-        Text("Zodiac: ${p?.zodiac}")
-        Text("Job: ${p?.occupation}")
+private fun LoveBuzzComparison(comparison: LoveBuzzFullInfoResponse.Comparison?) {
+    Card(
+        modifier = Modifier
+            .width(340.dp)
+            .wrapContentHeight(),
+        shape = RoundedCornerShape(32.dp),
+        colors = CardDefaults.cardColors(containerColor = DarkBackground)
+    ) {
+        Column(
+            modifier = Modifier.padding(24.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                // Left Profile
+                ProfileItem(
+                    name = comparison?.personA?.name.orEmpty(),
+                    imageRes = comparison?.personA?.image.orEmpty(),
+                )
+
+                // VS Text
+                Text(
+                    text = "VS",
+                    color = Color(0xFF333333),
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Black,
+                    fontStyle = FontStyle.Italic
+                )
+
+                ProfileItem(
+                    name = comparison?.personB?.name.orEmpty(),
+                    imageRes = comparison?.personB?.image.orEmpty(),
+                )
+
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            StatRow(label = "Age", leftValue = "32", rightValue = "32")
+            StatRow(label = "Height", leftValue = "5' 4\"", rightValue = "5' 11\"")
+            StatRow(label = "Zodiac", leftValue = "Cancer", rightValue = "Leo")
+            StatRow(
+                label = "Job",
+                leftValue = "Vocalist",
+                rightValue = "Footballer",
+                showDivider = false
+            )
+        }
+    }
+}
+@Composable
+fun StatRow(label: String, leftValue: String, rightValue: String, showDivider: Boolean = true) {
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Left Value
+            Text(
+                text = leftValue,
+                color = TextWhite,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Start
+            )
+
+            // Center Label (AGE, HEIGHT, etc.)
+            Text(
+                text = label.uppercase(),
+                color = TextLabel,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 2.sp,
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center
+            )
+
+            // Right Value
+            Text(
+                text = rightValue,
+                color = TextWhite,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.End
+            )
+        }
+
+        if (showDivider) {
+            HorizontalDivider(
+                thickness = 1.dp, color = Color(0xFF222222)
+            )
+        }
     }
 }
 

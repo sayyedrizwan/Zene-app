@@ -8,7 +8,6 @@ data class LoveBuzzFullInfoResponse(
     val summary: String?,
     val children: List<Children>?,
     val otherRelationship: List<OtherRelationship>?,
-    val about: List<String>?,
     val timeline: List<Timeline>?,
     val comparison: Comparison?,
     val references: Any?,
@@ -40,6 +39,7 @@ data class LoveBuzzFullInfoResponse(
 
     data class PersonsInfo(
         val name: String?,
+        val image: String?,
         val age: String?,
         val height: String?,
         val zodiac: String?,
@@ -47,6 +47,7 @@ data class LoveBuzzFullInfoResponse(
         val hair_color: String?,
         val eye_color: String?,
         val nationality: String?,
+        val about: String?,
     )
 
     data class PhotoGallery(
