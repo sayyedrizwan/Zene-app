@@ -193,7 +193,6 @@ class HomeViewModel @Inject constructor(
 
     fun homePodcastData() = viewModelScope.safeLaunch {
         val data: PodcastDataResponse? = cacheHelper.get(ZENE_RECENT_HOME_PODCAST_API)
-
         if ((data?.latest?.size ?: 0) > 0) {
             homePodcast = ResponseResult.Success(data!!)
             return@safeLaunch
@@ -202,8 +201,10 @@ class HomeViewModel @Inject constructor(
         zeneAPI.recentPodcast().onStart {
             homePodcast = ResponseResult.Loading
         }.catch {
+            Log.d("TAG", "homePodcastData: data ${it.message}")
             homePodcast = ResponseResult.Error(it)
         }.collectLatest {
+            Log.d("TAG", "homePodcastData: data ${it}")
             cacheHelper.save(ZENE_RECENT_HOME_PODCAST_API, it)
             homePodcast = ResponseResult.Success(it)
         }
