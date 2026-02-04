@@ -508,8 +508,10 @@ class ZeneAPIImplementation @Inject constructor(
     override suspend fun recentPodcast() = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""
+        val country = ipDB.firstOrNull()?.countryCode
         val json = JSONObject().apply {
             put("email", email)
+            put("country", country)
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
