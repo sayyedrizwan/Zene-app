@@ -75,6 +75,5 @@ fun HomeView(viewModel: NavigationViewModel, userInfo: UserInfoResponse?) {
                 ProcessPhoenix.triggerRebirth(context)
             }
         }
-        homeViewModel.homePodcastData()
     }
 }

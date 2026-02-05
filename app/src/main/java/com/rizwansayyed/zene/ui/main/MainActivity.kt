@@ -239,7 +239,7 @@ class MainActivity : FragmentActivity() {
                                 configClarity(this@MainActivity)
                             }
 
-//                            LoveBuzzNavView("perrie-edwards-and-alex-chamberlain")
+                            LoveBuzzNavView("perrie-edwards-and-alex-chamberlain")
 
                         } else if (showLogin) LoginView(loginViewModel)
                     }

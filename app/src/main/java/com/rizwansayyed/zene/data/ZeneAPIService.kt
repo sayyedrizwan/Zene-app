@@ -24,7 +24,6 @@ import com.rizwansayyed.zene.data.model.PlayerLyricsInfoResponse
 import com.rizwansayyed.zene.data.model.PlayerRadioResponse
 import com.rizwansayyed.zene.data.model.PlayerVideoForSongsResponse
 import com.rizwansayyed.zene.data.model.PodcastDataResponse
-import com.rizwansayyed.zene.data.model.PodcastEpisodeResponse
 import com.rizwansayyed.zene.data.model.PodcastPlaylistResponse
 import com.rizwansayyed.zene.data.model.RadioDataResponse
 import com.rizwansayyed.zene.data.model.RecommendationNotificationResponse
@@ -513,7 +512,7 @@ interface ZeneAPIService {
     @POST(ZENE_PLAYER_PODCAST_INFO_API)
     suspend fun playerPodcastInfo(
         @Header("token") token: String, @Body data: RequestBody
-    ): PodcastEpisodeResponse
+    ): ZeneMusicData
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_PLAYER_RADIO_INFO_API)

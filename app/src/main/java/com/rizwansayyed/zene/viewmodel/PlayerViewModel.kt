@@ -16,7 +16,6 @@ import com.rizwansayyed.zene.data.model.NewPlaylistResponse
 import com.rizwansayyed.zene.data.model.PlayerLyricsInfoResponse
 import com.rizwansayyed.zene.data.model.PlayerRadioResponse
 import com.rizwansayyed.zene.data.model.PlayerVideoForSongsResponse
-import com.rizwansayyed.zene.data.model.PodcastEpisodeResponse
 import com.rizwansayyed.zene.data.model.SearchDataResponse
 import com.rizwansayyed.zene.data.model.UserPlaylistResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
@@ -51,7 +50,7 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
     var itemAddedToPlaylists = mutableStateMapOf<String, Boolean>()
     var createPlaylist by mutableStateOf<ResponseResult<NewPlaylistResponse>>(ResponseResult.Empty)
     var playerLyrics by mutableStateOf<ResponseResult<PlayerLyricsInfoResponse>>(ResponseResult.Empty)
-    var playerPodcastInfo by mutableStateOf<ResponseResult<PodcastEpisodeResponse>>(ResponseResult.Empty)
+    var playerPodcastInfo by mutableStateOf<ResponseResult<ZeneMusicData>>(ResponseResult.Empty)
     var playerRadioInfo by mutableStateOf<ResponseResult<PlayerRadioResponse>>(ResponseResult.Empty)
     var similarSongs by mutableStateOf<ResponseResult<SearchDataResponse>>(ResponseResult.Empty)
     var similarPodcast by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
@@ -283,7 +282,7 @@ class PlayerViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface)
 
     fun podcastInfoPlay(id: String) = viewModelScope.safeLaunch  {
         zeneAPI.playerPodcastInfo(id).onStart {}.catch {}.collectLatest {
-            startMedia(it.getAsMusicData())
+            startMedia(it)
         }
     }
 

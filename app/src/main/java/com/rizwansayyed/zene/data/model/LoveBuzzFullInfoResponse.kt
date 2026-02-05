@@ -21,7 +21,9 @@ data class LoveBuzzFullInfoResponse(
 
     data class Children(
         val name: String?,
-        val age: Long?,
+        val gender: String?,
+        val born: String?,
+        val age: String?,
     )
 
     data class OtherRelationship(

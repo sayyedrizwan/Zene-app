@@ -145,6 +145,7 @@
     <string name="your_favourite_artists">Your favourite artists</string>
     <string name="explore_tunes">Explore Tunes</string>
     <string name="latest_podcasts">Latest Podcasts</string>
+    <string name="trending_podcasts">Trending Podcasts</string>
     <string name="radio_in_your_country">Radio\'s in your country</string>
     <string name="explore_more_radios">Explore more Radio\'s</string>
     <string name="recommended_radios_for_you">Recommended Radio\'s for you </string>
@@ -561,6 +562,14 @@
     <string name="get_tickets_now">Get Tickets Now</string>
     <string name="in_relationship">In Relationship</string>
     <string name="children">Children</string>
+    <string name="age_at_start_of_relationship">Age (at start of relationship)</string>
+    <string name="height">Height</string>
+    <string name="zodiac">Zodiac</string>
+    <string name="hair_color">Hair Color</string>
+    <string name="eye_color">Eye Color</string>
+    <string name="nationality">Nationality</string>
+    <string name="occupation">Occupation</string>
+    <string name="born">Born</string>
 
     <!--    notification channels-->
     <string name="connect_updates_name">Connect Update Alerts</string>

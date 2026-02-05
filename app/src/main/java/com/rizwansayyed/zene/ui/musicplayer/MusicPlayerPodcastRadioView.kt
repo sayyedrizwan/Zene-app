@@ -74,17 +74,9 @@ fun MusicPlayerPodcastInfoView(viewModel: PlayerViewModel) {
             }
             item { Spacer(Modifier.height(20.dp)) }
             item {
-                if (v.data.image?.url != null) GlideImage(
-                    v.data.image.url,
-                    v.data.slug,
-                    Modifier
-                        .size(120.dp)
-                        .clip(RoundedCornerShape(14.dp)),
-                    contentScale = ContentScale.Crop
-                )
-                else GlideImage(
-                    v.data.series?.image?.url,
-                    v.data.slug,
+                if (v.data.thumbnail != null) GlideImage(
+                    v.data.thumbnail,
+                    v.data.name,
                     Modifier
                         .size(120.dp)
                         .clip(RoundedCornerShape(14.dp)),
@@ -94,38 +86,16 @@ fun MusicPlayerPodcastInfoView(viewModel: PlayerViewModel) {
 
             item {
                 Spacer(Modifier.height(14.dp))
-                TextViewSemiBold(v.data.title ?: "", 18, center = true)
-                if (v.data.series?.title != null) {
+                TextViewSemiBold(v.data.name ?: "", 18, center = true)
+                if (v.data.artists != null) {
                     Spacer(Modifier.height(10.dp))
-                    TextViewNormal(v.data.series.title, 15, center = true)
+                    TextViewNormal(v.data.artists, 15, center = true, line = 100000)
                 }
             }
 
-            item {
-                Spacer(Modifier.height(10.dp))
-                Text(
-                    text = AnnotatedString.fromHtml(
-                        v.data.description ?: "", linkStyles = TextLinkStyles(
-                            style = SpanStyle(
-                                textDecoration = TextDecoration.Underline,
-                                fontStyle = FontStyle.Italic,
-                                color = Pink80
-                            )
-                        )
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .animateContentSize(),
-                    color = Color.White,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Normal,
-                    fontFamily = proximanOverFamily,
-                    textAlign = TextAlign.Center
-                )
-            }
 
             item {
-                if (v.data.series?.slug != null) {
+                if (v.data.id != null) {
                     Spacer(Modifier.height(10.dp))
 
                     ButtonWithImageAndBorder(
@@ -133,31 +103,7 @@ fun MusicPlayerPodcastInfoView(viewModel: PlayerViewModel) {
                         R.string.open_podcast_series,
                         tint = Color.White
                     ) {
-                        NavigationUtils.triggerHomeNav("$NAV_PODCAST_PAGE${v.data.series.slug}")
-                    }
-                }
-            }
-
-            if (v.data.home != null) item {
-                if (v.data.series?.home != v.data.home) {
-                    Spacer(Modifier.height(10.dp))
-
-                    ButtonWithImageAndBorder(
-                        R.drawable.ic_arrow_up_right, R.string.open_episode_page, tint = Color.White
-                    ) {
-                        MediaContentUtils.openCustomBrowser(v.data.home)
-                    }
-                }
-            }
-
-            item {
-                if (v.data.series?.home != null) {
-                    Spacer(Modifier.height(10.dp))
-
-                    ButtonWithImageAndBorder(
-                        R.drawable.ic_arrow_up_right, R.string.open_home_page, tint = Color.White
-                    ) {
-                        MediaContentUtils.openCustomBrowser(v.data.series.home)
+                        NavigationUtils.triggerHomeNav("$NAV_PODCAST_PAGE${v.data.id}")
                     }
                 }
             }

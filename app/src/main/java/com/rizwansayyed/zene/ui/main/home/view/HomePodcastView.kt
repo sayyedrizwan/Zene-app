@@ -116,6 +116,26 @@ fun HomePodcastView(homeViewModel: HomeViewModel) {
                     }
                 }
 
+                if (v.data.trending?.isNotEmpty() == true) item(span = { GridItemSpan(maxLineSpan) }) {
+                    Column(Modifier.fillMaxWidth()) {
+                        Spacer(Modifier.height(50.dp))
+                        Box(Modifier.padding(horizontal = 6.dp)) {
+                            TextViewBold(stringResource(R.string.trending_podcasts), 23)
+                        }
+                        Spacer(Modifier.height(12.dp))
+                        LazyRow(Modifier.fillMaxWidth()) {
+                            itemsIndexed(v.data.trending) { i, z ->
+                                ItemCardView(z)
+
+                                if (!isPremium) {
+                                    if (i == 1) NativeViewAdsCard(z?.id)
+                                    if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
+                                }
+                            }
+                        }
+                    }
+                }
+
                 if (v.data.categories?.isNotEmpty() == true) item(span = { GridItemSpan(maxLineSpan) }) {
                     Column(Modifier.fillMaxWidth()) {
                         Spacer(Modifier.height(50.dp))
@@ -187,6 +207,10 @@ fun HomePodcastView(homeViewModel: HomeViewModel) {
 
     if (categoryTypeSheet != null) CategoryPodcastSheetView(categoryTypeSheet!!) {
         categoryTypeSheet = null
+    }
+
+    LaunchedEffect(Unit) {
+        homeViewModel.homePodcastData()
     }
 }
 

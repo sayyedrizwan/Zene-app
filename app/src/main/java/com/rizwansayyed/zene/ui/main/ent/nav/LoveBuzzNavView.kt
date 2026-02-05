@@ -39,7 +39,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,9 +49,12 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.LoveBuzzFullInfoResponse
 import com.rizwansayyed.zene.ui.main.ent.EntertainmentViewModel
+import com.rizwansayyed.zene.ui.theme.DarkCharcoal
+import com.rizwansayyed.zene.ui.theme.LoveBuzzBg
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ButtonArrowBack
 import com.rizwansayyed.zene.ui.view.TextViewBold
+import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 
@@ -100,8 +102,19 @@ fun LoveBuzzNavView(id: String) {
                 }
 
                 item { Spacer(Modifier.height(35.dp)) }
+                item {
+                    Column(Modifier.fillMaxWidth()) {
+                        ArtistsInfoView(v.data.comparison?.personA)
+                        Box(Modifier.padding(25.dp)) {
+                            HorizontalDivider(thickness = 1.dp, color = Color.Gray)
+                        }
+                        ArtistsInfoView(v.data.comparison?.personB)
+                    }
+                }
+
+                item { Spacer(Modifier.height(35.dp)) }
                 item { LoveBuzzComparison(v.data.comparison) }
-                item { Spacer(Modifier.height(12.dp)) }
+                item { Spacer(Modifier.height(30.dp)) }
                 item { LoveBuzzChildren(v.data.children) }
                 item { Spacer(Modifier.height(12.dp)) }
                 item { LoveBuzzExFiles(v.data.otherRelationship) }
@@ -119,6 +132,27 @@ fun LoveBuzzNavView(id: String) {
             viewModel.loveBuzzFullInfo(id)
         }
     }
+}
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+private fun ArtistsInfoView(v: LoveBuzzFullInfoResponse.PersonsInfo?) {
+    Row(Modifier.padding(2.dp), verticalAlignment = Alignment.CenterVertically) {
+        if (v != null) {
+            GlideImage(
+                v.image,
+                v.name,
+                Modifier
+                    .padding(10.dp)
+                    .size(80.dp)
+                    .clip(RoundedCornerShape(100)),
+                contentScale = ContentScale.Crop
+            )
+
+            TextViewNormal(v.about.orEmpty(), 14)
+        }
+    }
+
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
@@ -241,162 +275,158 @@ private fun LoveBuzzTimeline(
     }
 }
 
-val DarkBackground = Color(0xFF161616) // Main card background
-val CardBackground = Color(0xFF1E1E1E) // Slightly lighter if needed, or use black
-val RedAccent = Color(0xFFE94057)
-val GrayBorder = Color(0xFF484848)
-val TextWhite = Color.White
-val TextLabel = Color(0xFF666666)
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun ProfileItem(name: String, imageRes: String) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.width(100.dp)
-    ) {
+fun ProfileItem(info: LoveBuzzFullInfoResponse.PersonsInfo?, modifier: Modifier) {
+    Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
         GlideImage(
-            imageRes,
-            contentDescription = name,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(80.dp)
-                .padding(4.dp) // Gap between border and image
+            info?.image, info?.name,
+            Modifier
+                .size(110.dp)
                 .clip(CircleShape)
-                .background(Color.Gray) // Placeholder bg
+                .background(Color.Gray),
+            contentScale = ContentScale.Crop,
         )
-        Spacer(modifier = Modifier.height(12.dp))
-        Text(
-            text = name,
-            color = TextWhite,
-            fontWeight = FontWeight.Bold,
-            fontSize = 14.sp,
-            textAlign = TextAlign.Center,
-            lineHeight = 18.sp
-        )
+        Spacer(Modifier.height(12.dp))
+        TextViewBold(info?.name.orEmpty(), 15, center = true)
     }
 }
 
+
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-private fun LoveBuzzComparison(comparison: LoveBuzzFullInfoResponse.Comparison?) {
+private fun LoveBuzzComparison(v: LoveBuzzFullInfoResponse.Comparison?) {
     Card(
-        modifier = Modifier
-            .width(340.dp)
+        Modifier
+            .padding(top = 15.dp)
+            .padding(10.dp)
+            .fillMaxWidth()
             .wrapContentHeight(),
-        shape = RoundedCornerShape(32.dp),
-        colors = CardDefaults.cardColors(containerColor = DarkBackground)
+        RoundedCornerShape(32.dp),
+        CardDefaults.cardColors(DarkCharcoal)
     ) {
         Column(
-            modifier = Modifier.padding(24.dp)
+            Modifier
+                .padding(24.dp)
+                .fillMaxWidth()
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                Modifier.fillMaxWidth(), Arrangement.SpaceBetween, Alignment.Top
             ) {
-                // Left Profile
-                ProfileItem(
-                    name = comparison?.personA?.name.orEmpty(),
-                    imageRes = comparison?.personA?.image.orEmpty(),
-                )
+                ProfileItem(v?.personA, Modifier.weight(1f))
 
-                // VS Text
                 Text(
                     text = "VS",
                     color = Color(0xFF333333),
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Black,
-                    fontStyle = FontStyle.Italic
+                    fontStyle = FontStyle.Italic,
+                    modifier = Modifier.padding(top = 40.dp)
                 )
 
-                ProfileItem(
-                    name = comparison?.personB?.name.orEmpty(),
-                    imageRes = comparison?.personB?.image.orEmpty(),
-                )
-
+                ProfileItem(v?.personB, Modifier.weight(1f))
             }
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            StatRow(label = "Age", leftValue = "32", rightValue = "32")
-            StatRow(label = "Height", leftValue = "5' 4\"", rightValue = "5' 11\"")
-            StatRow(label = "Zodiac", leftValue = "Cancer", rightValue = "Leo")
-            StatRow(
-                label = "Job",
-                leftValue = "Vocalist",
-                rightValue = "Footballer",
-                showDivider = false
+            if (v?.personA?.age != null || v?.personB?.age != null) StatRow(
+                R.string.age_at_start_of_relationship, v.personA?.age, v.personB?.age
+            )
+
+            if (v?.personA?.height != null || v?.personB?.height != null) StatRow(
+                R.string.height, v.personA?.height, v.personB?.height
+            )
+
+            if (v?.personA?.zodiac != null || v?.personB?.zodiac != null) StatRow(
+                R.string.zodiac, v.personA?.zodiac, v.personB?.zodiac
+            )
+
+            if (v?.personA?.hair_color != null || v?.personB?.hair_color != null) StatRow(
+                R.string.hair_color, v.personA?.hair_color, v.personB?.hair_color
+            )
+
+            if (v?.personA?.eye_color != null || v?.personB?.eye_color != null) StatRow(
+                R.string.eye_color, v.personA?.eye_color, v.personB?.eye_color
+            )
+
+            if (v?.personA?.occupation != null || v?.personB?.occupation != null) StatRow(
+                R.string.occupation, v.personA?.occupation, v.personB?.occupation
+            )
+
+            if (v?.personA?.nationality != null || v?.personB?.nationality != null) StatRow(
+                R.string.nationality, v.personA?.nationality, v.personB?.nationality, false
             )
         }
     }
 }
+
 @Composable
-fun StatRow(label: String, leftValue: String, rightValue: String, showDivider: Boolean = true) {
+private fun StatRow(
+    label: Int, leftValue: String?, rightValue: String?, showDivider: Boolean = true
+) {
     Column {
         Row(
-            modifier = Modifier
+            Modifier
                 .fillMaxWidth()
                 .padding(vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Left Value
-            Text(
-                text = leftValue,
-                color = TextWhite,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Start
-            )
+            Box(Modifier.weight(1f)) {
+                TextViewSemiBold(leftValue.orEmpty(), 15, center = true)
+            }
 
-            // Center Label (AGE, HEIGHT, etc.)
-            Text(
-                text = label.uppercase(),
-                color = TextLabel,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Bold,
-                letterSpacing = 2.sp,
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
-            )
+            Box(Modifier.weight(1f)) {
+                TextViewLight(stringResource(label), 15, Color.Gray, true)
+            }
 
-            // Right Value
-            Text(
-                text = rightValue,
-                color = TextWhite,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.End
-            )
+            Box(Modifier.weight(1f)) {
+                TextViewSemiBold(rightValue.orEmpty(), 15, center = true)
+            }
+
         }
 
         if (showDivider) {
-            HorizontalDivider(
-                thickness = 1.dp, color = Color(0xFF222222)
-            )
+            HorizontalDivider(thickness = 1.dp, color = Color(0xFF222222))
         }
     }
 }
 
-/* ---------------- CHILDREN ---------------- */
-
 @Composable
 private fun LoveBuzzChildren(children: List<LoveBuzzFullInfoResponse.Children>?) {
-    if (children?.isEmpty() == true) return
-    Column(Modifier.padding(horizontal = 16.dp)) {
-        Text("Children", fontWeight = FontWeight.Bold)
-        Spacer(Modifier.height(8.dp))
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            items(children?.size ?: 0) { i ->
-                val c = children?.get(i)
-                Card(shape = RoundedCornerShape(12.dp)) {
-                    Column(Modifier.padding(12.dp)) {
-                        Text(c?.name.orEmpty(), fontWeight = FontWeight.SemiBold)
-                        Text("${c?.age} years old", fontSize = 12.sp, color = Color.Gray)
-                    }
+    if (children?.isNotEmpty() == true) {
+        Box(
+            Modifier
+                .padding(horizontal = 6.dp)
+                .padding(bottom = 6.dp)
+        ) {
+            TextViewBold(stringResource(R.string.children), 23)
+        }
+
+        children.forEach { child ->
+            Row(
+                Modifier
+                    .padding(2.dp)
+                    .clip(RoundedCornerShape(22.dp))
+                    .background(DarkCharcoal)
+                    .padding(horizontal = 18.dp, vertical = 20.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(Modifier.weight(1f)) {
+                    TextViewSemiBold(child.name.orEmpty(), 19)
+                    TextViewLight("${stringResource(R.string.born)} ${child.born}", 14)
+                }
+
+                Box(
+                    Modifier
+                        .background(LoveBuzzBg, RoundedCornerShape(50))
+                        .padding(horizontal = 14.dp, vertical = 6.dp), Alignment.Center
+                ) {
+                    TextViewSemiBold(child.age.orEmpty(), 13, Color.LightGray)
                 }
             }
+
+            Spacer(Modifier.height(14.dp))
         }
     }
 }

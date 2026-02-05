@@ -168,7 +168,7 @@ fun LongPressSheetView(viewModel: NavigationViewModel) {
                                     LongPressSheetItem(
                                         R.drawable.ic_podcast, R.string.view_podcast_series
                                     ) {
-                                        triggerHomeNav("$NAV_PODCAST_PAGE${v.data.series?.slug}")
+                                        triggerHomeNav("$NAV_PODCAST_PAGE${v.data.id}")
                                         viewModel.setShowMediaInfo(null)
                                     }
                                 }
