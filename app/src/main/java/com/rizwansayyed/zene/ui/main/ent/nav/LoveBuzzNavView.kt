@@ -34,6 +34,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,6 +57,7 @@ import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.LoveBuzzFullInfoResponse
 import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.ui.main.ent.EntertainmentViewModel
+import com.rizwansayyed.zene.ui.main.view.share.ShareDataView
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.theme.FacebookColor
 import com.rizwansayyed.zene.ui.theme.LoveBuzzBg
@@ -66,6 +71,8 @@ import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.URLSUtils.getSearchNewsOnGoogle
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
+import com.rizwansayyed.zene.utils.share.ShareContentUtils
+import com.rizwansayyed.zene.utils.share.SharingContentType
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -182,6 +189,7 @@ private fun ArtistsInfoView(v: LoveBuzzFullInfoResponse.PersonsInfo?) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun LoveBuzzHeader(data: LoveBuzzFullInfoResponse) {
+    var showShare by remember { mutableStateOf(false) }
     Row(
         Modifier
             .padding(horizontal = 8.dp)
@@ -201,10 +209,15 @@ private fun LoveBuzzHeader(data: LoveBuzzFullInfoResponse) {
         }
 
         Row(Modifier.clickable {
-            NavigationUtils.triggerInfoSheet(data.toMusicData())
+            showShare = true
         }.padding(12.dp), horizontalArrangement = Arrangement.SpaceBetween) {
             ImageIcon(R.drawable.ic_share, 24)
         }
+    }
+
+
+    if (showShare) ShareDataView(data.toMusicData()) {
+        showShare = false
     }
 }
 
