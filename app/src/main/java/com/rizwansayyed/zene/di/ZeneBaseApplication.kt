@@ -6,6 +6,7 @@ import android.content.Context
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
+import com.bumptech.glide.Glide
 import com.rizwansayyed.zene.datastore.DataStorageManager
 import com.rizwansayyed.zene.di.utils.AppCrashHandler
 import com.rizwansayyed.zene.utils.ads.nativeAdsMap
@@ -20,6 +21,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 
@@ -81,7 +83,14 @@ class ZeneBaseApplication : Application() {
         AppCrashHandler(this).init()
 
         ProcessLifecycleOwner.get().lifecycle.addObserver(observer)
+    }
 
+    fun clearGlideCache() {
+        Glide.get(context).clearMemory()
+
+        Thread {
+            Glide.get(context).clearDiskCache()
+        }.start()
     }
 
 }

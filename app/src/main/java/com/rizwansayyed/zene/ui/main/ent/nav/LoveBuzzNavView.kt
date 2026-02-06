@@ -2,12 +2,14 @@ package com.rizwansayyed.zene.ui.main.ent.nav
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -39,24 +42,30 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.bumptech.glide.integration.compose.placeholder
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.LoveBuzzFullInfoResponse
+import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.ui.main.ent.EntertainmentViewModel
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
+import com.rizwansayyed.zene.ui.theme.FacebookColor
 import com.rizwansayyed.zene.ui.theme.LoveBuzzBg
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ButtonArrowBack
+import com.rizwansayyed.zene.ui.view.ImageIcon
+import com.rizwansayyed.zene.ui.view.ShimmerEffect
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.URLSUtils.getSearchNewsOnGoogle
+import com.rizwansayyed.zene.utils.share.MediaContentUtils
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -114,13 +123,28 @@ fun LoveBuzzNavView(id: String) {
 
                 item { Spacer(Modifier.height(35.dp)) }
                 item { LoveBuzzComparison(v.data.comparison) }
-                item { Spacer(Modifier.height(30.dp)) }
-                item { LoveBuzzChildren(v.data.children) }
-                item { Spacer(Modifier.height(12.dp)) }
-                item { LoveBuzzExFiles(v.data.otherRelationship) }
-                item { Spacer(Modifier.height(12.dp)) }
-                item { LoveBuzzGallery(v.data.photoGallery) }
+                if (v.data.children?.isNotEmpty() == true) {
+                    item { Spacer(Modifier.height(30.dp)) }
+                    item { LoveBuzzChildrenList(v.data.children) }
+                }
+                if (v.data.comparison?.personA?.otherRelationships?.isNotEmpty() == true || v.data.comparison?.personB?.otherRelationships?.isNotEmpty() == true) {
+                    item { Spacer(Modifier.height(30.dp)) }
+                    item { LoveBuzzExPartners(v.data.comparison) }
+                }
+                if (v.data.photoGallery?.isNotEmpty() == true) {
+                    item { Spacer(Modifier.height(40.dp)) }
+                    item { LoveBuzzGallery(v.data.photoGallery) }
+                }
+
+                if (v.data.references?.isNotEmpty() == true) {
+                    item { Spacer(Modifier.height(40.dp)) }
+                    item { ReferencesList(v.data.references) }
+                }
+
                 item { Spacer(Modifier.height(40.dp)) }
+
+
+                item { Spacer(Modifier.height(260.dp)) }
             }
         }
 
@@ -176,8 +200,10 @@ private fun LoveBuzzHeader(data: LoveBuzzFullInfoResponse) {
             TextViewBold(data.title.orEmpty(), 25)
         }
 
-        Row(Modifier.padding(12.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-            Icon(Icons.Default.Share, null, tint = Color.White)
+        Row(Modifier.clickable {
+            NavigationUtils.triggerInfoSheet(data.toMusicData())
+        }.padding(12.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+            ImageIcon(R.drawable.ic_share, 24)
         }
     }
 }
@@ -341,6 +367,9 @@ private fun LoveBuzzComparison(v: LoveBuzzFullInfoResponse.Comparison?) {
             if (v?.personA?.zodiac != null || v?.personB?.zodiac != null) StatRow(
                 R.string.zodiac, v.personA?.zodiac, v.personB?.zodiac
             )
+            if (v?.personA?.religion != null || v?.personB?.religion != null) StatRow(
+                R.string.religion, v.personA?.religion, v.personB?.religion
+            )
 
             if (v?.personA?.hair_color != null || v?.personB?.hair_color != null) StatRow(
                 R.string.hair_color, v.personA?.hair_color, v.personB?.hair_color
@@ -393,8 +422,7 @@ private fun StatRow(
 }
 
 @Composable
-private fun LoveBuzzChildren(children: List<LoveBuzzFullInfoResponse.Children>?) {
-    if (children?.isNotEmpty() == true) {
+private fun LoveBuzzChildrenList(children: List<LoveBuzzFullInfoResponse.Children>?) {
         Box(
             Modifier
                 .padding(horizontal = 6.dp)
@@ -403,7 +431,7 @@ private fun LoveBuzzChildren(children: List<LoveBuzzFullInfoResponse.Children>?)
             TextViewBold(stringResource(R.string.children), 23)
         }
 
-        children.forEach { child ->
+    children?.forEach { child ->
             Row(
                 Modifier
                     .padding(2.dp)
@@ -414,7 +442,9 @@ private fun LoveBuzzChildren(children: List<LoveBuzzFullInfoResponse.Children>?)
             ) {
                 Column(Modifier.weight(1f)) {
                     TextViewSemiBold(child.name.orEmpty(), 19)
-                    TextViewLight("${stringResource(R.string.born)} ${child.born}", 14)
+                    TextViewLight(
+                        "${stringResource(R.string.born)} ${child.born} - ${child.gender}", 14
+                    )
                 }
 
                 Box(
@@ -427,70 +457,131 @@ private fun LoveBuzzChildren(children: List<LoveBuzzFullInfoResponse.Children>?)
             }
 
             Spacer(Modifier.height(14.dp))
-        }
     }
 }
 
-/* ---------------- EX FILES ---------------- */
-
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-private fun LoveBuzzExFiles(list: List<LoveBuzzFullInfoResponse.OtherRelationship>?) {
-    if (list?.isEmpty() == true) return
-    Column(Modifier.padding(horizontal = 16.dp)) {
-        Text("Ex-Files", fontWeight = FontWeight.Bold)
-        Spacer(Modifier.height(8.dp))
+private fun LoveBuzzExPartners(c: LoveBuzzFullInfoResponse.Comparison) {
+    if (c.personA?.otherRelationships?.isNotEmpty() == true) {
+        Box(
+            Modifier
+                .padding(horizontal = 6.dp)
+                .padding(bottom = 6.dp)
+        ) {
+            TextViewBold("${c.personA.name} ${stringResource(R.string.dating_history)}", 23)
+        }
+
         LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            items(list?.size ?: 0) { i ->
-                val p = list?.get(i)
+            items(c.personA.otherRelationships) { p ->
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     GlideImage(
-                        model = p?.image,
-                        contentDescription = p?.name,
-                        modifier = Modifier
-                            .size(80.dp)
-                            .clip(RoundedCornerShape(10.dp)),
+                        p.image,
+                        p.name,
+                        Modifier
+                            .size(150.dp)
+                            .clip(RoundedCornerShape(15.dp)),
                         contentScale = ContentScale.Crop
                     )
-                    Spacer(Modifier.height(6.dp))
-                    Text(
-                        p?.name.orEmpty(),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        fontSize = 12.sp
+                    Spacer(Modifier.height(9.dp))
+                    TextViewBold(p.name.orEmpty(), 15, center = true, line = 1)
+                }
+            }
+        }
+    }
+
+    if (c.personA?.otherRelationships?.isNotEmpty() == true && c.personB?.otherRelationships?.isNotEmpty() == true) {
+        Spacer(Modifier.height(30.dp))
+    }
+
+
+    if (c.personB?.otherRelationships?.isNotEmpty() == true) {
+        Box(
+            Modifier
+                .padding(horizontal = 6.dp)
+                .padding(bottom = 6.dp)
+        ) {
+            TextViewBold("${c.personB.name} ${stringResource(R.string.dating_history)}", 23)
+        }
+
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            items(c.personB.otherRelationships) { p ->
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    GlideImage(
+                        p.image,
+                        p.name,
+                        Modifier
+                            .size(150.dp)
+                            .clip(RoundedCornerShape(15.dp)),
+                        contentScale = ContentScale.Crop
                     )
+                    Spacer(Modifier.height(9.dp))
+                    TextViewBold(p.name.orEmpty(), 15, center = true, line = 1)
                 }
             }
         }
     }
 }
 
-/* ---------------- GALLERY ---------------- */
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+private fun LoveBuzzGallery(photos: List<String?>?) {
+    Box(
+        Modifier
+            .padding(horizontal = 6.dp)
+            .padding(bottom = 6.dp)
+    ) {
+        TextViewBold(stringResource(R.string.photos), 23)
+    }
+
+    LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        items(photos ?: emptyList()) { p ->
+            GlideImage(
+                model = p,
+                contentDescription = p,
+                modifier = Modifier
+                    .width(200.dp)
+                    .aspectRatio(0.8f)
+                    .clip(RoundedCornerShape(15.dp)),
+                contentScale = ContentScale.Crop,
+                loading = placeholder {
+                    ShimmerEffect(
+                        modifier = Modifier
+                            .width(200.dp)
+                            .aspectRatio(0.8f)
+                            .clip(RoundedCornerShape(15.dp))
+                    )
+                })
+        }
+    }
+}
+
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-private fun LoveBuzzGallery(photos: List<LoveBuzzFullInfoResponse.PhotoGallery>?) {
-    if (photos?.isEmpty() == true) return
-    Column(Modifier.padding(horizontal = 16.dp)) {
-        Text("Spotted", fontWeight = FontWeight.Bold)
-        Spacer(Modifier.height(8.dp))
-        val rows = photos?.chunked(2)
-        rows?.forEach { row ->
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                row.forEach {
-                    GlideImage(
-                        model = it.url,
-                        contentDescription = it.alt,
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(120.dp)
-                            .clip(RoundedCornerShape(10.dp)),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-                if (row.size == 1) Spacer(Modifier.weight(1f))
+private fun ReferencesList(ref: List<String?>?) {
+    Box(
+        Modifier
+            .padding(horizontal = 6.dp)
+            .padding(bottom = 6.dp)
+    ) {
+        TextViewBold(stringResource(R.string.articles), 23)
+    }
+
+
+    ref?.forEach { r ->
+        if (r != null) Row(Modifier.padding(10.dp)) {
+            Box(
+                Modifier
+                    .weight(1f)
+                    .clickable {
+                        MediaContentUtils.openCustomBrowser(r)
+                    }
+                    .padding(end = 5.dp)
+            ) {
+                TextViewNormal(r, line = 1, color = FacebookColor)
             }
-            Spacer(Modifier.height(8.dp))
+            ImageIcon(R.drawable.ic_link_square, 20, Color.White)
         }
     }
 }

@@ -1,18 +1,23 @@
 package com.rizwansayyed.zene.data.model
 
 data class LoveBuzzFullInfoResponse(
+    val id: String?,
     val title: String?,
     val mainImage: String?,
     val relationshipStatus: String?,
     val relationshipDuration: RelationshipDuration?,
     val summary: String?,
     val children: List<Children>?,
-    val otherRelationship: List<OtherRelationship>?,
     val timeline: List<Timeline>?,
     val comparison: Comparison?,
-    val references: Any?,
-    val photoGallery: List<PhotoGallery>?,
+    val references: List<String?>?,
+    val photoGallery: List<String?>?,
 ) {
+
+    fun toMusicData(): ZeneMusicData {
+        val name = "${comparison?.personA?.name} & ${comparison?.personB?.name}"
+        return ZeneMusicData(summary, id, name, "", mainImage, MusicDataTypes.DATING.name)
+    }
 
     data class RelationshipDuration(
         val relationshipDuration: Long?,
@@ -27,9 +32,8 @@ data class LoveBuzzFullInfoResponse(
     )
 
     data class OtherRelationship(
-        val id: String?,
-        val name: String?,
         val image: String?,
+        val name: String?
     )
 
     data class Timeline(
@@ -50,10 +54,7 @@ data class LoveBuzzFullInfoResponse(
         val eye_color: String?,
         val nationality: String?,
         val about: String?,
-    )
-
-    data class PhotoGallery(
-        val url: String?,
-        val alt: String?,
+        val otherRelationships: List<OtherRelationship>?,
+        val religion: String?,
     )
 }
