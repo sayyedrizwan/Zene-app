@@ -47,6 +47,7 @@ import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_ARTIST_PAG
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_CONNECT_PROFILE_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_EVENTS_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_GO_BACK
+import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_LIFESTYLE_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_LOVE_BUZZ_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MOVIES_PAGE
@@ -60,7 +61,6 @@ import com.rizwansayyed.zene.ui.login.LoginView
 import com.rizwansayyed.zene.ui.main.connect.HomeConnectView
 import com.rizwansayyed.zene.ui.main.connect.profile.ConnectUserProfileView
 import com.rizwansayyed.zene.ui.main.ent.EntertainmentView
-import com.rizwansayyed.zene.ui.main.ent.nav.EventNavLoading
 import com.rizwansayyed.zene.ui.main.ent.nav.EventNavView
 import com.rizwansayyed.zene.ui.main.ent.nav.LifeStyleNavView
 import com.rizwansayyed.zene.ui.main.ent.nav.LoveBuzzNavView
@@ -94,7 +94,6 @@ import com.rizwansayyed.zene.utils.MainUtils.clearCacheIfSizeIsMoreThen200MB
 import com.rizwansayyed.zene.utils.MainUtils.configClarity
 import com.rizwansayyed.zene.utils.MainUtils.isNotificationEnabled
 import com.rizwansayyed.zene.utils.SnackBarManager
-import com.rizwansayyed.zene.utils.URLSUtils.ZENE_LIFESTYLE
 import com.rizwansayyed.zene.utils.ads.OpenAppAdsUtils
 import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.utils.share.GenerateShortcuts.generateMainShortcuts
@@ -203,7 +202,7 @@ class MainActivity : FragmentActivity() {
                                     if (id != null) EventNavView(id)
                                 }
 
-                                composable("$ZENE_LIFESTYLE{id}") { backStackEntry ->
+                                composable("$NAV_LIFESTYLE_PAGE{id}") { backStackEntry ->
                                     val id = backStackEntry.arguments?.getString("id")
                                     if (id != null) LifeStyleNavView(id)
                                 }
@@ -220,13 +219,16 @@ class MainActivity : FragmentActivity() {
                             MusicPlayerView(navigationViewModel)
                             LongPressSheetView(navigationViewModel)
                             BackHandler {
-                                if (!navController.popBackStack() && navigationViewModel.homeNavSection == HOME) {
-                                    finish()
+                                if (navController.popBackStack()) {
+                                    navigationViewModel.restorePreviousSection()
                                     return@BackHandler
                                 }
 
-                                if (navigationViewModel.homeNavSection != HOME)
+                                if (navigationViewModel.homeNavSection == HOME) {
+                                    finish()
+                                } else {
                                     navigationViewModel.setHomeNavSections(HOME)
+                                }
                             }
 
 
@@ -238,6 +240,7 @@ class MainActivity : FragmentActivity() {
 
                                 configClarity(this@MainActivity)
                             }
+
                         } else if (showLogin) LoginView(loginViewModel)
                     }
 
@@ -245,6 +248,7 @@ class MainActivity : FragmentActivity() {
                         delay(500)
                         setNavigationCallback(object : HomeNavigationListener {
                             override fun navigate(path: String) {
+                                navigationViewModel.setPreviousHomeSection(navigationViewModel.homeNavSection)
                                 lifecycleScope.safeLaunch(Dispatchers.Main) {
                                     if (path == NAV_GO_BACK) {
                                         navController.popBackStack()

@@ -202,14 +202,6 @@ fun EventsMapScreen(events: List<EventsResponsesItems>, cameraPositionState: Cam
 
         var cameraReady by remember { mutableStateOf(false) }
 
-        LaunchedEffect(Unit) {
-            scope.launch {
-                delay(900)
-                cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(latLong!!, zoom), 800)
-                cameraReady = true
-            }
-        }
-
         Box(Modifier.fillMaxSize()) {
             GoogleMap(
                 Modifier.fillMaxSize(),
@@ -219,7 +211,14 @@ fun EventsMapScreen(events: List<EventsResponsesItems>, cameraPositionState: Cam
                     myLocationButtonEnabled = false,
                     compassEnabled = false,
                     mapToolbarEnabled = false
-                )
+                ),
+                onMapLoaded = {
+                    scope.launch {
+                        delay(900)
+                        cameraPositionState.animate(CameraUpdateFactory.newLatLngZoom(latLong!!, zoom), 800)
+                        cameraReady = true
+                    }
+                }
             )
             {
                 val clusterManager = rememberClusterManager<EventClusterItem>()

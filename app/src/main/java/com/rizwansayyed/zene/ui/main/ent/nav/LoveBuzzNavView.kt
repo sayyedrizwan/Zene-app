@@ -3,10 +3,12 @@ package com.rizwansayyed.zene.ui.main.ent.nav
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -25,11 +27,12 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,13 +44,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
@@ -55,7 +63,6 @@ import com.bumptech.glide.integration.compose.placeholder
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.LoveBuzzFullInfoResponse
-import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.ui.main.ent.EntertainmentViewModel
 import com.rizwansayyed.zene.ui.main.view.share.ShareDataView
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
@@ -69,15 +76,152 @@ import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
-import com.rizwansayyed.zene.utils.URLSUtils.getSearchNewsOnGoogle
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
-import com.rizwansayyed.zene.utils.share.ShareContentUtils
-import com.rizwansayyed.zene.utils.share.SharingContentType
+
+@OptIn(ExperimentalGlideComposeApi::class)
+@Composable
+fun LoveBuzzLoadingNavView() {
+    LazyColumn(
+        modifier = Modifier
+            .background(Color.Black)
+            .fillMaxSize()
+    ) {
+
+        item {
+            ShimmerEffect(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(350.dp)
+            )
+        }
+        item { Spacer(Modifier.height(20.dp)) }
+
+        item {
+            Row(
+                Modifier
+                    .padding(horizontal = 12.dp)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Column(Modifier.weight(1f)) {
+
+                    ShimmerEffect(
+                        Modifier
+                            .width(120.dp)
+                            .height(22.dp)
+                            .clip(RoundedCornerShape(50))
+                    )
+
+                    Spacer(Modifier.height(10.dp))
+
+                    ShimmerEffect(
+                        Modifier
+                            .fillMaxWidth(0.7f)
+                            .height(26.dp)
+                    )
+                }
+
+                ShimmerEffect(
+                    Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                )
+            }
+        }
+
+        item { Spacer(Modifier.height(30.dp)) }
+
+        items(3) {
+            Row(
+                Modifier
+                    .padding(horizontal = 12.dp, vertical = 10.dp)
+                    .fillMaxWidth()
+            ) {
+                ShimmerEffect(
+                    Modifier
+                        .width(24.dp)
+                        .height(60.dp)
+                )
+
+                Spacer(Modifier.width(12.dp))
+
+                Column(Modifier.weight(1f)) {
+                    ShimmerEffect(
+                        Modifier
+                            .width(100.dp)
+                            .height(12.dp)
+                    )
+
+                    Spacer(Modifier.height(6.dp))
+
+                    ShimmerEffect(
+                        Modifier
+                            .fillMaxWidth(0.8f)
+                            .height(14.dp)
+                    )
+                }
+            }
+        }
+
+        item { Spacer(Modifier.height(35.dp)) }
+
+        item {
+            Column(
+                Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+            ) {
+                repeat(4) {
+                    ShimmerEffect(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(14.dp)
+                            .padding(vertical = 6.dp)
+                    )
+                }
+            }
+        }
+
+        item { Spacer(Modifier.height(40.dp)) }
+
+        item {
+            Column {
+                ShimmerEffect(
+                    Modifier
+                        .width(140.dp)
+                        .height(20.dp)
+                        .padding(start = 12.dp)
+                )
+
+                Spacer(Modifier.height(12.dp))
+
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    contentPadding = PaddingValues(horizontal = 12.dp)
+                ) {
+                    items(5) {
+                        ShimmerEffect(
+                            Modifier
+                                .width(200.dp)
+                                .aspectRatio(0.8f)
+                                .clip(RoundedCornerShape(15.dp))
+                        )
+                    }
+                }
+            }
+        }
+
+        item { Spacer(Modifier.height(260.dp)) }
+    }
+}
+
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun LoveBuzzNavView(id: String) {
     val viewModel: EntertainmentViewModel = hiltViewModel()
+
     Box(
         Modifier
             .background(Color.Black)
@@ -86,72 +230,78 @@ fun LoveBuzzNavView(id: String) {
         when (val v = viewModel.loveBuzzFullInfo) {
             ResponseResult.Empty -> {}
             is ResponseResult.Error -> {}
-            ResponseResult.Loading -> {}
-            is ResponseResult.Success -> LazyColumn(modifier = Modifier.fillMaxSize()) {
-                item {
-                    GlideImage(
-                        v.data.mainImage,
-                        v.data.title,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(350.dp),
-                        contentScale = ContentScale.Crop
-                    )
-                }
-                item { Spacer(Modifier.height(20.dp)) }
-                item { LoveBuzzHeader(v.data) }
-                item {
-                    Column(Modifier.padding(horizontal = 8.dp, vertical = 5.dp)) {
-                        TextViewNormal(v.data.summary.orEmpty(), 15)
+            ResponseResult.Loading -> LoveBuzzLoadingNavView()
+            is ResponseResult.Success -> {
+                if (v.data.comparison == null) {
+                    Column(Modifier.fillMaxSize(), Arrangement.Center, Alignment.CenterHorizontally) {
+                        TextViewBold(stringResource(R.string.no_dating_buzz_found), 25)
                     }
-                }
-                item { Spacer(Modifier.height(30.dp)) }
-                item { LoveBuzzStats(v.data) }
-                item { Spacer(Modifier.height(35.dp)) }
-
-                itemsIndexed(v.data.timeline ?: emptyList()) { index, item ->
-                    LoveBuzzTimeline(
-                        item,
-                        isLast = index == (v.data.timeline ?: emptyList()).lastIndex,
-                        isActive = index == 0
-                    )
-                }
-
-                item { Spacer(Modifier.height(35.dp)) }
-                item {
-                    Column(Modifier.fillMaxWidth()) {
-                        ArtistsInfoView(v.data.comparison?.personA)
-                        Box(Modifier.padding(25.dp)) {
-                            HorizontalDivider(thickness = 1.dp, color = Color.Gray)
+                } else LazyColumn(Modifier.fillMaxSize()) {
+                    item {
+                        GlideImage(
+                            v.data.mainImage,
+                            v.data.title,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(350.dp),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                    item { Spacer(Modifier.height(20.dp)) }
+                    item { LoveBuzzHeader(v.data) }
+                    item {
+                        Column(Modifier.padding(horizontal = 8.dp, vertical = 5.dp)) {
+                            TextViewNormal(v.data.summary.orEmpty(), 15)
                         }
-                        ArtistsInfoView(v.data.comparison?.personB)
                     }
-                }
-
-                item { Spacer(Modifier.height(35.dp)) }
-                item { LoveBuzzComparison(v.data.comparison) }
-                if (v.data.children?.isNotEmpty() == true) {
                     item { Spacer(Modifier.height(30.dp)) }
-                    item { LoveBuzzChildrenList(v.data.children) }
-                }
-                if (v.data.comparison?.personA?.otherRelationships?.isNotEmpty() == true || v.data.comparison?.personB?.otherRelationships?.isNotEmpty() == true) {
-                    item { Spacer(Modifier.height(30.dp)) }
-                    item { LoveBuzzExPartners(v.data.comparison) }
-                }
-                if (v.data.photoGallery?.isNotEmpty() == true) {
+                    item { LoveBuzzStats(v.data) }
+                    item { Spacer(Modifier.height(35.dp)) }
+
+                    itemsIndexed(v.data.timeline ?: emptyList()) { index, item ->
+                        LoveBuzzTimeline(
+                            item,
+                            isLast = index == (v.data.timeline ?: emptyList()).lastIndex,
+                            isActive = index == 0
+                        )
+                    }
+
+                    item { Spacer(Modifier.height(35.dp)) }
+                    item {
+                        Column(Modifier.fillMaxWidth()) {
+                            ArtistsInfoView(v.data.comparison?.personA)
+                            Box(Modifier.padding(25.dp)) {
+                                HorizontalDivider(thickness = 1.dp, color = Color.Gray)
+                            }
+                            ArtistsInfoView(v.data.comparison?.personB)
+                        }
+                    }
+
+                    item { Spacer(Modifier.height(35.dp)) }
+                    item { LoveBuzzComparison(v.data.comparison) }
+                    if (v.data.children?.isNotEmpty() == true) {
+                        item { Spacer(Modifier.height(30.dp)) }
+                        item { LoveBuzzChildrenList(v.data.children) }
+                    }
+                    if (v.data.comparison?.personA?.otherRelationships?.isNotEmpty() == true || v.data.comparison?.personB?.otherRelationships?.isNotEmpty() == true) {
+                        item { Spacer(Modifier.height(30.dp)) }
+                        item { LoveBuzzExPartners(v.data.comparison) }
+                    }
+                    if (v.data.photoGallery?.isNotEmpty() == true) {
+                        item { Spacer(Modifier.height(40.dp)) }
+                        item { LoveBuzzGallery(v.data.photoGallery) }
+                    }
+
+                    if (v.data.references?.isNotEmpty() == true) {
+                        item { Spacer(Modifier.height(40.dp)) }
+                        item { ReferencesList(v.data.references) }
+                    }
+
                     item { Spacer(Modifier.height(40.dp)) }
-                    item { LoveBuzzGallery(v.data.photoGallery) }
+
+
+                    item { Spacer(Modifier.height(260.dp)) }
                 }
-
-                if (v.data.references?.isNotEmpty() == true) {
-                    item { Spacer(Modifier.height(40.dp)) }
-                    item { ReferencesList(v.data.references) }
-                }
-
-                item { Spacer(Modifier.height(40.dp)) }
-
-
-                item { Spacer(Modifier.height(260.dp)) }
             }
         }
 
@@ -208,9 +358,12 @@ private fun LoveBuzzHeader(data: LoveBuzzFullInfoResponse) {
             TextViewBold(data.title.orEmpty(), 25)
         }
 
-        Row(Modifier.clickable {
-            showShare = true
-        }.padding(12.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+        Row(
+            Modifier
+                .clickable {
+                    showShare = true
+                }
+                .padding(12.dp), horizontalArrangement = Arrangement.SpaceBetween) {
             ImageIcon(R.drawable.ic_share, 24)
         }
     }
@@ -539,6 +692,8 @@ private fun LoveBuzzExPartners(c: LoveBuzzFullInfoResponse.Comparison) {
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 private fun LoveBuzzGallery(photos: List<String?>?) {
+    var selectedImage by remember { mutableStateOf<String?>(null) }
+
     Box(
         Modifier
             .padding(horizontal = 6.dp)
@@ -554,6 +709,9 @@ private fun LoveBuzzGallery(photos: List<String?>?) {
                 contentDescription = p,
                 modifier = Modifier
                     .width(200.dp)
+                    .clickable {
+                        selectedImage = p
+                    }
                     .aspectRatio(0.8f)
                     .clip(RoundedCornerShape(15.dp)),
                 contentScale = ContentScale.Crop,
@@ -565,6 +723,57 @@ private fun LoveBuzzGallery(photos: List<String?>?) {
                             .clip(RoundedCornerShape(15.dp))
                     )
                 })
+        }
+    }
+
+    if (selectedImage != null) Dialog(
+        { selectedImage = null },
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        var scale by remember { mutableStateOf(1f) }
+        var offset by remember { mutableStateOf(Offset.Zero) }
+
+        val minScale = 1f
+        val maxScale = 5f
+
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(Color.Black)
+                .pointerInput(Unit) {
+                    detectTransformGestures { _, pan, zoom, _ ->
+                        val newScale = (scale * zoom).coerceIn(minScale, maxScale)
+                        scale = newScale
+
+                        offset += pan
+                    }
+                }
+        ) {
+            GlideImage(
+                selectedImage, null, Modifier
+                    .align(Alignment.Center)
+                    .fillMaxSize()
+                    .graphicsLayer {
+                        scaleX = scale
+                        scaleY = scale
+                        translationX = offset.x
+                        translationY = offset.y
+                    },
+                contentScale = ContentScale.Fit
+            )
+
+            IconButton(
+                onClick = { selectedImage = null },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Close",
+                    tint = Color.White
+                )
+            }
         }
     }
 }

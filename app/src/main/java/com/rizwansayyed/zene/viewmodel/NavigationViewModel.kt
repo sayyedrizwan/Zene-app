@@ -30,6 +30,9 @@ import javax.inject.Inject
 class NavigationViewModel @Inject constructor() : ViewModel() {
     var homeSection by mutableStateOf(HomeSectionSelector.MUSIC)
     var homeNavSection by mutableStateOf(HomeNavSelector.HOME)
+
+    private var previousSection: HomeNavSelector? = null
+
     var entNavSection by mutableStateOf(EntSectionSelector.DISCOVER)
     var homeNotificationSection by mutableStateOf<IntentFCMNotification?>(null)
     var showMusicPlayer by mutableStateOf(false)
@@ -107,5 +110,16 @@ class NavigationViewModel @Inject constructor() : ViewModel() {
         infos?.albumInfo = value?.albumInfo
         showMediaInfoSheet = null
         showMediaInfoSheet = infos
+    }
+
+    fun setPreviousHomeSection(section: HomeNavSelector) {
+        previousSection = section
+    }
+
+    fun restorePreviousSection() {
+        previousSection?.let {
+            homeNavSection = it
+            previousSection = null
+        }
     }
 }

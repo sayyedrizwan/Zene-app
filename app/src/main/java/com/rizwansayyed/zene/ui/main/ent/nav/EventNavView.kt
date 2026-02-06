@@ -145,7 +145,11 @@ fun EventNavView(id: String) {
             is ResponseResult.Error -> {}
             ResponseResult.Loading -> EventNavLoading()
             is ResponseResult.Success -> {
-                Column(
+                if (v.data.artistName == null && v.data.ticketUrl == null) {
+                    Column(Modifier.fillMaxSize(), Arrangement.Center, Alignment.CenterHorizontally) {
+                        TextViewBold(stringResource(R.string.no_event_found), 25)
+                    }
+                } else Column(
                     Modifier
                         .background(Color.Black)
                         .fillMaxSize()

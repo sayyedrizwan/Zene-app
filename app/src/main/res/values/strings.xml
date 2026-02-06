@@ -500,6 +500,8 @@
     <string name="no_coupon_found_try_again">No coupon found, Please verify and try again :(</string>
     <string name="what_our_luxe_users_say">What our luxe users say</string>
     <string name="no_artist_found">No artist found</string>
+    <string name="no_dating_buzz_found">No Dating Buzz Found</string>
+    <string name="no_event_found">No Event Found</string>
     <string name="update_is_downloading_please_wait">Update is downloading. Please wait…</string>
     <string name="happy_with_the_app">Happy with the app?</string>
     <string name="happy_with_the_app_desc">Drop a quick 5★ with a review — or let us know what we can improve.</string>
