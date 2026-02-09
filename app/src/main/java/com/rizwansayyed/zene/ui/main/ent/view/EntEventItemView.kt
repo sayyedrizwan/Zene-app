@@ -219,8 +219,7 @@ fun EventsMapScreen(events: List<EventsResponsesItems>, cameraPositionState: Cam
                         cameraReady = true
                     }
                 }
-            )
-            {
+            ) {
                 val clusterManager = rememberClusterManager<EventClusterItem>()
 
                 MapEffect(clusterManager) { map ->

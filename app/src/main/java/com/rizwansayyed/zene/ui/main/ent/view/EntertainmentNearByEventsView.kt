@@ -81,7 +81,7 @@ fun EntertainmentNearByEventsView(events: EventsResponses, viewModel: Navigation
 @Composable
 fun EntertainmentNearByEventsItemView(event: EventsResponsesItems) {
     Box(
-        modifier = Modifier
+        Modifier
             .clip(RoundedCornerShape(28.dp))
             .height(400.dp)
             .width(300.dp)

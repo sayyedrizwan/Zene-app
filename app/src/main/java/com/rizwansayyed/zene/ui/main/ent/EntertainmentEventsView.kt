@@ -9,13 +9,12 @@ import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -35,7 +34,6 @@ import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
@@ -52,12 +50,14 @@ import com.google.maps.android.compose.MapsComposeExperimentalApi
 import com.google.maps.android.compose.rememberCameraPositionState
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.EventsResponsesItems
+import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.ui.main.ent.view.EventAllEventsLists
 import com.rizwansayyed.zene.ui.main.ent.view.EventsMapScreen
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ShimmerEffect
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
@@ -116,7 +116,7 @@ fun EntertainmentEventsView(viewModel: EntertainmentViewModel) {
                 BottomSheetScaffold(
                     scaffoldState = scaffoldState,
                     containerColor = Color.Transparent,
-                    sheetPeekHeight = 250.dp,
+                    sheetPeekHeight = 350.dp,
                     sheetContainerColor = MainColor,
                     sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
                     sheetContent = {
@@ -140,7 +140,11 @@ fun EventListOverlay(events: List<EventsResponsesItems>, onClose: () -> Unit) {
                 .background(MainColor),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            items(events) { event -> EventItemRow(event) }
+            items(events) { event ->
+                EventItemRow(event) {
+                    onClose()
+                }
+            }
 
             item {
                 Spacer(Modifier.height(24.dp))
@@ -155,9 +159,15 @@ fun EventItemRow(event: EventsResponsesItems, click: () -> Unit = {}) {
     Row(
         Modifier
             .padding(8.dp)
-            .clickable {
-                click()
-            }
+            .combinedClickable(
+                onLongClick = {
+                    NavigationUtils.triggerInfoSheet(event.toMusicData())
+                },
+                onClick = {
+                    click()
+                    startMedia(event.toMusicData())
+                }
+            )
             .fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
     ) {
         GlideImage(
