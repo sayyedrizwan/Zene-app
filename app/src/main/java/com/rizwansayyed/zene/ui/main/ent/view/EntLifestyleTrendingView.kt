@@ -109,7 +109,7 @@ fun LifestyleLookCard(item: ZeneMusicData) {
             )
 
             Text(
-                removeDate(item.artists.orEmpty()),
+                removeLifestyleDate(item.artists.orEmpty()),
                 Modifier
                     .align(Alignment.BottomStart)
                     .padding(10.dp)
@@ -192,13 +192,12 @@ fun EntLifestyleLatestItemView(data: ZeneMusicData) {
 }
 
 
-private fun removeDate(text: String): String {
+fun removeLifestyleDate(text: String): String {
     return text.replace(
         Regex("\\s+[A-Z][a-z]+\\s+\\d{1,2},\\s+\\d{4}$"), ""
     )
 }
-
-private  fun extractDate(text: String): String {
+fun extractDate(text: String): String {
     val regex = Regex("[A-Z][a-z]+\\s+\\d{1,2},\\s+\\d{4}")
     return regex.find(text)?.value ?: text
 }

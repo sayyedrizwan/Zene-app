@@ -576,6 +576,9 @@
     <string name="dating_history">Dating History</string>
     <string name="photos">Photos</string>
     <string name="articles">Articles</string>
+    <string name="wearing">Wearing</string>
+    <string name="shop">Shop</string>
+    <string name="other_of_their_lifestyles">Other of their Lifestyles</string>
 
     <!--    notification channels-->
     <string name="connect_updates_name">Connect Update Alerts</string>

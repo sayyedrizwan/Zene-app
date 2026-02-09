@@ -240,7 +240,6 @@ class MainActivity : FragmentActivity() {
 
                                 configClarity(this@MainActivity)
                             }
-
                         } else if (showLogin) LoginView(loginViewModel)
                     }
 

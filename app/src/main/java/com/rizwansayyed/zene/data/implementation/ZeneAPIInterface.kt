@@ -11,6 +11,7 @@ import com.rizwansayyed.zene.data.model.CountResponse
 import com.rizwansayyed.zene.data.model.DeleteAccountInfoResponse
 import com.rizwansayyed.zene.data.model.EntertainmentDiscoverResponse
 import com.rizwansayyed.zene.data.model.EventInfoResponse
+import com.rizwansayyed.zene.data.model.LifeStyleEventsInfo
 import com.rizwansayyed.zene.data.model.LoveBuzzFullInfoResponse
 import com.rizwansayyed.zene.data.model.MediaLikedResponse
 import com.rizwansayyed.zene.data.model.MediaPathResponse
@@ -208,6 +209,7 @@ interface ZeneAPIInterface {
     suspend fun entBoxOfficeMovie(): Flow<ZeneMusicDataList>
     suspend fun entUpcomingMovie(): Flow<UpcomingMoviesList>
     suspend fun entLifestyleEvents(): Flow<ZeneMusicDataList>
+    suspend fun entLifestyleEventsInfo(id: String): Flow<LifeStyleEventsInfo>
 
     suspend fun storeTopDeals(): Flow<StoreDealResponseList>
     suspend fun storeStripeLink(url: String): Flow<StoreStripeResponse>

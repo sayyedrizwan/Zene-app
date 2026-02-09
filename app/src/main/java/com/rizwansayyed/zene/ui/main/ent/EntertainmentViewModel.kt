@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.ui.main.ent
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -13,6 +14,7 @@ import com.rizwansayyed.zene.data.cache.CacheHelper
 import com.rizwansayyed.zene.data.implementation.ZeneAPIInterface
 import com.rizwansayyed.zene.data.model.EntertainmentDiscoverResponse
 import com.rizwansayyed.zene.data.model.EventInfoResponse
+import com.rizwansayyed.zene.data.model.LifeStyleEventsInfo
 import com.rizwansayyed.zene.data.model.LoveBuzzFullInfoResponse
 import com.rizwansayyed.zene.data.model.StreamingTrendingList
 import com.rizwansayyed.zene.data.model.UpcomingMoviesList
@@ -70,6 +72,7 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
     var boxOfficeMovie by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
     var upcomingMovies by mutableStateOf<ResponseResult<UpcomingMoviesList>>(ResponseResult.Empty)
     var lifeStylesEvents by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
+    var lifeStylesInfo by mutableStateOf<ResponseResult<LifeStyleEventsInfo>>(ResponseResult.Empty)
     var eventsFullInfo by mutableStateOf<ResponseResult<EventInfoResponse>>(ResponseResult.Empty)
     var loveBuzzFullInfo by mutableStateOf<ResponseResult<LoveBuzzFullInfoResponse>>(ResponseResult.Empty)
 
@@ -234,6 +237,16 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
         }.collectLatest {
             cacheHelper.save(ZENE_ENT_LIFESTYLES_EVENTS_API, it)
             lifeStylesEvents = ResponseResult.Success(it)
+        }
+    }
+
+    fun entLifeStyleInfo(id: String) = viewModelScope.safeLaunch {
+        zeneAPI.entLifestyleEventsInfo(id).onStart {
+            lifeStylesInfo = ResponseResult.Loading
+        }.catch {
+            lifeStylesInfo = ResponseResult.Error(it)
+        }.collectLatest {
+            lifeStylesInfo = ResponseResult.Success(it)
         }
     }
 

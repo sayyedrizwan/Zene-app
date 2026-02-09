@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.data.model
 
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.di.ZeneBaseApplication.Companion.context
+import com.rizwansayyed.zene.ui.main.ent.view.extractDate
 import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -94,6 +95,18 @@ data class StreamingTrendingResponse(
     val name: String?,
     val icon: String?
 )
+
+data class LifeStyleEventsInfo(
+    val similar: ZeneMusicDataList,
+    val name: String?,
+    val title: String?,
+    val id: String?,
+    val image: String?,
+    val products: List<Products>?,
+) {
+    fun shareData() = ZeneMusicData(extractDate(title.orEmpty()), id,  name, "", image, MusicDataTypes.CELEB_LIFESTYLE.name)
+    data class Products(val title: String?, val url: String?, val img: String?)
+}
 
 typealias UpcomingMoviesList = List<UpcomingMoviesResponse>
 data class UpcomingMoviesResponse(
