@@ -85,6 +85,10 @@ fun EntertainmentNearByEventsItemView(event: EventsResponsesItems) {
             .clip(RoundedCornerShape(28.dp))
             .height(400.dp)
             .width(300.dp)
+            .combinedClickable(
+                onLongClick = { NavigationUtils.triggerInfoSheet(event.toMusicData()) },
+                onClick = { startMedia(event.toMusicData()) }
+            )
             .fillMaxWidth()
     ) {
         GlideImage(
