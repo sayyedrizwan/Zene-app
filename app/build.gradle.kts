@@ -116,89 +116,103 @@ android {
 }
 
 dependencies {
+
+    // --- Core & Lifecycle ---
     implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.material.icons.extended)
-    implementation(libs.androidx.compose.foundation)
-
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
-
-    implementation(libs.androidx.core.ktx)
-
-
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.process)
+    implementation(libs.process.phoenix)
 
-    implementation(libs.play.services.location)
 
+// --- Dependency Injection : Hilt ---
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
     implementation(libs.hilt.navigation.compose)
 
-    implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.auth)
-    implementation(libs.firebase.perf)
-    implementation(libs.firebase.crashlytics)
-    implementation(libs.firebase.analytics)
-    implementation(libs.firebase.messaging)
 
-    implementation(libs.app.update)
-    implementation(libs.app.review)
+// --- UI : Jetpack Compose ---
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
 
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.compose.foundation)
+
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.material.icons.extended)
+
+
+// --- Navigation & Web ---
+    implementation(libs.navigation.compose)
+    implementation(libs.browser)
+    implementation(libs.androidx.webkit)
+
+
+// --- Location & Maps ---
+    implementation(libs.play.services.location)
+    implementation(libs.maps.compose)
+    implementation(libs.maps.compose.utils)
+
+
+// --- Authentication / Identity / Login ---
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.services)
     implementation(libs.androidx.play.services)
     implementation(libs.androidx.credentials.googleid)
 
     implementation(libs.facebook.login)
+    implementation(libs.truecaller)
 
 
+// --- Firebase / Analytics / Crash / Push ---
+    implementation(platform(libs.firebase.bom))
+
+    implementation(libs.firebase.auth)
+    implementation(libs.firebase.perf)
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.messaging)
+
+
+// --- Play Core : Update & Review ---
+    implementation(libs.app.update)
+    implementation(libs.app.review)
+
+
+// --- Networking / API / Serialization ---
     implementation(platform(libs.okhttp.bom))
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
-
 
     implementation(libs.retrofit)
     implementation(libs.converter.moshi)
     implementation(libs.moshi.kotlin)
 
-    implementation(libs.androidx.datastore.preferences)
-
-    implementation(libs.glide)
-    implementation(libs.glide.main)
+    implementation(libs.gson)
     implementation(libs.jsoup)
 
-    implementation(libs.gson)
-    implementation(libs.process.phoenix)
 
-    implementation(libs.maps.compose)
-    implementation(libs.maps.compose.utils)
+// --- Database / Local Storage ---
+    implementation(libs.room.runtime)
+    annotationProcessor(libs.room.compiler)
+    implementation(libs.room.ktx)
 
-    implementation(libs.emoji)
-    implementation(libs.emoji.picker)
-    implementation(libs.emoji2.bundled)
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.storage)
+    implementation(libs.opencsv)
 
-    implementation(libs.truecaller)
 
-    implementation(libs.camera.lifecycle)
-    implementation(libs.camera2)
-    implementation(libs.camera.view)
-    implementation(libs.camera.core)
+// --- Images / Graphics ---
+    implementation(libs.glide)
+    implementation(libs.glide.compose)
 
     implementation(libs.image.cropper)
     implementation(libs.exifinterface)
+    implementation(libs.palette.ktx)
 
+
+// --- Media Playback (Media3) ---
     implementation(libs.media3.exoplayer)
     implementation(libs.media3.compose)
     implementation(libs.media3.exoplayer.dash)
@@ -207,40 +221,62 @@ dependencies {
     implementation(libs.media3.transformer)
     implementation(libs.media3.session)
 
-    implementation(libs.room.runtime)
-    annotationProcessor(libs.room.compiler)
-    implementation(libs.room.ktx)
 
-    implementation(libs.storage)
-
-    implementation(libs.androidx.webkit)
-
-    implementation(libs.navigation.compose)
-    implementation(libs.browser)
-
-    implementation(libs.custom.qr.generator)
+// --- Camera ---
+    implementation(libs.camera.lifecycle)
+    implementation(libs.camera2)
+    implementation(libs.camera.view)
+    implementation(libs.camera.core)
 
 
-    implementation(libs.hashids)
-    implementation(libs.palette.ktx)
+// --- Emoji / Rich Input ---
+    implementation(libs.emoji)
+    implementation(libs.emoji.picker)
+    implementation(libs.emoji2.bundled)
 
-    implementation(libs.colorpicker.compose)
+
+// --- Security / Encryption ---
     implementation(libs.security.crypto)
 
-    implementation(libs.glance.appwidget)
 
-    implementation(libs.socket.io.client)
-
+// --- Billing / Monetization / Ads ---
+    implementation(libs.billing)
     implementation(libs.play.services.ads)
 
-    implementation(libs.opencsv)
 
+// --- Widgets / UI Extras ---
+    implementation(libs.glance.appwidget)
     implementation(libs.reorderable)
-
-    implementation(libs.billing)
-
     implementation(libs.konfetti.compose)
+    implementation(libs.colorpicker.compose)
+
+
+// --- Realtime / Sockets ---
+    implementation(libs.socket.io.client)
+
+
+// --- Utilities / Misc ---
+    implementation(libs.custom.qr.generator)
+    implementation(libs.hashids)
     implementation(libs.clarity)
 
+
+// --- Testing : Unit ---
+    testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.core)
+    testImplementation(libs.truth)
+
+
+// --- Testing : Android / Instrumentation ---
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
+
+
+// --- Debug / Tooling ---
+    debugImplementation(libs.androidx.ui.tooling)
+    debugImplementation(libs.androidx.ui.test.manifest)
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.14")
 }
