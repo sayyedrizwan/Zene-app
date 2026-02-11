@@ -104,7 +104,6 @@ object DataStorageManager {
                 val json = moshi.adapter(AndroidSponsorAds::class.java).toJson(value.first())
                 it[SPONSOR_ADS_DB] = json
             }
-            if (isActive) cancel()
         }
 
     var userInfo: Flow<UserInfoResponse?>
@@ -116,7 +115,6 @@ object DataStorageManager {
                 val json = moshi.adapter(UserInfoResponse::class.java).toJson(value.first())
                 it[USER_INFO_DB] = json
             }
-            if (isActive) cancel()
         }
 
     var musicPlayerDB: Flow<MusicPlayerData?>
@@ -128,7 +126,6 @@ object DataStorageManager {
                 val json = moshi.adapter(MusicPlayerData::class.java).toJson(value.first())
                 it[MUSIC_PLAYER_DB] = json
             }
-            if (isActive) cancel()
         }
 
     var searchHistoryDB: Flow<Array<String>?>
@@ -140,7 +137,6 @@ object DataStorageManager {
                 val json = moshi.adapter(Array<String>::class.java).toJson(value.first())
                 it[SEARCH_HISTORY_DB] = json
             }
-            if (isActive) cancel()
         }
 
     var ipDB: Flow<IPResponse?>
@@ -152,7 +148,6 @@ object DataStorageManager {
                 val json = moshi.adapter(IPResponse::class.java).toJson(value.first())
                 it[IP_DB] = json
             }
-            if (isActive) cancel()
         }
 
 
@@ -165,7 +160,6 @@ object DataStorageManager {
             context.dataStore.edit {
                 it[VIDEO_QUALITY_DB] = value.first().name
             }
-            if (isActive) cancel()
         }
 
     var sortMyPlaylistTypeDB: Flow<SortMyPlaylistType>
@@ -177,7 +171,6 @@ object DataStorageManager {
             context.dataStore.edit {
                 it[SORT_MY_PLAYLIST_TYPE_DB] = value.first().name
             }
-            if (isActive) cancel()
         }
 
     var videoSpeedDB: Flow<VideoSpeedEnum>
@@ -189,7 +182,6 @@ object DataStorageManager {
             context.dataStore.edit {
                 it[VIDEO_SPEED_DB] = value.first().name
             }
-            if (isActive) cancel()
         }
 
     var songSpeedDB: Flow<VideoSpeedEnum>
@@ -201,7 +193,6 @@ object DataStorageManager {
             context.dataStore.edit {
                 it[SONG_SPEED_DB] = value.first().name
             }
-            if (isActive) cancel()
         }
 
     var isPostedReviewDB: Flow<Boolean>
@@ -212,7 +203,6 @@ object DataStorageManager {
             context.dataStore.edit {
                 it[IS_POSTED_REVIEW_DB] = value.first()
             }
-            if (isActive) cancel()
         }
 
 
@@ -224,7 +214,6 @@ object DataStorageManager {
             context.dataStore.edit {
                 value.first().let { t -> it[IS_POSTED_REVIEW_TIMESTAMP_DB] = t }
             }
-            if (isActive) cancel()
         }
 
     var videoCCDB: Flow<Boolean>
@@ -235,7 +224,6 @@ object DataStorageManager {
             context.dataStore.edit {
                 it[VIDEO_PLAYER_CC_DB] = value.first()
             }
-            if (isActive) cancel()
         }
 
     var isShuffleDB: Flow<Boolean>
@@ -246,7 +234,6 @@ object DataStorageManager {
             context.dataStore.edit {
                 it[IS_SHUFFLE_DB] = value.first()
             }
-            if (isActive) cancel()
         }
 
     var isLoopDB: Flow<Boolean>
@@ -257,7 +244,6 @@ object DataStorageManager {
             context.dataStore.edit {
                 it[IS_LOOP_DB] = value.first()
             }
-            if (isActive) cancel()
         }
 
     var isPremiumDB: Flow<Boolean>
@@ -268,7 +254,6 @@ object DataStorageManager {
             context.dataStore.edit {
                 it[IS_PREMIUM_DB] = value.first()
             }
-            if (isActive) cancel()
         }
 
     var autoPausePlayerSettings: Flow<Boolean>
@@ -279,7 +264,6 @@ object DataStorageManager {
             context.dataStore.edit {
                 it[AUTO_PAUSE_PLAYER_SETTINGS_DB] = value.first()
             }
-            if (isActive) cancel()
         }
 
 
@@ -291,7 +275,6 @@ object DataStorageManager {
             context.dataStore.edit {
                 it[SMOOTH_SONG_TRANSITION_SETTINGS_DB] = value.first()
             }
-            if (isActive) cancel()
         }
 
     var pauseHistorySettings: Flow<Boolean>
@@ -302,7 +285,6 @@ object DataStorageManager {
             context.dataStore.edit {
                 it[PAUSE_SONG_HISTORY_DB] = value.first()
             }
-            if (isActive) cancel()
         }
 
     var lastNotificationGeneratedTSDB: Flow<Long>
@@ -313,7 +295,6 @@ object DataStorageManager {
             context.dataStore.edit {
                 it[LAST_NOTIFICATION_GENERATED_TS_DB] = value.first()
             }
-            if (isActive) cancel()
         }
 
     var lastNotificationSuggestedType: Flow<String>
@@ -324,7 +305,6 @@ object DataStorageManager {
             context.dataStore.edit {
                 it[LAST_NOTIFICATION_SUGGESTED_TYPE_DB] = value.first()
             }
-            if (isActive) cancel()
         }
 
     var lastLoadTimeDB: Flow<Long?>
@@ -335,7 +315,6 @@ object DataStorageManager {
             context.dataStore.edit {
                 value.first()?.let { t -> it[LAST_LOAD_TIME_DB] = t }
             }
-            if (isActive) cancel()
         }
 
     var signInWithEmailAddress: Flow<String?>
@@ -346,7 +325,6 @@ object DataStorageManager {
             context.dataStore.edit {
                 value.first()?.let { t -> it[SIGN_IN_WITH_EMAIL_ADDRESS_DB] = t }
             }
-            if (isActive) cancel()
         }
 
     var pushNewsLetterDB: Flow<Boolean>
@@ -357,7 +335,6 @@ object DataStorageManager {
             context.dataStore.edit {
                 it[PUSH_NEWS_LETTER_DB] = value.first()
             }
-            if (isActive) cancel()
         }
 
     suspend fun lockChatSettings(id: String, v: Boolean? = null): Flow<Boolean?> {
