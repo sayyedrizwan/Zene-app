@@ -63,7 +63,7 @@ import com.bumptech.glide.integration.compose.placeholder
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.LoveBuzzFullInfoResponse
-import com.rizwansayyed.zene.ui.main.ent.EntertainmentViewModel
+import com.rizwansayyed.zene.viewmodel.EntertainmentViewModel
 import com.rizwansayyed.zene.ui.main.view.share.ShareDataView
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.theme.FacebookColor

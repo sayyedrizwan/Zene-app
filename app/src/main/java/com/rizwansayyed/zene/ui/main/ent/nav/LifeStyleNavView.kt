@@ -45,7 +45,7 @@ import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.LifeStyleEventsInfo
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.service.notification.NavigationUtils
-import com.rizwansayyed.zene.ui.main.ent.EntertainmentViewModel
+import com.rizwansayyed.zene.viewmodel.EntertainmentViewModel
 import com.rizwansayyed.zene.ui.main.ent.view.extractDate
 import com.rizwansayyed.zene.ui.main.ent.view.removeLifestyleDate
 import com.rizwansayyed.zene.ui.main.view.share.ShareDataView

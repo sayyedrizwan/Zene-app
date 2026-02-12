@@ -48,6 +48,7 @@ import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.ShimmerEffect
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.viewmodel.EntertainmentViewModel
 
 @Composable
 fun EntertainmentDatingView(viewModel: EntertainmentViewModel) {

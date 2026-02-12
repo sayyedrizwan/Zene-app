@@ -52,7 +52,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.EventInfoResponse
 import com.rizwansayyed.zene.service.notification.NavigationUtils
-import com.rizwansayyed.zene.ui.main.ent.EntertainmentViewModel
+import com.rizwansayyed.zene.viewmodel.EntertainmentViewModel
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.theme.LoveBuzzBg
 import com.rizwansayyed.zene.ui.theme.MainColor

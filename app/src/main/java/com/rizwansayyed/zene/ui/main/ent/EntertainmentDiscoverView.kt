@@ -32,6 +32,7 @@ import com.rizwansayyed.zene.ui.main.ent.view.EntertainmentNearByEventsView
 import com.rizwansayyed.zene.ui.main.home.EntSectionSelector
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.view.ShimmerEffect
+import com.rizwansayyed.zene.viewmodel.EntertainmentViewModel
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

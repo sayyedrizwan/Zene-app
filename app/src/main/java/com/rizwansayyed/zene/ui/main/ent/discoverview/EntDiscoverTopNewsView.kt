@@ -32,7 +32,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.service.notification.NavigationUtils.triggerInfoSheet
-import com.rizwansayyed.zene.ui.main.ent.EntertainmentViewModel
+import com.rizwansayyed.zene.viewmodel.EntertainmentViewModel
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.theme.MainColor
 import com.rizwansayyed.zene.ui.view.ImageIcon

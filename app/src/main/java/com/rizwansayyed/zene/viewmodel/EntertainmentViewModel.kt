@@ -1,8 +1,7 @@
-package com.rizwansayyed.zene.ui.main.ent
+package com.rizwansayyed.zene.viewmodel
 
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -21,22 +20,13 @@ import com.rizwansayyed.zene.data.model.UpcomingMoviesList
 import com.rizwansayyed.zene.data.model.WhoDatedWhoData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.ui.main.ent.utils.LiveReadersCounter
-import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_ALL_TRAILERS_API
-import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_BUZZ_NEWS_API
-import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_DATING_API
-import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_DISCOVER_TRENDING_NEWS_API
-import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_LIFESTYLES_EVENTS_API
-import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_LIFESTYLE_API
-import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_STREAMING_TRENDING_API
-import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_TOP_BOX_OFFICE_MOVIES_API
-import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_UPCOMING_MOVIES_API
+import com.rizwansayyed.zene.utils.URLSUtils
 import com.rizwansayyed.zene.utils.safeLaunch
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.onStart
 import javax.inject.Inject
-
 
 @HiltViewModel
 class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
@@ -79,7 +69,7 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
 
     fun entDiscoverNews(expireToken: () -> Unit) = viewModelScope.safeLaunch {
         val data: EntertainmentDiscoverResponse? =
-            cacheHelper.get(ZENE_ENT_DISCOVER_TRENDING_NEWS_API)
+            cacheHelper.get(URLSUtils.ZENE_ENT_DISCOVER_TRENDING_NEWS_API)
         if ((data?.news?.size ?: 0) > 0) {
             discover = ResponseResult.Success(data!!)
             return@safeLaunch
@@ -95,14 +85,14 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
                 return@collectLatest
             }
 
-            cacheHelper.save(ZENE_ENT_DISCOVER_TRENDING_NEWS_API, it)
+            cacheHelper.save(URLSUtils.ZENE_ENT_DISCOVER_TRENDING_NEWS_API, it)
             discover = ResponseResult.Success(it)
         }
     }
 
 
     fun entBuzzNews() = viewModelScope.safeLaunch {
-        val data: ZeneMusicDataList? = cacheHelper.get(ZENE_ENT_BUZZ_NEWS_API)
+        val data: ZeneMusicDataList? = cacheHelper.get(URLSUtils.ZENE_ENT_BUZZ_NEWS_API)
         if ((data?.size ?: 0) > 0) {
             buzzNews = ResponseResult.Success(data!!)
             return@safeLaunch
@@ -113,13 +103,13 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
         }.catch {
             buzzNews = ResponseResult.Error(it)
         }.collectLatest {
-            cacheHelper.save(ZENE_ENT_BUZZ_NEWS_API, it)
+            cacheHelper.save(URLSUtils.ZENE_ENT_BUZZ_NEWS_API, it)
             buzzNews = ResponseResult.Success(it)
         }
     }
 
     fun entDiscoverLifeStyle() = viewModelScope.safeLaunch {
-        val data: ZeneMusicDataList? = cacheHelper.get(ZENE_ENT_LIFESTYLE_API)
+        val data: ZeneMusicDataList? = cacheHelper.get(URLSUtils.ZENE_ENT_LIFESTYLE_API)
         if ((data?.size ?: 0) > 0) {
             discoverLifeStyle = ResponseResult.Success(data!!)
             return@safeLaunch
@@ -130,14 +120,14 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
         }.catch {
             discoverLifeStyle = ResponseResult.Error(it)
         }.collectLatest {
-            cacheHelper.save(ZENE_ENT_LIFESTYLE_API, it)
+            cacheHelper.save(URLSUtils.ZENE_ENT_LIFESTYLE_API, it)
             discoverLifeStyle = ResponseResult.Success(it)
         }
     }
 
 
     fun entDating() = viewModelScope.safeLaunch {
-        val data: List<WhoDatedWhoData>? = cacheHelper.get(ZENE_ENT_DATING_API)
+        val data: List<WhoDatedWhoData>? = cacheHelper.get(URLSUtils.ZENE_ENT_DATING_API)
         if ((data?.size ?: 0) > 0) {
             dating = ResponseResult.Success(data!!)
             return@safeLaunch
@@ -148,13 +138,13 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
         }.catch {
             dating = ResponseResult.Error(it)
         }.collectLatest {
-            cacheHelper.save(ZENE_ENT_DATING_API, it)
+            cacheHelper.save(URLSUtils.ZENE_ENT_DATING_API, it)
             dating = ResponseResult.Success(it ?: emptyList())
         }
     }
 
     fun entTrailers() = viewModelScope.safeLaunch {
-        val data: ZeneMusicDataList? = cacheHelper.get(ZENE_ENT_ALL_TRAILERS_API)
+        val data: ZeneMusicDataList? = cacheHelper.get(URLSUtils.ZENE_ENT_ALL_TRAILERS_API)
         if ((data?.size ?: 0) > 0) {
             trailers = ResponseResult.Success(data!!)
             return@safeLaunch
@@ -165,14 +155,14 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
         }.catch {
             trailers = ResponseResult.Error(it)
         }.collectLatest {
-            cacheHelper.save(ZENE_ENT_ALL_TRAILERS_API, it)
+            cacheHelper.save(URLSUtils.ZENE_ENT_ALL_TRAILERS_API, it)
             trailers = ResponseResult.Success(it)
         }
     }
 
 
     fun entStreamingTrending() = viewModelScope.safeLaunch {
-        val data: StreamingTrendingList? = cacheHelper.get(ZENE_ENT_STREAMING_TRENDING_API)
+        val data: StreamingTrendingList? = cacheHelper.get(URLSUtils.ZENE_ENT_STREAMING_TRENDING_API)
         if ((data?.size ?: 0) > 0) {
             streaming = ResponseResult.Success(data!!)
             return@safeLaunch
@@ -183,14 +173,14 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
         }.catch {
             streaming = ResponseResult.Error(it)
         }.collectLatest {
-            cacheHelper.save(ZENE_ENT_STREAMING_TRENDING_API, it)
+            cacheHelper.save(URLSUtils.ZENE_ENT_STREAMING_TRENDING_API, it)
             streaming = ResponseResult.Success(it)
         }
     }
 
 
     fun entBoxOfficeMovie() = viewModelScope.safeLaunch {
-        val data: ZeneMusicDataList? = cacheHelper.get(ZENE_ENT_TOP_BOX_OFFICE_MOVIES_API)
+        val data: ZeneMusicDataList? = cacheHelper.get(URLSUtils.ZENE_ENT_TOP_BOX_OFFICE_MOVIES_API)
         if ((data?.size ?: 0) > 0) {
             boxOfficeMovie = ResponseResult.Success(data!!)
             return@safeLaunch
@@ -201,13 +191,13 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
         }.catch {
             boxOfficeMovie = ResponseResult.Error(it)
         }.collectLatest {
-            cacheHelper.save(ZENE_ENT_TOP_BOX_OFFICE_MOVIES_API, it)
+            cacheHelper.save(URLSUtils.ZENE_ENT_TOP_BOX_OFFICE_MOVIES_API, it)
             boxOfficeMovie = ResponseResult.Success(it)
         }
     }
 
     fun entUpcomingMovie() = viewModelScope.safeLaunch {
-        val data: UpcomingMoviesList? = cacheHelper.get(ZENE_ENT_UPCOMING_MOVIES_API)
+        val data: UpcomingMoviesList? = cacheHelper.get(URLSUtils.ZENE_ENT_UPCOMING_MOVIES_API)
         if ((data?.size ?: 0) > 0) {
             upcomingMovies = ResponseResult.Success(data!!)
             return@safeLaunch
@@ -218,13 +208,13 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
         }.catch {
             upcomingMovies = ResponseResult.Error(it)
         }.collectLatest {
-            cacheHelper.save(ZENE_ENT_UPCOMING_MOVIES_API, it)
+            cacheHelper.save(URLSUtils.ZENE_ENT_UPCOMING_MOVIES_API, it)
             upcomingMovies = ResponseResult.Success(it)
         }
     }
 
     fun entLifeStyle() = viewModelScope.safeLaunch {
-        val data: ZeneMusicDataList? = cacheHelper.get(ZENE_ENT_LIFESTYLES_EVENTS_API)
+        val data: ZeneMusicDataList? = cacheHelper.get(URLSUtils.ZENE_ENT_LIFESTYLES_EVENTS_API)
         if ((data?.size ?: 0) > 0) {
             lifeStylesEvents = ResponseResult.Success(data!!)
             return@safeLaunch
@@ -235,7 +225,7 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
         }.catch {
             lifeStylesEvents = ResponseResult.Error(it)
         }.collectLatest {
-            cacheHelper.save(ZENE_ENT_LIFESTYLES_EVENTS_API, it)
+            cacheHelper.save(URLSUtils.ZENE_ENT_LIFESTYLES_EVENTS_API, it)
             lifeStylesEvents = ResponseResult.Success(it)
         }
     }

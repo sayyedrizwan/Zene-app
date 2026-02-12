@@ -22,6 +22,7 @@ import com.rizwansayyed.zene.ui.main.ent.view.EntLifestyleLatestView
 import com.rizwansayyed.zene.ui.main.ent.view.EntLifestyleTrendingLoadingView
 import com.rizwansayyed.zene.ui.main.ent.view.EntLifestyleTrendingView
 import com.rizwansayyed.zene.ui.view.ShimmerEffect
+import com.rizwansayyed.zene.viewmodel.EntertainmentViewModel
 
 @Composable
 fun EntLifestyleEventsView(viewModel: EntertainmentViewModel) {

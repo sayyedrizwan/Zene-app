@@ -20,6 +20,7 @@ import com.rizwansayyed.zene.ui.main.home.EntSectionSelector.LIFESTYLE
 import com.rizwansayyed.zene.ui.main.home.EntSectionSelector.MOVIES
 import com.rizwansayyed.zene.utils.ads.InterstitialAdsUtils
 import com.rizwansayyed.zene.utils.safeLaunch
+import com.rizwansayyed.zene.viewmodel.EntertainmentViewModel
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -37,6 +37,7 @@ import com.rizwansayyed.zene.ui.main.ent.view.EntUpcomingMoviesItemView
 import com.rizwansayyed.zene.ui.main.ent.view.EntUpcomingMoviesView
 import com.rizwansayyed.zene.ui.view.ShimmerEffect
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.viewmodel.EntertainmentViewModel
 
 @Composable
 fun EntertainmentMoviesView(viewModel: EntertainmentViewModel) {
