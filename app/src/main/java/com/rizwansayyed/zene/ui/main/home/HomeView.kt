@@ -11,9 +11,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.jakewharton.processphoenix.ProcessPhoenix
 import com.rizwansayyed.zene.data.model.UserInfoResponse
-import com.rizwansayyed.zene.ui.main.feed.FeedView
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.AI_MUSIC
-import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.FEED
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.LUXE
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.MUSIC
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector.MY_LIBRARY
@@ -57,7 +55,6 @@ fun HomeView(viewModel: NavigationViewModel, userInfo: UserInfoResponse?) {
         ) {
             when (viewModel.homeSection) {
                 MUSIC -> HomeMusicView(homeViewModel)
-                FEED -> FeedView(homeViewModel)
                 RADIO -> HomeRadioView(homeViewModel)
                 PODCAST -> HomePodcastView(homeViewModel)
                 LUXE -> LuxView()

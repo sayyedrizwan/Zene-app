@@ -154,18 +154,3 @@ fun ReadingNow(viewModel: EntertainmentViewModel, data: ZeneMusicData) {
         }
     }
 }
-
-@OptIn(ExperimentalGlideComposeApi::class)
-@Composable
-fun NetworkImage(
-    url: String, modifier: Modifier = Modifier, contentScale: ContentScale = ContentScale.Crop
-) {
-    GlideImage(
-        model = url,
-        contentDescription = null,
-        modifier = modifier,
-        contentScale = contentScale,
-        loading = placeholder(R.drawable.circle_image),
-        failure = placeholder(R.drawable.circle_image)
-    )
-}

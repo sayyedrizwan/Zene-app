@@ -1604,32 +1604,6 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.sponsorAds())
     }
 
-    override suspend fun feedFollowedArtists() = flow {
-        val email = userInfo.firstOrNull()?.email ?: ""
-        val token = userInfo.firstOrNull()?.authToken ?: ""
-        val country = ipDB.firstOrNull()?.countryCode
-
-        val json = JSONObject().apply {
-            put("email", email)
-            put("country", country)
-        }
-
-        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
-        emit(zeneAPI.feedFollowedArtists(token, body))
-    }
-
-    override suspend fun feedUpdatesArtists() = flow {
-        val email = userInfo.firstOrNull()?.email ?: ""
-        val token = userInfo.firstOrNull()?.authToken ?: ""
-
-        val json = JSONObject().apply {
-            put("email", email)
-        }
-
-        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
-        emit(zeneAPI.feedUpdatesArtists(token, body))
-    }
-
     override suspend fun deleteAccount() = flow {
         val email = userInfo.firstOrNull()?.email ?: ""
         val token = userInfo.firstOrNull()?.authToken ?: ""

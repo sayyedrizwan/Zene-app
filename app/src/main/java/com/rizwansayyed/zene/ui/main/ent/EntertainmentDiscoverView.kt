@@ -102,7 +102,7 @@ fun EntertainmentDiscoverView(
                     }
                 }
 
-                item(key = "stories") { EntCelebStoriesView() }
+                item(key = "stories") { EntCelebStoriesView(entViewModel) }
 
                 if (v.data.trends?.isNotEmpty() == true) item(key = "trending") {
                     EntTrendingTopicsView(v.data)

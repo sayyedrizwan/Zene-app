@@ -88,7 +88,6 @@ class HomeViewModel @Inject constructor(
     var movieShowInfo by mutableStateOf<ResponseResult<MoviesTvShowResponse>>(ResponseResult.Empty)
     var seasonsMovieShowInfo by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
 
-    var feedArtists by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
     var feedUpdates by mutableStateOf<ResponseResult<ZeneMusicDataList>>(ResponseResult.Empty)
 
     var topStoreDeals by mutableStateOf<ResponseResult<StoreDealResponseList>>(ResponseResult.Empty)
@@ -511,27 +510,6 @@ class HomeViewModel @Inject constructor(
     fun sponsorAds() = viewModelScope.safeLaunch {
         zeneAPI.sponsorAds().catch {}.collectLatest {
             sponsorAdsDB = flowOf(it.android)
-        }
-    }
-
-
-    fun artistsFollowedList() = viewModelScope.safeLaunch {
-        zeneAPI.feedFollowedArtists().onStart {
-            feedArtists = ResponseResult.Loading
-        }.catch {
-            feedArtists = ResponseResult.Error(it)
-        }.collectLatest {
-            feedArtists = ResponseResult.Success(it)
-        }
-    }
-
-    fun feedUpdatesArtists() = viewModelScope.safeLaunch {
-        zeneAPI.feedUpdatesArtists().onStart {
-            feedUpdates = ResponseResult.Loading
-        }.catch {
-            feedUpdates = ResponseResult.Error(it)
-        }.collectLatest {
-            feedUpdates = ResponseResult.Success(it)
         }
     }
 

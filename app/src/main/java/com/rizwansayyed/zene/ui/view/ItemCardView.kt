@@ -116,37 +116,6 @@ fun MoviesImageCardConnect(data: ZeneMusicData?, click: () -> Unit) {
     }
 }
 
-@OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
-@Composable
-fun NewsItemCard(data: ZeneMusicData?) {
-    Row(
-        Modifier
-            .combinedClickable(
-                onLongClick = { NavigationUtils.triggerInfoSheet(data) },
-                onClick = { startMedia(data) })
-            .padding(vertical = 20.dp)
-            .fillMaxWidth(),
-        Arrangement.Center,
-        Alignment.CenterVertically
-    ) {
-        GlideImage(
-            data?.thumbnail,
-            data?.name,
-            Modifier
-                .padding(horizontal = 10.dp)
-                .size(100.dp)
-                .clip(RoundedCornerShape(13.dp))
-                .background(Color.White),
-            contentScale = ContentScale.Crop
-        )
-
-        Column(Modifier.fillMaxWidth()) {
-            TextViewNormal(data?.name ?: "", 15, line = 3)
-            TextViewNormal(data?.extra ?: "", 12)
-        }
-    }
-}
-
 
 @OptIn(ExperimentalGlideComposeApi::class, ExperimentalFoundationApi::class)
 @Composable

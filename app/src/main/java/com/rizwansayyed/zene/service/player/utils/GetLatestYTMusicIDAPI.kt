@@ -13,6 +13,10 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONObject
+import java.text.Normalizer
+import kotlin.collections.maxByOrNull
+import kotlin.math.max
+import kotlin.math.min
 import kotlin.time.Duration.Companion.seconds
 
 class GetLatestYTMusicIDAPI(private val click: (String) -> Unit) {
@@ -39,21 +43,24 @@ class GetLatestYTMusicIDAPI(private val click: (String) -> Unit) {
         val playerInfo = musicPlayerDB.firstOrNull()
         runOnce(playerInfo?.data?.id ?: "") {
             val result = getSongDetailsList()
-            val videoID = findMostSuitableVideoId(
-                result, playerInfo?.data?.name ?: "", playerInfo?.data?.artists ?: "",
-            )
-            click(videoID ?: "")
+
+            val candidates = extractCandidates(result)
+            if (candidates.isEmpty()) return@runOnce
+
+            val get = findBestVideoId(playerInfo?.data?.name.orEmpty(), candidates)
+            if (get != null) click(get.videoId)
         }
     }
 
     private suspend fun searchName(): String {
         val playerInfo = musicPlayerDB.firstOrNull()
         val a = playerInfo?.data?.artists?.substringBefore(", ")?.substringBefore(" and ")
-        return "${playerInfo?.data?.name} - $a"
+        return "${playerInfo?.data?.name} - $a".replace("\"", "")
     }
 
     private suspend fun getSongDetailsList() = withContext(Dispatchers.IO) {
         val ip = ipDB.firstOrNull()
+
         val client = OkHttpClient()
         val jsonBody = JSONObject().apply {
             put("context", JSONObject().apply {
@@ -61,7 +68,7 @@ class GetLatestYTMusicIDAPI(private val click: (String) -> Unit) {
                     put("hl", "en-GB")
                     put("gl", ip?.countryCode?.uppercase())
                     put("clientName", "WEB_REMIX")
-                    put("clientVersion", "1.20250804.03.00")
+                    put("clientVersion", "1.20260209.03.00")
                 })
             })
             put("query", searchName())
@@ -84,160 +91,162 @@ class GetLatestYTMusicIDAPI(private val click: (String) -> Unit) {
 
     }
 
-    data class VideoInfo(
-        val videoId: String, val title: String, val artists: String, val viewCount: Long
-    )
+    data class MatchResult(val videoId: String, val title: String, val score: Double)
 
-    fun findMostSuitableVideoId(jsonString: String, songName: String, artistName: String): String? {
-        try {
-            val jsonObject = JSONObject(jsonString)
+    fun normalizeText(s: String): String {
+        var t = s.lowercase().trim()
+        t = t.replace("“", "\"").replace("”", "\"").replace("’", "'").replace("‘", "'")
+        t = Normalizer.normalize(t, Normalizer.Form.NFD)
+            .replace(Regex("\\p{InCombiningDiacriticalMarks}+"), "")
+        t = t.replace(Regex("[^a-z0-9\\s\"']"), " ")
+        t = t.replace(Regex("\\s+"), " ").trim()
+        return t
+    }
 
-            val tabs = jsonObject
-                .getJSONObject("contents")
-                .getJSONObject("tabbedSearchResultsRenderer")
-                .getJSONArray("tabs")
+    fun stripParentheses(s: String): String {
+        return s.replace(Regex("\\(.*?\\)"), " ").replace(Regex("\\s+"), " ").trim()
+    }
 
-            val videos = mutableListOf<VideoInfo>()
+    fun levenshtein(a: String, b: String): Int {
+        if (a == b) return 0
+        if (a.isEmpty()) return b.length
+        if (b.isEmpty()) return a.length
+        val la = a.length
+        val lb = b.length
+        val dp = Array(la + 1) { IntArray(lb + 1) }
+        for (i in 0..la) dp[i][0] = i
+        for (j in 0..lb) dp[0][j] = j
+        for (i in 1..la) {
+            for (j in 1..lb) {
+                val cost = if (a[i - 1] == b[j - 1]) 0 else 1
+                dp[i][j] = min(
+                    min(dp[i - 1][j] + 1, dp[i][j - 1] + 1),
+                    dp[i - 1][j - 1] + cost
+                )
+            }
+        }
+        return dp[la][lb]
+    }
+    fun normalizedLevenshteinSimilarity(a: String, b: String): Double {
+        val maxLen = max(a.length, b.length).coerceAtLeast(1)
+        val d = levenshtein(a, b)
+        return 1.0 - d.toDouble() / maxLen.toDouble()
+    }
 
-            for (i in 0 until tabs.length()) {
-                val tab = tabs.getJSONObject(i).optJSONObject("tabRenderer") ?: continue
-                val sectionList =
-                    tab.optJSONObject("content")?.optJSONObject("sectionListRenderer") ?: continue
-                val contents = sectionList.optJSONArray("contents") ?: continue
+    fun tokenize(s: String): Set<String> =
+        s.split(Regex("\\s+")).filter { it.isNotBlank() && it.length > 0 }.toSet()
 
-                for (j in 0 until contents.length()) {
-                    val content = contents.getJSONObject(j)
+    fun jaccard(a: String, b: String): Double {
+        val ta = tokenize(a)
+        val tb = tokenize(b)
+        if (ta.isEmpty() && tb.isEmpty()) return 1.0
+        val inter = ta.intersect(tb).size.toDouble()
+        val union = ta.union(tb).size.toDouble()
+        return if (union == 0.0) 0.0 else inter / union
+    }
 
-                    if (content.has("musicCardShelfRenderer")) {
-                        val shelf = content.getJSONObject("musicCardShelfRenderer")
+    fun trigrams(s: String): Set<String> {
+        val t = s.replace(" ", "_")
+        if (t.length < 3) return setOf(t)
+        val out = mutableSetOf<String>()
+        for (i in 0..t.length - 3) out.add(t.substring(i, i + 3))
+        return out
+    }
+    fun trigramSimilarity(a: String, b: String): Double {
+        val A = trigrams(a)
+        val B = trigrams(b)
+        if (A.isEmpty() && B.isEmpty()) return 1.0
+        val inter = A.intersect(B).size.toDouble()
+        val denom = (A.size + B.size).toDouble()
+        return if (denom == 0.0) 0.0 else (2.0 * inter) / denom
+    }
 
-                        val runs = shelf.optJSONObject("title")?.optJSONArray("runs") ?: continue
-                        val firstRun = runs.optJSONObject(0) ?: continue
-                        val title = firstRun.optString("text", "")
+    fun scoreCandidate(target: String, candidate: String): Double {
+        val tNorm = normalizeText(target)
+        val cNorm = normalizeText(candidate)
+        val tStrip = stripParentheses(tNorm)
+        val cStrip = stripParentheses(cNorm)
 
-                        val subtitleRuns =
-                            shelf.optJSONObject("subtitle")?.optJSONArray("runs") ?: continue
-                        var artists = ""
-                        var views = ""
+        val levens = max(
+            normalizedLevenshteinSimilarity(tNorm, cNorm),
+            normalizedLevenshteinSimilarity(tStrip, cStrip)
+        )
+        val jac = max(jaccard(tNorm, cNorm), jaccard(tStrip, cStrip))
+        val tri = max(trigramSimilarity(tNorm, cNorm), trigramSimilarity(tStrip, cStrip))
 
-                        for (k in 0 until subtitleRuns.length()) {
-                            val text = subtitleRuns.getJSONObject(k).optString("text", "")
-                            if (text.contains("views")) {
-                                views = text
-                            } else if (text != " • " && text != "Video" && !text.matches(Regex("\\d+:\\d+"))) {
-                                artists += text
-                            }
-                        }
+        val wLev = 0.50
+        val wJac = 0.30
+        val wTri = 0.20
 
-                        val navEndpoint = firstRun.optJSONObject("navigationEndpoint")
+        return wLev * levens + wJac * jac + wTri * tri
+    }
+
+    fun findBestVideoId(targetTitle: String, candidates: List<Pair<String, String>>, minScore: Double = 0.58): MatchResult? {
+        if (candidates.isEmpty()) return null
+        val scored = candidates.map { (title, vid) ->
+            val s = scoreCandidate(targetTitle, title)
+            MatchResult(vid, title, s)
+        }
+        val best = scored.maxByOrNull { it.score }!!
+        return if (best.score >= minScore) best else best
+    }
+    fun extractCandidates(json: String): List<Pair<String, String>> {
+        val result = mutableListOf<Pair<String, String>>()
+        val root = JSONObject(json)
+
+        fun extractTitleFromRenderer(renderer: JSONObject): String? {
+            return try {
+                val flexColumns = renderer
+                    .getJSONArray("flexColumns")
+
+                val firstColumn = flexColumns
+                    .getJSONObject(0)
+                    .getJSONObject("musicResponsiveListItemFlexColumnRenderer")
+
+                val runs = firstColumn
+                    .getJSONObject("text")
+                    .getJSONArray("runs")
+
+                runs.getJSONObject(0).getString("text")
+            } catch (_: Exception) {
+                null
+            }
+        }
+
+        fun walk(obj: Any?) {
+            when (obj) {
+                is JSONObject -> {
+                    if (obj.has("musicResponsiveListItemRenderer")) {
+                        val renderer =
+                            obj.getJSONObject("musicResponsiveListItemRenderer")
+
+                        val title = extractTitleFromRenderer(renderer)
                         val videoId =
-                            navEndpoint?.optJSONObject("watchEndpoint")?.optString("videoId")
+                            renderer.optJSONObject("playlistItemData")
+                                ?.optString("videoId")
+                                ?: renderer
+                                    .optJSONObject("navigationEndpoint")
+                                    ?.optJSONObject("watchEndpoint")
+                                    ?.optString("videoId")
 
-                        if (videoId != null) {
-                            val viewCount = parseViewCount(views)
-                            videos.add(VideoInfo(videoId, title, artists, viewCount))
+                        if (!title.isNullOrBlank() && !videoId.isNullOrBlank()) {
+                            result.add(title to videoId)
                         }
                     }
 
-                    if (content.has("musicShelfRenderer")) {
-                        val items =
-                            content.getJSONObject("musicShelfRenderer").optJSONArray("contents")
-                                ?: continue
-                        for (k in 0 until items.length()) {
-                            val item = items.getJSONObject(k)
-                                .optJSONObject("musicResponsiveListItemRenderer") ?: continue
+                    obj.keys().forEach { key ->
+                        walk(obj.get(key))
+                    }
+                }
 
-                            val playlistData = item.optJSONObject("playlistItemData")
-                            val videoId = playlistData?.optString("videoId") ?: continue
-
-                            val flexColumns = item.optJSONArray("flexColumns") ?: continue
-
-                            val title = flexColumns.optJSONObject(0)
-                                ?.optJSONObject("musicResponsiveListItemFlexColumnRenderer")
-                                ?.optJSONObject("text")
-                                ?.optJSONArray("runs")
-                                ?.optJSONObject(0)
-                                ?.optString("text", "") ?: ""
-
-                            val subtitleRuns = flexColumns.optJSONObject(1)
-                                ?.optJSONObject("musicResponsiveListItemFlexColumnRenderer")
-                                ?.optJSONObject("text")
-                                ?.optJSONArray("runs") ?: continue
-
-                            var artists = ""
-                            var views = ""
-
-                            for (r in 0 until subtitleRuns.length()) {
-                                val text = subtitleRuns.getJSONObject(r).optString("text", "")
-                                if (text.contains("views")) {
-                                    views = text
-                                } else if (text != " • " && text != "Video" && !text.matches(Regex("\\d+:\\d+"))) {
-                                    artists += text
-                                }
-                            }
-
-                            if (views.isEmpty()) continue
-
-                            val viewCount = parseViewCount(views)
-                            videos.add(VideoInfo(videoId, title, artists, viewCount))
-                        }
+                is JSONArray -> {
+                    for (i in 0 until obj.length()) {
+                        walk(obj.get(i))
                     }
                 }
             }
-            val matchingVideos = filterVideos(videos, songName, artistName)
-            val videoID = matchingVideos.maxByOrNull { it.viewCount }?.videoId
-            return videoID
-        } catch (_: Exception) {
-            return null
         }
-    }
-
-    private fun filterVideos(videos: List<VideoInfo>, songName: String, artistStr: String): List<VideoInfo> {
-        val requiredArtists = parseArtists(artistStr)
-        val songNameLower = songName.lowercase()
-
-        return videos.filter { video ->
-            val titleLower = video.title.lowercase()
-            val artistsLower = video.artists.lowercase()
-
-            val hasSong = titleLower.contains(songNameLower) || songNameLower.contains(titleLower)
-            val hasArtists = requiredArtists.all { artist ->
-                titleLower.contains(artist) || artistsLower.contains(artist)
-            }
-            hasSong && hasArtists
-        }
-    }
-
-    private fun parseArtists(artistStr: String): List<String> {
-        return artistStr
-            .lowercase()
-            .split("&", ",", " and ")
-            .map { it.trim() }
-            .filter { it.isNotEmpty() }
-    }
-
-    private fun parseViewCount(viewString: String): Long {
-        return try {
-            val numberPart = viewString.replace(" views", "").trim()
-            when {
-                numberPart.endsWith("M") -> {
-                    (numberPart.removeSuffix("M").toFloat() * 1_000_000).toLong()
-                }
-
-                numberPart.endsWith("K") -> {
-                    (numberPart.removeSuffix("K").toFloat() * 1_000).toLong()
-                }
-
-                else -> numberPart.toLongOrNull() ?: 0L
-            }
-        } catch (_: Exception) {
-            0L
-        }
-    }
-
-    inline fun JSONArray.forEach(action: (JSONObject) -> Unit) {
-        for (i in 0 until length()) {
-            action(getJSONObject(i))
-        }
+        walk(root)
+        return result
     }
 }

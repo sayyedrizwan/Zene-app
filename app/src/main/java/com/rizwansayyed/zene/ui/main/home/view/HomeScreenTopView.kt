@@ -87,11 +87,6 @@ fun HomeScreenTopView(viewModel: NavigationViewModel, userInfo: UserInfoResponse
         ) {
             viewModel.setHomeSections(HomeSectionSelector.MUSIC)
         }
-        TextSimpleCards(
-            viewModel.homeSection == HomeSectionSelector.FEED, stringResource(R.string.feed)
-        ) {
-            viewModel.setHomeSections(HomeSectionSelector.FEED)
-        }
 
         TextSimpleCards(
             viewModel.homeSection == HomeSectionSelector.PODCAST, stringResource(R.string.podcasts)

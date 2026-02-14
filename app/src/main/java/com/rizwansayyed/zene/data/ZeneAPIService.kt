@@ -88,8 +88,6 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_LOVE_BUZZ_FULL_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_STREAMING_TRENDING_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_TOP_BOX_OFFICE_MOVIES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_UPCOMING_MOVIES_API
-import com.rizwansayyed.zene.utils.URLSUtils.ZENE_FEED_ARTISTS_UPDATES_API
-import com.rizwansayyed.zene.utils.URLSUtils.ZENE_FEED_FOLLOWED_ARTISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_ARTIST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_ARTIST_FOLLOW_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_MOVIE_SHOW_INFO_API
@@ -760,18 +758,6 @@ interface ZeneAPIService {
     suspend fun sponsorAds(): SponsorAdsResponse
 
     @Headers("Content-Type: application/json")
-    @POST(ZENE_FEED_FOLLOWED_ARTISTS_API)
-    suspend fun feedFollowedArtists(
-        @Header("token") token: String, @Body data: RequestBody
-    ): ZeneMusicDataList
-
-    @Headers("Content-Type: application/json")
-    @POST(ZENE_FEED_ARTISTS_UPDATES_API)
-    suspend fun feedUpdatesArtists(
-        @Header("token") token: String, @Body data: RequestBody
-    ): ZeneMusicDataList
-
-    @Headers("Content-Type: application/json")
     @POST(ZENE_USER_DELETE_ACCOUNT_API)
     suspend fun deleteAccount(
         @Header("token") token: String, @Body data: RequestBody
@@ -847,38 +833,38 @@ interface ZeneAPIService {
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_ENT_LIFESTYLES_EVENTS_API)
-        suspend fun entLifestyleEvents(
+    suspend fun entLifestyleEvents(
         @Header("token") token: String, @Body data: RequestBody
     ): ZeneMusicDataList
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_ENT_LIFESTYLES_EVENTS_INFO_API)
-        suspend fun entLifestyleEventsInfo(
+    suspend fun entLifestyleEventsInfo(
         @Header("token") token: String, @Body data: RequestBody
     ): LifeStyleEventsInfo
 
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_STORE_TOP_DEALS_API)
-        suspend fun storeTopDeals(
+    suspend fun storeTopDeals(
         @Header("token") token: String, @Body data: RequestBody
     ): StoreDealResponseList
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_STORE_STRIPE_LINK_API)
-        suspend fun storeStripeLink(
+    suspend fun storeStripeLink(
         @Header("token") token: String, @Body data: RequestBody
     ): StoreStripeResponse
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_ENT_EVENT_FULL_INFO_API)
-        suspend fun eventFullInfo(
+    suspend fun eventFullInfo(
         @Header("token") token: String, @Body data: RequestBody
     ): EventInfoResponse
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_ENT_LOVE_BUZZ_FULL_INFO_API)
-        suspend fun loveBuzzFullInfo(
+    suspend fun loveBuzzFullInfo(
         @Header("token") token: String, @Body data: RequestBody
     ): LoveBuzzFullInfoResponse
 
