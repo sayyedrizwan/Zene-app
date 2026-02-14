@@ -38,6 +38,7 @@ import com.rizwansayyed.zene.data.model.StatusTypeResponse
 import com.rizwansayyed.zene.data.model.StoreDealResponse
 import com.rizwansayyed.zene.data.model.StoreDealResponseList
 import com.rizwansayyed.zene.data.model.StoreStripeResponse
+import com.rizwansayyed.zene.data.model.StoriesListsResponse
 import com.rizwansayyed.zene.data.model.StreamingTrendingList
 import com.rizwansayyed.zene.data.model.UpcomingMoviesList
 import com.rizwansayyed.zene.data.model.UserInfoResponse
@@ -85,6 +86,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_LIFESTYLES_EVENTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_LIFESTYLES_EVENTS_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_LIFESTYLE_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_LOVE_BUZZ_FULL_INFO_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_STORIES_LISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_STREAMING_TRENDING_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_TOP_BOX_OFFICE_MOVIES_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_UPCOMING_MOVIES_API
@@ -867,5 +869,11 @@ interface ZeneAPIService {
     suspend fun loveBuzzFullInfo(
         @Header("token") token: String, @Body data: RequestBody
     ): LoveBuzzFullInfoResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_ENT_STORIES_LISTS_API)
+    suspend fun storiesLists(
+        @Header("token") token: String, @Body data: RequestBody
+    ): StoriesListsResponse
 
 }

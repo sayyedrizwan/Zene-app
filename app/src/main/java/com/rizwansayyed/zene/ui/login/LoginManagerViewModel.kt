@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.ui.login
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.activity.result.ActivityResult
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,6 +32,7 @@ class LoginManagerViewModel @Inject constructor(
     companion object {
         var setEmail by mutableStateOf("")
     }
+
     var isLoginStateLoading = mutableStateOf(false)
 
     var loginViaEmail by mutableStateOf<ResponseResult<Boolean>>(ResponseResult.Empty)
@@ -48,11 +50,9 @@ class LoginManagerViewModel @Inject constructor(
 
     fun startLegacyGoogleLogin(result: ActivityResult) {
         setLoading(true)
-        if (result.resultCode == Activity.RESULT_OK) {
-            result.data?.let { data ->
-                val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-                googleLoginHandler.handleLegacySignInResult(task)
-            }
+        result.data?.let { data ->
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            googleLoginHandler.handleLegacySignInResult(task)
         }
     }
 
@@ -74,7 +74,7 @@ class LoginManagerViewModel @Inject constructor(
 
     fun startEmailLogin(email: String) {
         loginViaEmail = ResponseResult.Loading
-        viewModelScope.safeLaunch  {
+        viewModelScope.safeLaunch {
             setEmail = email
             loginHandler.sendSignInLink(email).catch {
                 loginViaEmail = ResponseResult.Empty

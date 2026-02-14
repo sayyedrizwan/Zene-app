@@ -8,7 +8,7 @@ minsdk = "23"
 appversion = "270"
 
 versionname = "5.14.021"
-agp = "9.0.0"
+agp = "9.0.1"
 
 # kotlin / tooling
 kotlin = "2.3.10"

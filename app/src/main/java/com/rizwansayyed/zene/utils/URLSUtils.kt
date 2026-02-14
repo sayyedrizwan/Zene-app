@@ -54,9 +54,9 @@ object URLSUtils {
     const val LIKED_SONGS_ON_ZENE = "_liked_songs_on_zene"
 
     val ZENE_BASE_URL_SOCKET = BuildConfig.API_ZENE_MUSIC_BASE_URL
-//        if (BuildConfig.DEBUG) "http://192.168.0.110:4102" else BuildConfig.API_ZENE_MUSIC_BASE_URL
+//        if (BuildConfig.DEBUG) "http://192.168.0.109:4102" else BuildConfig.API_ZENE_MUSIC_BASE_URL
     val ZENE_BASE_URL_API = BuildConfig.API_ZENE_MUSIC_BASE_URL
-//        if (BuildConfig.DEBUG) "http://192.168.0.110:4100" else BuildConfig.API_ZENE_MUSIC_BASE_URL
+//        if (BuildConfig.DEBUG) "http://192.168.0.109:4100" else BuildConfig.API_ZENE_MUSIC_BASE_URL
 
     const val ZENE_RECENT_HOME_MUSIC_API = "recent/home-music"
     const val ZENE_RECENT_HOME_PODCAST_API = "recent/home-podcast"
@@ -168,6 +168,7 @@ object URLSUtils {
     const val ZENE_ENT_LIFESTYLES_EVENTS_INFO_API = "entertainment/lifestyles-events-info"
     const val ZENE_ENT_EVENT_FULL_INFO_API = "entertainment/event-full-info"
     const val ZENE_ENT_LOVE_BUZZ_FULL_INFO_API = "entertainment/love-buzz-full-info"
+    const val ZENE_ENT_STORIES_LISTS_API = "entertainment/stories-lists"
 
     const val ZENE_STORE_TOP_DEALS_API = "store/top-deals"
     const val ZENE_STORE_STRIPE_LINK_API = "store/get-stripe-link"

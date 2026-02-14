@@ -15,12 +15,14 @@ import com.rizwansayyed.zene.data.model.EntertainmentDiscoverResponse
 import com.rizwansayyed.zene.data.model.EventInfoResponse
 import com.rizwansayyed.zene.data.model.LifeStyleEventsInfo
 import com.rizwansayyed.zene.data.model.LoveBuzzFullInfoResponse
+import com.rizwansayyed.zene.data.model.StoriesListsResponse
 import com.rizwansayyed.zene.data.model.StreamingTrendingList
 import com.rizwansayyed.zene.data.model.UpcomingMoviesList
 import com.rizwansayyed.zene.data.model.WhoDatedWhoData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
 import com.rizwansayyed.zene.ui.main.ent.utils.LiveReadersCounter
 import com.rizwansayyed.zene.utils.URLSUtils
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_STORIES_LISTS_API
 import com.rizwansayyed.zene.utils.safeLaunch
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
@@ -65,6 +67,7 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
     var lifeStylesInfo by mutableStateOf<ResponseResult<LifeStyleEventsInfo>>(ResponseResult.Empty)
     var eventsFullInfo by mutableStateOf<ResponseResult<EventInfoResponse>>(ResponseResult.Empty)
     var loveBuzzFullInfo by mutableStateOf<ResponseResult<LoveBuzzFullInfoResponse>>(ResponseResult.Empty)
+    var storiesLists by mutableStateOf<ResponseResult<StoriesListsResponse>>(ResponseResult.Empty)
 
 
     fun entDiscoverNews(expireToken: () -> Unit) = viewModelScope.safeLaunch {
@@ -258,6 +261,22 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
             loveBuzzFullInfo = ResponseResult.Error(it)
         }.collectLatest {
             loveBuzzFullInfo = ResponseResult.Success(it)
+        }
+    }
+
+    fun storiesLists() = viewModelScope.safeLaunch {
+        val data: StoriesListsResponse? = cacheHelper.get(ZENE_ENT_STORIES_LISTS_API)
+        if ((data?.size ?: 0) > 0) {
+            storiesLists = ResponseResult.Success(data!!)
+            return@safeLaunch
+        }
+        zeneAPI.storiesLists().onStart {
+            storiesLists = ResponseResult.Loading
+        }.catch {
+            storiesLists = ResponseResult.Error(it)
+        }.collectLatest {
+            cacheHelper.save(ZENE_ENT_STORIES_LISTS_API, it)
+            storiesLists = ResponseResult.Success(it)
         }
     }
 

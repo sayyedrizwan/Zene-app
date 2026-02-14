@@ -67,6 +67,7 @@ fun EntertainmentView(viewModel: NavigationViewModel) {
         }
 
         entViewModel.entDiscoverLifeStyle()
+        entViewModel.storiesLists()
         context?.let { InterstitialAdsUtils(it) }
     }
 

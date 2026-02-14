@@ -116,6 +116,11 @@ data class UpcomingMoviesResponse(
 data class MediaPathResponse(val urlPath: String?)
 
 data class PlayerVideoForSongsResponse(val videoID: ZeneMusicData?, val lyricsID: ZeneMusicData?)
+
+typealias StoriesListsResponse = List<StoriesListsResponseItems>
+data class StoriesListsResponseItems(val info: ZeneMusicData?, val news: ZeneMusicDataList?)
+
+
 data class CountResponse(val count: Int?)
 
 typealias ZeneMusicDataList = List<ZeneMusicData>

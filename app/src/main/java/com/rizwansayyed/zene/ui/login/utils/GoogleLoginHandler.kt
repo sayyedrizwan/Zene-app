@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.ui.login.utils
 
 import android.app.Activity
 import android.content.Intent
+import android.util.Log
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialResponse
@@ -84,6 +85,7 @@ class GoogleLoginHandler @Inject constructor(private val zeneAPI: ZeneAPIInterfa
             try {
                 val info = GoogleIdTokenCredential.createFrom(credential.data)
                 serverLogin(info.idToken, LoginType.GOOGLE)
+                Log.d("TAG", "serverLogin: rnnnnned 111")
                 registerEvents(FirebaseEvents.FirebaseEventsParams.GOOGLE_LOGIN)
             } catch (e: Exception) {
                 e.message?.toast()
@@ -130,7 +132,9 @@ class GoogleLoginHandler @Inject constructor(private val zeneAPI: ZeneAPIInterfa
             return
         }
 
-        zeneAPI.loginUser(id, type.type).catch { loginManager?.setLoading(false) }.collectLatest {
+        zeneAPI.loginUser(id, type.type).catch {
+            loginManager?.setLoading(false)
+        }.collectLatest {
             if (it.isError == true) SnackBarManager.showMessage(
                 ZeneBaseApplication.context.resources.getString(
                     R.string.error_login
