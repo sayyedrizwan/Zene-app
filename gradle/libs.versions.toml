@@ -5,9 +5,10 @@ packagename = "com.rizwansayyed.zene"
 
 compilesdk = "36"
 minsdk = "23"
-appversion = "270"
 
-versionname = "5.14.021"
+appversion = "271"
+versionname = "5.14.025"
+
 agp = "9.0.1"
 
 # kotlin / tooling
@@ -17,11 +18,11 @@ ksp = "2.3.4"
 # core / androidx
 coreKtx = "1.17.0"
 lifecycleRuntimeKtx = "2.10.0"
-activityCompose = "1.12.3"
+activityCompose = "1.12.4"
 
 # compose
-composeBom = "2026.01.01"
-foundation = "1.10.2"
+composeBom = "2026.02.00"
+foundation = "1.10.3"
 material3 = "1.4.0"
 
 # navigation / web
@@ -71,7 +72,7 @@ exifinterface = "1.4.2"
 paletteKtx = "1.0.0"
 
 # maps / location
-mapsCompose = "8.0.1"
+mapsCompose = "8.1.0"
 playServicesLocation = "21.3.0"
 
 # UI extras

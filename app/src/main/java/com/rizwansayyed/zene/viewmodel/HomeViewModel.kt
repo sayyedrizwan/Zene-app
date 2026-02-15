@@ -39,6 +39,7 @@ import com.rizwansayyed.zene.ui.phoneverification.view.TrueCallerUtils
 import com.rizwansayyed.zene.ui.view.playlist.PlaylistsType
 import com.rizwansayyed.zene.utils.SnackBarManager
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_AI_MUSIC_LIST_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_STORIES_LISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_MUSIC_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_PODCAST_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_RECENT_HOME_RADIO_API
@@ -403,6 +404,7 @@ class HomeViewModel @Inject constructor(
     fun followArtists(name: String?, doAdd: Boolean, addedMore: () -> Unit) =
         viewModelScope.safeLaunch {
             isFollowing = doAdd
+            CacheHelper().clear(ZENE_ENT_STORIES_LISTS_API)
             zeneAPI.followArtists(name, doAdd).catch {}.collectLatest {
                 if (!it) {
                     addedMore()
