@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.viewmodel
 
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -16,10 +17,14 @@ import com.rizwansayyed.zene.data.model.EventInfoResponse
 import com.rizwansayyed.zene.data.model.LifeStyleEventsInfo
 import com.rizwansayyed.zene.data.model.LoveBuzzFullInfoResponse
 import com.rizwansayyed.zene.data.model.StoriesListsResponse
+import com.rizwansayyed.zene.data.model.StoriesListsResponseItems
 import com.rizwansayyed.zene.data.model.StreamingTrendingList
 import com.rizwansayyed.zene.data.model.UpcomingMoviesList
 import com.rizwansayyed.zene.data.model.WhoDatedWhoData
 import com.rizwansayyed.zene.data.model.ZeneMusicDataList
+import com.rizwansayyed.zene.roomdb.StoriesNewsDao
+import com.rizwansayyed.zene.roomdb.StoriesNewsEntity
+import com.rizwansayyed.zene.roomdb.StoriesNewsRepository
 import com.rizwansayyed.zene.ui.main.ent.utils.LiveReadersCounter
 import com.rizwansayyed.zene.utils.URLSUtils
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ENT_STORIES_LISTS_API
@@ -27,12 +32,15 @@ import com.rizwansayyed.zene.utils.safeLaunch
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInterface) :
-    ViewModel() {
+class EntertainmentViewModel @Inject constructor(
+    private val zeneAPI: ZeneAPIInterface, private val storiesNews: StoriesNewsRepository
+) : ViewModel() {
 
     private val cacheHelper = CacheHelper()
 
@@ -165,7 +173,8 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
 
 
     fun entStreamingTrending() = viewModelScope.safeLaunch {
-        val data: StreamingTrendingList? = cacheHelper.get(URLSUtils.ZENE_ENT_STREAMING_TRENDING_API)
+        val data: StreamingTrendingList? =
+            cacheHelper.get(URLSUtils.ZENE_ENT_STREAMING_TRENDING_API)
         if ((data?.size ?: 0) > 0) {
             streaming = ResponseResult.Success(data!!)
             return@safeLaunch
@@ -267,7 +276,7 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
     fun storiesLists() = viewModelScope.safeLaunch {
         val data: StoriesListsResponse? = cacheHelper.get(ZENE_ENT_STORIES_LISTS_API)
         if ((data?.size ?: 0) > 0) {
-            storiesLists = ResponseResult.Success(data!!)
+            storiesLists = ResponseResult.Success(mapStoriesWithSeenState(data!!))
             return@safeLaunch
         }
         zeneAPI.storiesLists().onStart {
@@ -276,8 +285,49 @@ class EntertainmentViewModel @Inject constructor(private val zeneAPI: ZeneAPIInt
             storiesLists = ResponseResult.Error(it)
         }.collectLatest {
             cacheHelper.save(ZENE_ENT_STORIES_LISTS_API, it)
-            storiesLists = ResponseResult.Success(it)
+            storiesLists = ResponseResult.Success(mapStoriesWithSeenState(it))
         }
     }
 
+    private suspend fun mapStoriesWithSeenState(api: StoriesListsResponse): List<StoriesListsResponseItems> {
+        val idsList = api.mapNotNull { it.info?.id }
+        val list = storiesNews.getArtistsInfo(idsList).firstOrNull()
+
+        return api.map { item ->
+            val artistId = item.info?.id ?: item.info?.name ?: ""
+            val data = list?.firstOrNull { it.artistId == artistId }
+            if (data != null) StoriesListsResponseItems(
+                info = item.info,
+                news = item.news,
+                isSeen = data.isViewed
+            ) else StoriesListsResponseItems(
+                info = item.info,
+                news = item.news,
+                isSeen = false
+            )
+        }.sortedBy { it.isSeen }
+    }
+
+    fun viewedArtistsStories(data: StoriesListsResponseItems) = viewModelScope.launch {
+        data.info?.id ?: return@launch
+        val newsURL = data.news?.firstOrNull() ?: return@launch
+
+        val items = StoriesNewsEntity(
+            data.info.id, newsURL.id, isViewed = true
+        )
+        storiesNews.updateArtists(items).catch { }.collectLatest { }
+
+        when (val v = storiesLists) {
+            ResponseResult.Empty -> {}
+            is ResponseResult.Error -> {}
+            ResponseResult.Loading -> {}
+            is ResponseResult.Success -> {
+                val list = v.data.map { item ->
+                    if (item.info?.id == data.info.id) item.copy(isSeen = true)
+                    else item
+                }
+                storiesLists = ResponseResult.Success(list)
+            }
+        }
+    }
 }

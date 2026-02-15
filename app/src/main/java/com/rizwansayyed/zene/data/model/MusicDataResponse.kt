@@ -90,6 +90,7 @@ data class ArtistsResponse(
 )
 
 typealias StreamingTrendingList = List<StreamingTrendingResponse>
+
 data class StreamingTrendingResponse(
     val items: ZeneMusicDataList,
     val name: String?,
@@ -104,11 +105,20 @@ data class LifeStyleEventsInfo(
     val image: String?,
     val products: List<Products>?,
 ) {
-    fun shareData() = ZeneMusicData(extractDate(title.orEmpty()), id,  name, "", image, MusicDataTypes.CELEB_LIFESTYLE.name)
+    fun shareData() = ZeneMusicData(
+        extractDate(title.orEmpty()),
+        id,
+        name,
+        "",
+        image,
+        MusicDataTypes.CELEB_LIFESTYLE.name
+    )
+
     data class Products(val title: String?, val url: String?, val img: String?)
 }
 
 typealias UpcomingMoviesList = List<UpcomingMoviesResponse>
+
 data class UpcomingMoviesResponse(
     val list: ZeneMusicDataList, val date: String?
 )
@@ -118,7 +128,12 @@ data class MediaPathResponse(val urlPath: String?)
 data class PlayerVideoForSongsResponse(val videoID: ZeneMusicData?, val lyricsID: ZeneMusicData?)
 
 typealias StoriesListsResponse = List<StoriesListsResponseItems>
-data class StoriesListsResponseItems(val info: ZeneMusicData?, val news: ZeneMusicDataList?)
+
+data class StoriesListsResponseItems(
+    val info: ZeneMusicData?,
+    val news: ZeneMusicDataList?,
+    val isSeen: Boolean?
+)
 
 
 data class CountResponse(val count: Int?)

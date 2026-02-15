@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,9 +31,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.ContentScale.Companion
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -42,7 +43,6 @@ import com.bumptech.glide.integration.compose.GlideImage
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.StoriesListsResponseItems
-import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.ui.main.ent.utils.dynamicNameColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewBold
@@ -67,22 +67,22 @@ fun EntCelebStoriesView(viewModel: EntertainmentViewModel) {
             contentPadding = PaddingValues(horizontal = 15.dp)
         ) {
             items(v.data) { story ->
-                StoryBubble(story.info) {
+                StoryBubble(story) {
                     dialogInfo = story
                 }
             }
         }
     }
 
-    if (dialogInfo != null) StoryDialogInfo(dialogInfo) {
+    if (dialogInfo != null) StoryDialogInfo(dialogInfo, viewModel) {
         dialogInfo = null
     }
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun StoryBubble(story: ZeneMusicData?, click: () -> Unit) {
-    if (story?.name != null) Column(
+fun StoryBubble(story: StoriesListsResponseItems, click: () -> Unit) {
+    if (story.info?.name != null) Column(
         Modifier
             .width(95.dp)
             .clickable {
@@ -90,22 +90,27 @@ fun StoryBubble(story: ZeneMusicData?, click: () -> Unit) {
             }, horizontalAlignment = Alignment.CenterHorizontally
     ) {
         GlideImage(
-            model = story.thumbnail,
-            contentDescription = story.name,
+            model = story.info.thumbnail,
+            contentDescription = story.info.name,
             modifier = Modifier
                 .size(90.dp)
                 .clip(CircleShape)
-                .border(3.dp, dynamicNameColor(story.name), CircleShape),
+                .border(
+                    3.dp, if (story.isSeen == true) Brush.linearGradient(listOf(Color.Gray, Color.DarkGray))
+                    else dynamicNameColor(story.info.name), CircleShape
+                ),
             contentScale = ContentScale.Crop
         )
 
         Spacer(Modifier.height(5.dp))
-        TextViewSemiBold(story.name, 15, line = 1)
+        TextViewSemiBold(story.info.name, 15, line = 1)
     }
 }
 
 @Composable
-fun StoryDialogInfo(info: StoriesListsResponseItems?, dismiss: () -> Unit) {
+fun StoryDialogInfo(
+    info: StoriesListsResponseItems?, viewModel: EntertainmentViewModel, dismiss: () -> Unit
+) {
     Dialog(dismiss, DialogProperties(usePlatformDefaultWidth = false)) {
         LazyColumn(
             Modifier
@@ -124,6 +129,10 @@ fun StoryDialogInfo(info: StoriesListsResponseItems?, dismiss: () -> Unit) {
                 EntBuzzNewsViewItem(it)
             }
         }
+
+        LaunchedEffect(Unit) {
+            info?.let { viewModel.viewedArtistsStories(it) }
+        }
     }
 }
 
@@ -137,8 +146,7 @@ fun StoriesDialogHeader(info: StoriesListsResponseItems?, dismiss: () -> Unit) {
             .clickable {
                 dismiss()
                 startMedia(info?.info)
-            },
-        verticalAlignment = Alignment.CenterVertically
+            }, verticalAlignment = Alignment.CenterVertically
     ) {
         GlideImage(
             info?.info?.thumbnail,
@@ -155,9 +163,11 @@ fun StoriesDialogHeader(info: StoriesListsResponseItems?, dismiss: () -> Unit) {
             TextViewBold(info?.info?.name.orEmpty(), 22)
             Spacer(Modifier.height(7.dp))
             Row(
-                Modifier.border(BorderStroke(1.dp, Color.White), RoundedCornerShape(12.dp))
+                Modifier
+                    .border(BorderStroke(1.dp, Color.White), RoundedCornerShape(12.dp))
                     .padding(horizontal = 13.dp, vertical = 5.dp),
-                Arrangement.Center, Alignment.CenterVertically
+                Arrangement.Center,
+                Alignment.CenterVertically
             ) {
                 TextViewLight(stringResource(R.string.view), 16)
                 Spacer(Modifier.width(4.dp))
