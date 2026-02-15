@@ -36,6 +36,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.collections.firstOrNull
 
 @HiltViewModel
 class EntertainmentViewModel @Inject constructor(
@@ -296,11 +297,18 @@ class EntertainmentViewModel @Inject constructor(
         return api.map { item ->
             val artistId = item.info?.id ?: item.info?.name ?: ""
             val data = list?.firstOrNull { it.artistId == artistId }
-            if (data != null) StoriesListsResponseItems(
-                info = item.info,
-                news = item.news,
-                isSeen = data.isViewed
-            ) else StoriesListsResponseItems(
+
+            if (data != null) {
+                val newsURL = data.latestUrl == item.news?.firstOrNull()?.id
+
+                return@map StoriesListsResponseItems(
+                    info = item.info,
+                    news = item.news,
+                    isSeen = newsURL
+                )
+            }
+
+            return@map StoriesListsResponseItems(
                 info = item.info,
                 news = item.news,
                 isSeen = false

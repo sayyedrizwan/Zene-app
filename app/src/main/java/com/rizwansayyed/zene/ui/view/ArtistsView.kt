@@ -316,6 +316,9 @@ fun ArtistsDetailsInfo(data: ArtistsResponse, viewModel: HomeViewModel) {
         else ButtonWithBorder(R.string.follow, Color.White) {
             viewModel.followArtists(data.data?.name, true) { showMoreFollower = true }
         }
+        Spacer(Modifier.width(5.dp))
+
+        if (viewModel.isFollowing) ImageIcon(R.drawable.ic_information_circle, 19)
 
         Spacer(Modifier.width(15.dp))
 
