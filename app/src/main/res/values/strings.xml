@@ -70,6 +70,8 @@
     <string name="movies">Movies</string>
     <string name="movie">Movie</string>
     <string name="my_library">My Library</string>
+    <string name="how_it_works">How it works</string>
+    <string name="updates_from_artists_follow">Updates from the artists you follow will appear in your Entertainment section. You\’ll see their latest news, music releases, and activity.</string>
     <string name="error_following_artists">Error following artist</string>
     <string name="a_user_can_only_follow_up_to_40_artists">A User can only follow up to 40 artists.</string>
     <string name="add_to_home_screen">Add to Home Screen</string>

@@ -266,6 +266,7 @@ fun ArtistsDetailsInfo(data: ArtistsResponse, viewModel: HomeViewModel) {
     var showAddToHomeScreen by remember { mutableStateOf(false) }
     var showShareView by remember { mutableStateOf(false) }
     var showMoreFollower by remember { mutableStateOf(false) }
+    var showMoreFollowerInfo by remember { mutableStateOf(false) }
 
     Column(
         Modifier
@@ -318,8 +319,11 @@ fun ArtistsDetailsInfo(data: ArtistsResponse, viewModel: HomeViewModel) {
         }
         Spacer(Modifier.width(2.dp))
 
-        if (viewModel.isFollowing) ImageIcon(R.drawable.ic_information_circle, 20)
-
+        if (viewModel.isFollowing) Box(Modifier.clickable {
+            showMoreFollowerInfo = true
+        }) {
+            ImageIcon(R.drawable.ic_information_circle, 20)
+        }
         Spacer(Modifier.width(15.dp))
 
         Spacer(
@@ -377,6 +381,11 @@ fun ArtistsDetailsInfo(data: ArtistsResponse, viewModel: HomeViewModel) {
         R.string.error_following_artists, null,
         R.string.a_user_can_only_follow_up_to_40_artists,
         { showMoreFollower = false })
+
+    if (showMoreFollowerInfo) TextAlertDialog(
+        R.string.how_it_works, null,
+        R.string.updates_from_artists_follow,
+        { showMoreFollowerInfo = false })
 }
 
 
