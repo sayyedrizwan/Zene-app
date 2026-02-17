@@ -3,6 +3,7 @@ package com.rizwansayyed.zene.ui.main
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -35,6 +36,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.android.gms.ads.MobileAds
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.data.model.ZeneMusicData
@@ -57,6 +60,7 @@ import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PODCAST_PA
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_SETTINGS_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.setNavigationCallback
 import com.rizwansayyed.zene.ui.login.LoginManagerViewModel
+import com.rizwansayyed.zene.ui.login.LoginManagerViewModel.Companion.setEmail
 import com.rizwansayyed.zene.ui.login.LoginView
 import com.rizwansayyed.zene.ui.main.connect.HomeConnectView
 import com.rizwansayyed.zene.ui.main.connect.profile.ConnectUserProfileView
@@ -231,16 +235,20 @@ class MainActivity : FragmentActivity() {
                                 }
                             }
 
-
                             LaunchedEffect(Unit) {
-                                IntentCheckUtils(
-                                    intent, navigationViewModel, playerViewModel, loginViewModel
-                                ).call()
-                                initThe()
-
                                 configClarity(this@MainActivity)
                             }
+
                         } else if (showLogin) LoginView(loginViewModel)
+                    }
+
+                    LaunchedEffect(Unit) {
+                        IntentCheckUtils(
+                            intent, navigationViewModel, playerViewModel, loginViewModel
+                        ).call()
+                        initThe()
+
+                        configClarity(this@MainActivity)
                     }
 
                     LaunchedEffect(userInfo?.email) {

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.Intent.CATEGORY_APP_MUSIC
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.util.Base64
+import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
@@ -32,6 +33,7 @@ import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_PODCAST_PA
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_SETTINGS_PAGE
 import com.rizwansayyed.zene.service.notification.NavigationUtils.triggerHomeNav
 import com.rizwansayyed.zene.ui.login.LoginManagerViewModel
+import com.rizwansayyed.zene.ui.login.LoginManagerViewModel.Companion.setEmail
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector
 import com.rizwansayyed.zene.ui.main.home.HomeSectionSelector
 import com.rizwansayyed.zene.ui.videoplayer.VideoPlayerActivity
@@ -73,7 +75,7 @@ data class IntentFCMNotification(
     val title: String, val body: String, val type: String, val lat: String?, val long: String?
 )
 
-class IntentCheckUtils(
+class  IntentCheckUtils(
     private val intent: Intent,
     private val navViewModel: NavigationViewModel,
     private val viewModel: PlayerViewModel,

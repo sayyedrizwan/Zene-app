@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.ui.login.utils
 
 import android.app.Activity
 import android.net.Uri
+import android.util.Log
 import androidx.activity.result.ActivityResultRegistryOwner
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -111,7 +112,6 @@ class AppleFacebookLoginHandler @Inject constructor(private val zeneAPI: ZeneAPI
             val response = Firebase.auth.signInWithEmailLink(email, link.toString()).await()
 
             val tokenResult = response.user?.getIdToken(true)?.await()
-
             serverLogin(tokenResult?.token ?: "", LoginType.EMAIL)
             registerEvents(FirebaseEvents.FirebaseEventsParams.EMAIL_LOGIN)
         } catch (e: Exception) {
