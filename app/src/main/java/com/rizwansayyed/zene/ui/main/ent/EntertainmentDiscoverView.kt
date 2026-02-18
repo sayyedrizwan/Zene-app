@@ -45,7 +45,7 @@ fun EntertainmentDiscoverView(
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(entViewModel.discover) {
-        if (entViewModel.discover is ResponseResult.Success) coroutineScope.launch {
+        coroutineScope.launch {
             delay(500)
             listState.scrollToItem(index = 0)
         }

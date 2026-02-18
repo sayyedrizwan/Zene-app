@@ -45,6 +45,7 @@ import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.data.model.StoriesListsResponseItems
 import com.rizwansayyed.zene.ui.main.ent.utils.dynamicNameColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
+import com.rizwansayyed.zene.ui.view.ShimmerEffect
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewLight
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
@@ -58,7 +59,20 @@ fun EntCelebStoriesView(viewModel: EntertainmentViewModel) {
     when (val v = viewModel.storiesLists) {
         ResponseResult.Empty -> {}
         is ResponseResult.Error -> {}
-        ResponseResult.Loading -> {}
+        ResponseResult.Loading -> LazyRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 15.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(horizontal = 15.dp)
+        ) {
+            items(10) {
+                ShimmerEffect(Modifier
+                    .size(100.dp)
+                    .clip(CircleShape))
+            }
+        }
+
         is ResponseResult.Success -> LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
@@ -96,8 +110,15 @@ fun StoryBubble(story: StoriesListsResponseItems, click: () -> Unit) {
                 .size(90.dp)
                 .clip(CircleShape)
                 .border(
-                    3.dp, if (story.isSeen == true) Brush.linearGradient(listOf(Color.Gray, Color.DarkGray))
-                    else dynamicNameColor(story.info.name), CircleShape
+                    3.dp,
+                    if (story.isSeen == true) Brush.linearGradient(
+                        listOf(
+                            Color.Gray,
+                            Color.DarkGray
+                        )
+                    )
+                    else dynamicNameColor(story.info.name),
+                    CircleShape
                 ),
             contentScale = ContentScale.Crop
         )
