@@ -1,6 +1,7 @@
 package com.rizwansayyed.zene.ui.main.home
 
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.Gravity
 import android.widget.TextView
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -42,18 +43,18 @@ fun topHeaderAlert(): String {
         val request = Request.Builder().url(url).get().build()
         val response = client.newCall(request).execute()
 
-        val body = response.body?.string()
+        val body = response.body.string()
 
-        if (body?.contains("DOCS_modelChunk = [{\"ty\":\"is\",\"ibi\":1") == false) return ""
-        val value = body?.substringAfter("DOCS_modelChunk = [{\"ty\":\"is\",\"ibi\":1")
-            ?.substringAfter(":\"")?.substringBefore("\"},{")?.trim() ?: ""
+        if (!body.contains("DOCS_modelChunk = [{\"ty\":\"is\",\"ibi\":1")) return ""
+        val value = body.substringAfter("DOCS_modelChunk = [{\"ty\":\"is\",\"ibi\":1")
+            .substringAfter(":\"").substringBefore("\"},{").trim()
 
         val decodedString = HtmlCompat.fromHtml(value, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
         val unescaped =
             decodedString.replace("\\u003c", "<").replace("\\u003e", ">").replace("\\u003d", "=")
                 .replace("\\\"", "\"").replace("\\n", "")
         return unescaped
-    } catch (_: Exception) {
+    } catch (e: Exception) {
         return ""
     }
 }
