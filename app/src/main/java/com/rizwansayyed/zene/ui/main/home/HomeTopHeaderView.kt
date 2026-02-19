@@ -1,42 +1,48 @@
 package com.rizwansayyed.zene.ui.main.home
 
-import android.text.method.LinkMovementMethod
-import android.util.Log
-import android.view.Gravity
-import android.widget.TextView
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.text.HtmlCompat
+import androidx.compose.ui.unit.dp
 import com.rizwansayyed.zene.BuildConfig
+import com.rizwansayyed.zene.ui.view.TextViewBold
+import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.utils.MainUtils.moshi
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import androidx.core.graphics.toColorInt
+import com.rizwansayyed.zene.utils.share.MediaContentUtils
 
 
 @Composable
-fun HomeTopHeaderView(headerText: String) {
-    if (headerText.trim().length > 2) AndroidView(factory = { context ->
-        TextView(context).apply {
-            movementMethod = LinkMovementMethod.getInstance()
-            setTextColor(Color.White.toArgb())
-            linksClickable = true
-            gravity = Gravity.CENTER
-            textSize = 15f
-            setTextIsSelectable(false)
-            setSingleLine(false)
+fun HomeTopHeaderView(headerText: MutableList<AlertShowcaseItem>) {
+    if (headerText.isNotEmpty()) FlowRow(
+        modifier = Modifier.fillMaxWidth().padding(9.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        headerText.sortedBy { it.id }.forEach { item ->
+            Box(Modifier.clickable(enabled = item.redirect_url != null) {
+                MediaContentUtils.openCustomBrowser(item.redirect_url)
+            }) {
+                if (item.bold) TextViewBold(
+                    item.text,
+                    color = item.color?.let { Color(it.toColorInt()) } ?: Color.White)
+                else TextViewNormal(
+                    item.text,
+                    color = item.color?.let { Color(it.toColorInt()) } ?: Color.White)
+            }
         }
-    }, Modifier
-        .fillMaxWidth()
-        .wrapContentHeight(), {
-        it.text = HtmlCompat.fromHtml(headerText, HtmlCompat.FROM_HTML_MODE_COMPACT)
-    })
+    }
 }
 
-fun topHeaderAlert(): String {
+fun topHeaderAlert(): List<AlertShowcaseItem> {
     val url = BuildConfig.ZENE_TOP_ALERT_DOCS
     val client = OkHttpClient().newBuilder().build()
     try {
@@ -44,17 +50,23 @@ fun topHeaderAlert(): String {
         val response = client.newCall(request).execute()
 
         val body = response.body.string()
+        val json = moshi.adapter(AlertShowcaseResponse::class.java).fromJson(body)
 
-        if (!body.contains("DOCS_modelChunk = [{\"ty\":\"is\",\"ibi\":1")) return ""
-        val value = body.substringAfter("DOCS_modelChunk = [{\"ty\":\"is\",\"ibi\":1")
-            .substringAfter(":\"").substringBefore("\"},{").trim()
-
-        val decodedString = HtmlCompat.fromHtml(value, HtmlCompat.FROM_HTML_MODE_LEGACY).toString()
-        val unescaped =
-            decodedString.replace("\\u003c", "<").replace("\\u003e", ">").replace("\\u003d", "=")
-                .replace("\\\"", "\"").replace("\\n", "")
-        return unescaped
-    } catch (e: Exception) {
-        return ""
+        if (!(json?.show ?: false)) return emptyList()
+        return json.showcase_items ?: emptyList()
+    } catch (_: Exception) {
+        return emptyList()
     }
 }
+
+data class AlertShowcaseResponse(
+    val show: Boolean?, val showcase_items: List<AlertShowcaseItem>?
+)
+
+data class AlertShowcaseItem(
+    val id: Int?,
+    val text: String,
+    val color: String? = null,
+    val redirect_url: String? = null,
+    val bold: Boolean
+)

@@ -14,10 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -26,6 +24,7 @@ import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.data.ResponseResult
 import com.rizwansayyed.zene.datastore.DataStorageManager.isPremiumDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.sponsorAdsDB
+import com.rizwansayyed.zene.ui.main.home.AlertShowcaseItem
 import com.rizwansayyed.zene.ui.main.home.HomeSponsorAdsView
 import com.rizwansayyed.zene.ui.main.home.HomeTopHeaderView
 import com.rizwansayyed.zene.ui.main.home.topHeaderAlert
@@ -41,12 +40,14 @@ import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlin.time.Duration.Companion.seconds
 
 @Composable
 fun HomeMusicView(homeViewModel: HomeViewModel) {
     val navViewModel: NavigationViewModel = hiltViewModel()
-    var headerText by remember { mutableStateOf("") }
+    val headerText = remember { mutableListOf<AlertShowcaseItem>() }
     val coroutine = rememberCoroutineScope()
     val isPremium by isPremiumDB.collectAsState(true)
     val sponsorAds by sponsorAdsDB.collectAsState(null)
@@ -276,8 +277,13 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
     LaunchedEffect(Unit) {
         coroutine.safeLaunch {
             homeViewModel.askUserForReview()
-            headerText = topHeaderAlert()
-            if (headerText.length > 3) coroutine.safeLaunch(Dispatchers.Main) {
+        }
+
+        coroutine.safeLaunch {
+            headerText.clear()
+            headerText.addAll(topHeaderAlert())
+            if (headerText.isNotEmpty()) coroutine.safeLaunch(Dispatchers.Main) {
+                delay(1.seconds)
                 state.animateScrollToItem(0)
                 if (isActive) cancel()
             }

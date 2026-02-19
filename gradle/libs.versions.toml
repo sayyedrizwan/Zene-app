@@ -6,8 +6,8 @@ packagename = "com.rizwansayyed.zene"
 compilesdk = "36"
 minsdk = "23"
 
-appversion = "272"
-versionname = "5.14.028"
+appversion = "273"
+versionname = "5.15.104"
 
 agp = "9.0.1"
 
@@ -89,7 +89,7 @@ clarity = "3.8.1"
 processPhoenix = "3.0.0"
 
 # ads / billing
-playServicesAds = "24.9.0"
+playServicesAds = "25.0.0"
 billing = "8.3.0"
 
 # realtime / sockets
