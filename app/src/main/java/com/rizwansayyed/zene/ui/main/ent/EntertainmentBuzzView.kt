@@ -46,6 +46,8 @@ import com.rizwansayyed.zene.ui.view.CircularLoadingView
 import com.rizwansayyed.zene.ui.view.ShimmerEffect
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.utils.FirebaseEvents.FirebaseEventsParams
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
 import com.rizwansayyed.zene.viewmodel.EntertainmentViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -133,6 +135,8 @@ fun EntertainmentBuzzView(viewModel: EntertainmentViewModel) {
 
     LaunchedEffect(Unit) {
         viewModel.entBuzzNews()
+
+        registerEvents(FirebaseEventsParams.ENT_BUZZ_PAGE_VIEW)
     }
 }
 

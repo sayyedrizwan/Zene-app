@@ -25,6 +25,8 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.isPremiumDB
 import com.rizwansayyed.zene.ui.view.HorizontalShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.TextViewBold
+import com.rizwansayyed.zene.utils.FirebaseEvents.FirebaseEventsParams
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
 import com.rizwansayyed.zene.utils.ads.NativeViewAdsCard
 import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
@@ -133,6 +135,8 @@ fun HomeAIView(homeViewModel: HomeViewModel) {
     }
 
     LaunchedEffect(Unit) {
+        registerEvents(FirebaseEventsParams.AI_MUSIC_PAGE_VIEW)
+
         homeViewModel.trendingAIMusic {
             CoroutineScope(Dispatchers.IO).safeLaunch {
                 delay(5.seconds)

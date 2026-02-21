@@ -45,6 +45,8 @@ import com.rizwansayyed.zene.ui.theme.FacebookColor
 import com.rizwansayyed.zene.ui.view.ImageIcon
 import com.rizwansayyed.zene.ui.view.TextViewNormal
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.FirebaseEvents.FirebaseEventsParams
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PRIVACY_POLICY_URL
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PRIVACY_TERMS_URL
 import com.rizwansayyed.zene.utils.share.MediaContentUtils
@@ -242,5 +244,8 @@ fun LuxView() {
 
     LaunchedEffect(Unit) {
         manager.startConnection()
+
+
+        registerEvents(FirebaseEventsParams.LUX_PAGE_VIEW)
     }
 }

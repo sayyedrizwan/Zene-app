@@ -31,6 +31,8 @@ import com.rizwansayyed.zene.ui.view.FullVideoCardView
 import com.rizwansayyed.zene.ui.view.HorizontalShimmerVideoLoadingCard
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.VideoCardView
+import com.rizwansayyed.zene.utils.FirebaseEvents.FirebaseEventsParams
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
 import com.rizwansayyed.zene.utils.ads.BannerAppAd
 import com.rizwansayyed.zene.utils.ads.NativeViewAdsCard
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
@@ -235,5 +237,7 @@ fun HomeVideoView(homeViewModel: HomeViewModel) {
 
     LaunchedEffect(Unit) {
         homeViewModel.homeVideosData()
+
+        registerEvents(FirebaseEventsParams.VIDEO_PAGE_VIEW)
     }
 }

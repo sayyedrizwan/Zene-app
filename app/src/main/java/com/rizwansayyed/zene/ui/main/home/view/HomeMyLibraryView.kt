@@ -66,6 +66,8 @@ import com.rizwansayyed.zene.ui.view.ImageWithBorder
 import com.rizwansayyed.zene.ui.view.TextAlertDialog
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewNormal
+import com.rizwansayyed.zene.utils.FirebaseEvents.FirebaseEventsParams
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
 import com.rizwansayyed.zene.utils.RefreshPlaylistManager.RefreshPlaylistListener
 import com.rizwansayyed.zene.utils.RefreshPlaylistManager.setRefreshPlaylistState
 import com.rizwansayyed.zene.utils.URLSUtils.LIKED_SONGS_ON_ZENE
@@ -249,6 +251,10 @@ fun HomeMyLibraryView() {
                 }
             })
         }
+    }
+
+    LaunchedEffect(Unit) {
+        registerEvents(FirebaseEventsParams.MY_LIBRARY_PAGE_VIEW)
     }
 }
 

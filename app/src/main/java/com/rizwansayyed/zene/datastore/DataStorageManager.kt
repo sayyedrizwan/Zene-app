@@ -27,6 +27,7 @@ import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.LAST_LO
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.LAST_NOTIFICATION_GENERATED_TS_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.LAST_NOTIFICATION_SUGGESTED_TYPE_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.MUSIC_PLAYER_DB
+import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.OPEN_ENT_VIEW_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.PAUSE_SONG_HISTORY_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.PUSH_NEWS_LETTER_DB
 import com.rizwansayyed.zene.datastore.DataStorageManager.DataStorageKey.SEARCH_HISTORY_DB
@@ -85,6 +86,7 @@ object DataStorageManager {
         val SMOOTH_SONG_TRANSITION_SETTINGS_DB =
             booleanPreferencesKey("smooth_song_transition_settings_db")
         val PAUSE_SONG_HISTORY_DB = booleanPreferencesKey("pause_song_history_db")
+        val OPEN_ENT_VIEW_DB = booleanPreferencesKey("open_ent_view_db")
         val LAST_NOTIFICATION_GENERATED_TS_DB =
             longPreferencesKey("last_notification_generated_ts_db")
         val LAST_NOTIFICATION_SUGGESTED_TYPE_DB =
@@ -284,6 +286,16 @@ object DataStorageManager {
         set(value) = runBlocking(Dispatchers.IO) {
             context.dataStore.edit {
                 it[PAUSE_SONG_HISTORY_DB] = value.first()
+            }
+        }
+
+    var openEntView: Flow<Boolean>
+        get() = context.dataStore.data.map {
+            it[OPEN_ENT_VIEW_DB] ?: false
+        }
+        set(value) = runBlocking(Dispatchers.IO) {
+            context.dataStore.edit {
+                it[OPEN_ENT_VIEW_DB] = value.first()
             }
         }
 

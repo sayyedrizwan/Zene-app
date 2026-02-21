@@ -41,6 +41,8 @@ import com.rizwansayyed.zene.ui.view.ItemSmallCardView
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewBorder
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.FirebaseEvents.FirebaseEventsParams
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -169,7 +171,11 @@ fun HomeRadioView(homeViewModel: HomeViewModel) {
         categoryTypeSheet = null
     }
 
-    LaunchedEffect(Unit) { homeViewModel.homeRadioData() }
+    LaunchedEffect(Unit) {
+        homeViewModel.homeRadioData()
+
+        registerEvents(FirebaseEventsParams.RADIO_PAGE_VIEW)
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

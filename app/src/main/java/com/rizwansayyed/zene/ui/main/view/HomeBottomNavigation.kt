@@ -25,6 +25,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
@@ -43,6 +44,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.datastore.DataStorageManager
+import com.rizwansayyed.zene.datastore.DataStorageManager.openEntView
 import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
 import com.rizwansayyed.zene.service.player.PlayerForegroundService.Companion.getPlayerS
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector
@@ -54,12 +56,12 @@ import com.rizwansayyed.zene.ui.view.TextViewSemiBold
 import com.rizwansayyed.zene.utils.MainUtils.isDirectToTV
 import com.rizwansayyed.zene.service.notification.NavigationUtils
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_MAIN_PAGE
+import com.rizwansayyed.zene.ui.theme.LuxColor
+import com.rizwansayyed.zene.ui.theme.PurpleGrey40
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 
 @Composable
-fun HomeBottomNavigationView(
-    modifier: Modifier = Modifier, vm: NavigationViewModel
-) {
+fun HomeBottomNavigationView(modifier: Modifier = Modifier, vm: NavigationViewModel) {
     Column(
         modifier
             .padding(bottom = 40.dp)
@@ -94,23 +96,24 @@ fun MusicPlayerMiniView(openPlayer: () -> Unit) {
     val player by DataStorageManager.musicPlayerDB.collectAsState(null)
     var gradientColors by remember { mutableStateOf<List<Color>>(emptyList()) }
 
-    if (player?.data?.id != null) Row(Modifier
-        .clickable(
-            indication = null,
-            interactionSource = remember { MutableInteractionSource() }
-        ) { openPlayer() }
-        .padding(5.dp)
-        .fillMaxWidth()
-        .clip(RoundedCornerShape(5.dp))
-        .background(MainColor)
-        .background(
-            Brush.linearGradient(
-                colors = gradientColors.ifEmpty { listOf(MainColor, Color.Black) },
-                start = Offset(0f, 0f),
-                end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
+    if (player?.data?.id != null) Row(
+        Modifier
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ) { openPlayer() }
+            .padding(5.dp)
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(5.dp))
+            .background(MainColor)
+            .background(
+                Brush.linearGradient(
+                    colors = gradientColors.ifEmpty { listOf(MainColor, Color.Black) },
+                    start = Offset(0f, 0f),
+                    end = Offset(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY)
+                )
             )
-        )
-        .padding(10.dp), Arrangement.Absolute.SpaceBetween, Alignment.CenterVertically
+            .padding(10.dp), Arrangement.Absolute.SpaceBetween, Alignment.CenterVertically
     ) {
         GlideImage(
             player?.data?.thumbnail,
@@ -179,24 +182,38 @@ fun MusicPlayerMiniView(openPlayer: () -> Unit) {
 
 @Composable
 fun HomeBottomNavItems(icon: Int, txt: Int, nav: HomeNavSelector, vm: NavigationViewModel) {
-    Column(Modifier
-        .padding(horizontal = 5.dp)
-        .clickable(
-            interactionSource = remember { MutableInteractionSource() },
-            indication = null
-        ) {
-            NavigationUtils.triggerHomeNav(NAV_MAIN_PAGE)
-            vm.setHomeNavSections(nav)
+    val isOpenedNewEntView by openEntView.collectAsState(null)
+    Box(
+        Modifier
+            .padding(horizontal = 5.dp)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) {
+                NavigationUtils.triggerHomeNav(NAV_MAIN_PAGE)
+                vm.setHomeNavSections(nav)
+            }
+            .padding(horizontal = 15.dp), Alignment.TopEnd) {
+        Column(Modifier, Arrangement.Center, Alignment.CenterHorizontally) {
+            if (vm.homeNavSection == nav) {
+                ImageIcon(icon, 25)
+                Spacer(Modifier.height(4.dp))
+                TextViewSemiBold(stringResource(txt), 14, line = 1)
+            } else {
+                ImageIcon(icon, 25, Color.Gray)
+                Spacer(Modifier.height(4.dp))
+                TextViewSemiBold(stringResource(txt), 14, Color.Gray, line = 1)
+            }
         }
-        .padding(horizontal = 15.dp), Arrangement.Center, Alignment.CenterHorizontally) {
-        if (vm.homeNavSection == nav) {
-            ImageIcon(icon, 25)
-            Spacer(Modifier.height(4.dp))
-            TextViewSemiBold(stringResource(txt), 14, line = 1)
-        } else {
-            ImageIcon(icon, 25, Color.Gray)
-            Spacer(Modifier.height(4.dp))
-            TextViewSemiBold(stringResource(txt), 14, Color.Gray, line = 1)
+
+        if (nav == HomeNavSelector.ENT && isOpenedNewEntView != null) {
+            if (isOpenedNewEntView == false) Box(
+                Modifier
+                    .size(13.dp)
+                    .clip(RoundedCornerShape(13.dp))
+                    .background(Color.Red)
+                    .padding(horizontal = 2.dp)
+            )
         }
     }
 }

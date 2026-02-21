@@ -46,6 +46,8 @@ import com.rizwansayyed.zene.ui.view.PodcastViewItems
 import com.rizwansayyed.zene.ui.view.TextViewBold
 import com.rizwansayyed.zene.ui.view.TextViewBorder
 import com.rizwansayyed.zene.ui.view.TextViewSemiBold
+import com.rizwansayyed.zene.utils.FirebaseEvents.FirebaseEventsParams
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
 import com.rizwansayyed.zene.utils.ads.NativeViewAdsCard
 import com.rizwansayyed.zene.utils.share.MediaContentUtils.startMedia
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
@@ -211,6 +213,8 @@ fun HomePodcastView(homeViewModel: HomeViewModel) {
 
     LaunchedEffect(Unit) {
         homeViewModel.homePodcastData()
+
+        registerEvents(FirebaseEventsParams.PODCAST_PAGE_VIEW)
     }
 }
 

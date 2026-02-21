@@ -26,6 +26,8 @@ import com.rizwansayyed.zene.ui.main.home.view.HomeRadioView
 import com.rizwansayyed.zene.ui.main.home.view.HomeScreenTopView
 import com.rizwansayyed.zene.ui.main.home.view.HomeVideoView
 import com.rizwansayyed.zene.ui.main.lux.LuxView
+import com.rizwansayyed.zene.utils.FirebaseEvents.FirebaseEventsParams
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
 import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
@@ -72,5 +74,7 @@ fun HomeView(viewModel: NavigationViewModel, userInfo: UserInfoResponse?) {
                 ProcessPhoenix.triggerRebirth(context)
             }
         }
+
+        registerEvents(FirebaseEventsParams.HOME_PAGE_VIEW)
     }
 }

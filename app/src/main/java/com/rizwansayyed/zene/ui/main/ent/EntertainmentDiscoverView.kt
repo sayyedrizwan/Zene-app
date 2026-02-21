@@ -32,6 +32,8 @@ import com.rizwansayyed.zene.ui.main.ent.view.EntertainmentNearByEventsView
 import com.rizwansayyed.zene.ui.main.home.EntSectionSelector
 import com.rizwansayyed.zene.ui.theme.DarkCharcoal
 import com.rizwansayyed.zene.ui.view.ShimmerEffect
+import com.rizwansayyed.zene.utils.FirebaseEvents.FirebaseEventsParams
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
 import com.rizwansayyed.zene.viewmodel.EntertainmentViewModel
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import kotlinx.coroutines.delay
@@ -45,6 +47,8 @@ fun EntertainmentDiscoverView(
     val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(entViewModel.discover) {
+        registerEvents(FirebaseEventsParams.ENT_DISCOVER_PAGE_VIEW)
+
         coroutineScope.launch {
             delay(500)
             listState.scrollToItem(index = 0)

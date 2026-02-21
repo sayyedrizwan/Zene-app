@@ -33,6 +33,8 @@ import com.rizwansayyed.zene.ui.view.HorizontalShimmerLoadingCard
 import com.rizwansayyed.zene.ui.view.ItemArtistsCardView
 import com.rizwansayyed.zene.ui.view.ItemCardView
 import com.rizwansayyed.zene.ui.view.TextViewBold
+import com.rizwansayyed.zene.utils.FirebaseEvents.FirebaseEventsParams
+import com.rizwansayyed.zene.utils.FirebaseEvents.registerEvents
 import com.rizwansayyed.zene.utils.ads.BannerAppAd
 import com.rizwansayyed.zene.utils.ads.NativeViewAdsCard
 import com.rizwansayyed.zene.utils.safeLaunch
@@ -278,6 +280,8 @@ fun HomeMusicView(homeViewModel: HomeViewModel) {
         coroutine.safeLaunch {
             homeViewModel.askUserForReview()
         }
+
+        registerEvents(FirebaseEventsParams.MUSIC_PAGE_VIEW)
 
         coroutine.safeLaunch {
             headerText.clear()
