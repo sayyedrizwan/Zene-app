@@ -44,7 +44,6 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_LIFESTYLE
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_LOVE_BUZZ
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_M
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_MIX
-import com.rizwansayyed.zene.utils.URLSUtils.ZENE_MOVIE_IF_ENC
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_NEWS
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PODCAST
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PODCAST_SERIES
@@ -155,6 +154,7 @@ object ShareContentUtils {
             MusicDataTypes.CELEB_LIFESTYLE -> String.format(
                 context.resources.getString(R.string.enjoy_celeb_lifestyle_on_zene), data.name
             )
+
             AI_MUSIC -> String.format(
                 context.resources.getString(R.string.enjoy_free_ai_music_on_zene), data.name
             )
@@ -162,7 +162,8 @@ object ShareContentUtils {
             TEXT -> ""
             null -> ""
             MusicDataTypes.DATING -> String.format(
-                context.resources.getString(R.string.enjoy_latest_relationship_buzz_on_zene), data.name
+                context.resources.getString(R.string.enjoy_latest_relationship_buzz_on_zene),
+                data.name
             )
 
             MusicDataTypes.EVENTS -> String.format(
@@ -240,17 +241,9 @@ object ShareContentUtils {
             PODCAST_CATEGORIES -> ZENE_URL
             NEWS -> "$ZENE_URL$ZENE_NEWS" + Base64.encodeToString(
                 data.id?.toByteArray(Charsets.UTF_8), Base64.NO_WRAP
-            ).replace("=", "").replace("/","___")
+            ).replace("=", "").replace("/", "___")
 
-            MOVIES_SHOW -> {
-                if ((data.id?.split("/")?.size ?: 0) >= 3) {
-                    val id = Base64.encodeToString(
-                        data.id?.toByteArray(Charsets.UTF_8), Base64.NO_WRAP
-                    ).replace("=", "").replace("/", "___")
-                    "$ZENE_URL$ZENE_M$ZENE_MOVIE_IF_ENC${id}"
-                } else
-                    "$ZENE_URL$ZENE_M${data.id}"
-            }
+            MOVIES_SHOW -> "$ZENE_URL$ZENE_M${data.id}"
             AI_MUSIC -> "$ZENE_URL$ZENE_AI_MUSIC${data.id}"
             MusicDataTypes.CELEB_LIFESTYLE -> "$ZENE_URL$ZENE_LIFESTYLE${id}"
             TEXT -> ZENE_URL

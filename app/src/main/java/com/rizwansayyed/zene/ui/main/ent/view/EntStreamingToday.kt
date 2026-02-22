@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.main.ent.view
 
+import android.util.Log
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -77,13 +78,18 @@ fun EntStreamingTodayItems(data: StreamingTrendingResponse) {
                         v.thumbnail, v.name,
                         Modifier
                             .clip(RoundedCornerShape(15.dp))
-                            .height(250.dp),
+                            .height(250.dp)
+                            .combinedClickable(
+                                onLongClick = { NavigationUtils.triggerInfoSheet(v) },
+                                onClick = { startMedia(v) }),
                         contentScale = ContentScale.Fit
                     )
 
-                    Box(Modifier
-                        .align(Alignment.BottomStart)
-                        .offset(y = (9).dp)) {
+                    Box(
+                        Modifier
+                            .align(Alignment.BottomStart)
+                            .offset(y = (9).dp)
+                    ) {
                         TextViewBold("${i + 1}", 45)
                     }
                 }

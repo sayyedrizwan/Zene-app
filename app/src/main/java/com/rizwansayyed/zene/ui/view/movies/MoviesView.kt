@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.ui.view.movies
 
+import android.util.Log
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -65,8 +66,7 @@ fun MoviesView(id: String) {
 
     LaunchedEffect(Unit) {
         if (viewModel.movieShowInfo !is ResponseResult.Success) {
-            val idName = id.replace("^", "/")
-            viewModel.moviesTvShowsInfo(idName)
+            viewModel.moviesTvShowsInfo(id)
         }
 
         context?.let { InterstitialAdsUtils(it) }

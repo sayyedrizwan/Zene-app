@@ -84,9 +84,9 @@ object MediaContentUtils {
             ARTISTS -> NavigationUtils.triggerHomeNav("$NAV_ARTIST_PAGE${data.id}")
             PODCAST_CATEGORIES -> {}
             NEWS -> openCustomBrowser(data.id)
-            MOVIES_SHOW -> NavigationUtils.triggerHomeNav(
-                "$NAV_MOVIES_PAGE${data.id?.replace("/", "^")}"
-            )
+            MOVIES_SHOW -> {
+                NavigationUtils.triggerHomeNav("$NAV_MOVIES_PAGE${data.id}")
+            }
 
             TEXT -> {}
             null -> {}

@@ -44,7 +44,6 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_ARTIST
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_LOVE_BUZZ
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_M
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_MIX
-import com.rizwansayyed.zene.utils.URLSUtils.ZENE_MOVIE_IF_ENC
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_NEWS
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PODCAST
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PODCAST_SERIES
@@ -75,7 +74,7 @@ data class IntentFCMNotification(
     val title: String, val body: String, val type: String, val lat: String?, val long: String?
 )
 
-class  IntentCheckUtils(
+class IntentCheckUtils(
     private val intent: Intent,
     private val navViewModel: NavigationViewModel,
     private val viewModel: PlayerViewModel,
@@ -85,8 +84,9 @@ class  IntentCheckUtils(
     fun call() = CoroutineScope(Dispatchers.IO).safeLaunch {
         delay(1.seconds)
 
-        if (intent.data.toString().contains("/email-login")
-            && Firebase.auth.isSignInWithEmailLink(intent.data.toString())
+        if (intent.data.toString().contains("/email-login") && Firebase.auth.isSignInWithEmailLink(
+                intent.data.toString()
+            )
         ) intent.data?.let { loginViewModel.signInWithEmailLink(it) }
 
         val userInfo = userInfo.firstOrNull()
@@ -183,10 +183,10 @@ class  IntentCheckUtils(
             } else if (data.toString().contains(ZENE_MIX)) {
                 val id = data.toString().substringAfterLast(replaceSlash(ZENE_MIX))
 
-                if (id.contains(MY_PLAYLIST_ID) || id.contains(LIKED_SONGS_ZENE_ID))
-                    triggerHomeNav("$NAV_MY_PLAYLIST_PAGE${replaceSlash(id)}")
-                else
-                    triggerHomeNav("$NAV_PLAYLIST_PAGE${replaceSlash(id)}")
+                if (id.contains(MY_PLAYLIST_ID) || id.contains(LIKED_SONGS_ZENE_ID)) triggerHomeNav(
+                    "$NAV_MY_PLAYLIST_PAGE${replaceSlash(id)}"
+                )
+                else triggerHomeNav("$NAV_PLAYLIST_PAGE${replaceSlash(id)}")
             } else if (data.toString().contains(ZENE_LOVE_BUZZ)) {
                 val id = data.toString().substringAfterLast(replaceSlash(ZENE_LOVE_BUZZ))
                 triggerHomeNav("$NAV_LOVE_BUZZ_PAGE${replaceSlash(id)}")
@@ -197,22 +197,16 @@ class  IntentCheckUtils(
                 val id = data.toString().substringAfterLast(replaceSlash(ZENE_PODCAST_SERIES))
                 triggerHomeNav("$NAV_PODCAST_PAGE${replaceSlash(id)}")
             } else if (data.toString().contains(ZENE_PODCAST)) {
-                val id = data.toString().substringAfterLast(replaceSlash(ZENE_PODCAST))
-                    .replace("_", "/")
+                val id =
+                    data.toString().substringAfterLast(replaceSlash(ZENE_PODCAST)).replace("_", "/")
                 viewModel.podcastInfoPlay(id)
             } else if (data.toString().contains(ZENE_NEWS)) {
-                val id = data.toString().substringAfterLast(ZENE_NEWS).replace("___","/")
+                val id = data.toString().substringAfterLast(ZENE_NEWS).replace("___", "/")
                 val url = String(Base64.decode(id, Base64.NO_WRAP), Charsets.UTF_8)
                 MediaContentUtils.openCustomBrowser(url)
             } else if (data.toString().contains(ZENE_M)) {
                 val id = data.toString().substringAfterLast(replaceSlash(ZENE_M))
-                    .replace("___", "/")
-                if (id.contains(ZENE_MOVIE_IF_ENC)) {
-                    val cleared = id.substringAfter(ZENE_MOVIE_IF_ENC)
-                    val path = String(Base64.decode(cleared, Base64.NO_WRAP), Charsets.UTF_8)
-                    triggerHomeNav("$NAV_MOVIES_PAGE${path.replace("/", "^")}")
-                } else
-                    triggerHomeNav("$NAV_MOVIES_PAGE${id}")
+                triggerHomeNav("$NAV_MOVIES_PAGE${id}")
             } else if (data.toString().contains(ZENE_AI_MUSIC)) {
                 val id = data.toString().substringAfterLast(replaceSlash(ZENE_AI_MUSIC))
                 viewModel.aiMusicInfoPlay(id)
