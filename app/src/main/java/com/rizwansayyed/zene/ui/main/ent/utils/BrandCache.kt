@@ -29,7 +29,7 @@ object BrandCache {
             val request = Request.Builder().url(faviconUrl).build()
             val response = httpClient.newCall(request).execute()
             BitmapFactory.decodeStream(response.body.byteStream())
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }

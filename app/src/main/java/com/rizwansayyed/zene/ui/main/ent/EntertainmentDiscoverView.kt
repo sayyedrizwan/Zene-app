@@ -44,15 +44,9 @@ fun EntertainmentDiscoverView(
     entViewModel: EntertainmentViewModel, viewModel: NavigationViewModel
 ) {
     val listState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(entViewModel.discover) {
         registerEvents(FirebaseEventsParams.ENT_DISCOVER_PAGE_VIEW)
-
-        coroutineScope.launch {
-            delay(500)
-            listState.scrollToItem(index = 0)
-        }
     }
 
     LazyColumn(
@@ -126,26 +120,20 @@ fun EntertainmentDiscoverView(
                     item(key = "events_") { Spacer(Modifier.height(30.dp)) }
                     item(key = "events") { EntertainmentNearByEventsView(v.data.events, viewModel) }
                 }
-            }
-        }
 
-        when (val lifestyle = entViewModel.discoverLifeStyle) {
-            ResponseResult.Empty -> {}
-            is ResponseResult.Error -> {}
-            ResponseResult.Loading -> item(key = "lifestyle_loading") { EntLifestyleLoadingView() }
-            is ResponseResult.Success -> if (lifestyle.data.isNotEmpty()) item(key = "lifestyle") {
-                EntLifestyleView(lifestyle.data, viewModel)
-            }
-        }
+                when (val lifestyle = entViewModel.discoverLifeStyle) {
+                    ResponseResult.Empty -> {}
+                    is ResponseResult.Error -> {}
+                    ResponseResult.Loading -> item(key = "lifestyle_loading") { EntLifestyleLoadingView() }
+                    is ResponseResult.Success -> if (lifestyle.data.isNotEmpty()) item(key = "lifestyle") {
+                        EntLifestyleView(lifestyle.data, viewModel)
+                    }
+                }
 
-        when (val v = entViewModel.discover) {
-            ResponseResult.Empty -> {}
-            is ResponseResult.Error -> {}
-            ResponseResult.Loading -> {}
-            is ResponseResult.Success -> {
                 item(key = "lifestyle_space") {
                     Spacer(Modifier.height(50.dp))
                 }
+
                 if (v.data.news?.isNotEmpty() == true) {
                     items(v.data.news.drop(1), key = { "news_${it.name}" }) { item ->
                         EntBuzzNewsViewItem(item)
