@@ -137,10 +137,10 @@ fun MerchCard(
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            TextViewBold("${item.currency}${item.mrp}")
+            TextViewBold("${item.currency}${item.dealPrice}")
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                text = "${item.currency}${item.dealPrice}",
+                text = "${item.currency}${item.mrp}",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
                 fontFamily = proximanOverFamily,
