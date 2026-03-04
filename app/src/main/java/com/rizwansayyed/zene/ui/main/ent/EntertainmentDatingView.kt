@@ -110,9 +110,7 @@ fun CoupleCardFull(dated: WhoDatedWhoData) {
                 .fillMaxWidth()
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(
-                            LoveBuzzBg, LoveBuzzBg.copy(alpha = 0.85f)
-                        )
+                        colors = listOf(LoveBuzzBg, LoveBuzzBg.copy(alpha = 0.85f))
                     )
                 )
                 .padding(vertical = 22.dp, horizontal = 16.dp),
