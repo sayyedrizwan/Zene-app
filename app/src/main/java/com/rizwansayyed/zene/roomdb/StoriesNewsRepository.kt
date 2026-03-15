@@ -1,6 +1,5 @@
 package com.rizwansayyed.zene.roomdb
 
-import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow

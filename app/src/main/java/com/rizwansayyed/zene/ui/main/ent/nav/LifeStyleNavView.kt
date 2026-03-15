@@ -242,7 +242,7 @@ fun WearingItemCard(data: LifeStyleEventsInfo.Products) {
     ) {
         Row(
             Modifier
-                .clickable {
+                .clickable(data.url?.trim().orEmpty().length > 4) {
                     if (data.url?.trim().orEmpty().length > 4) openCustomBrowser(data.url)
                 }
                 .fillMaxSize()
