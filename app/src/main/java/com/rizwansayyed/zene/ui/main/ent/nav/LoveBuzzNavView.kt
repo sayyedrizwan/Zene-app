@@ -233,7 +233,11 @@ fun LoveBuzzNavView(id: String) {
             ResponseResult.Loading -> LoveBuzzLoadingNavView()
             is ResponseResult.Success -> {
                 if (v.data.comparison == null) {
-                    Column(Modifier.fillMaxSize(), Arrangement.Center, Alignment.CenterHorizontally) {
+                    Column(
+                        Modifier.fillMaxSize(),
+                        Arrangement.Center,
+                        Alignment.CenterHorizontally
+                    ) {
                         TextViewBold(stringResource(R.string.no_dating_buzz_found), 25)
                     }
                 } else LazyColumn(Modifier.fillMaxSize()) {
@@ -269,11 +273,11 @@ fun LoveBuzzNavView(id: String) {
                     item { Spacer(Modifier.height(35.dp)) }
                     item {
                         Column(Modifier.fillMaxWidth()) {
-                            ArtistsInfoView(v.data.comparison?.personA)
+                            ArtistsInfoView(v.data.comparison.personA)
                             Box(Modifier.padding(25.dp)) {
                                 HorizontalDivider(thickness = 1.dp, color = Color.Gray)
                             }
-                            ArtistsInfoView(v.data.comparison?.personB)
+                            ArtistsInfoView(v.data.comparison.personB)
                         }
                     }
 
@@ -283,7 +287,7 @@ fun LoveBuzzNavView(id: String) {
                         item { Spacer(Modifier.height(30.dp)) }
                         item { LoveBuzzChildrenList(v.data.children) }
                     }
-                    if (v.data.comparison?.personA?.otherRelationships?.isNotEmpty() == true || v.data.comparison?.personB?.otherRelationships?.isNotEmpty() == true) {
+                    if (v.data.comparison.personA?.otherRelationships?.isNotEmpty() == true || v.data.comparison.personB?.otherRelationships?.isNotEmpty() == true) {
                         item { Spacer(Modifier.height(30.dp)) }
                         item { LoveBuzzExPartners(v.data.comparison) }
                     }
@@ -589,40 +593,40 @@ private fun StatRow(
 
 @Composable
 private fun LoveBuzzChildrenList(children: List<LoveBuzzFullInfoResponse.Children>?) {
-        Box(
-            Modifier
-                .padding(horizontal = 6.dp)
-                .padding(bottom = 6.dp)
-        ) {
-            TextViewBold(stringResource(R.string.children), 23)
-        }
+    Box(
+        Modifier
+            .padding(horizontal = 6.dp)
+            .padding(bottom = 6.dp)
+    ) {
+        TextViewBold(stringResource(R.string.children), 23)
+    }
 
     children?.forEach { child ->
-            Row(
-                Modifier
-                    .padding(2.dp)
-                    .clip(RoundedCornerShape(22.dp))
-                    .background(DarkCharcoal)
-                    .padding(horizontal = 18.dp, vertical = 20.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(Modifier.weight(1f)) {
-                    TextViewSemiBold(child.name.orEmpty(), 19)
-                    TextViewLight(
-                        "${stringResource(R.string.born)} ${child.born} - ${child.gender}", 14
-                    )
-                }
-
-                Box(
-                    Modifier
-                        .background(LoveBuzzBg, RoundedCornerShape(50))
-                        .padding(horizontal = 14.dp, vertical = 6.dp), Alignment.Center
-                ) {
-                    TextViewSemiBold(child.age.orEmpty(), 13, Color.LightGray)
-                }
+        Row(
+            Modifier
+                .padding(2.dp)
+                .clip(RoundedCornerShape(22.dp))
+                .background(DarkCharcoal)
+                .padding(horizontal = 18.dp, vertical = 20.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(Modifier.weight(1f)) {
+                TextViewSemiBold(child.name.orEmpty(), 19)
+                TextViewLight(
+                    "${stringResource(R.string.born)} ${child.born} - ${child.gender}", 14
+                )
             }
 
-            Spacer(Modifier.height(14.dp))
+            Box(
+                Modifier
+                    .background(LoveBuzzBg, RoundedCornerShape(50))
+                    .padding(horizontal = 14.dp, vertical = 6.dp), Alignment.Center
+            ) {
+                TextViewSemiBold(child.age.orEmpty(), 13, Color.LightGray)
+            }
+        }
+
+        Spacer(Modifier.height(14.dp))
     }
 }
 

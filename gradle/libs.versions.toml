@@ -16,13 +16,13 @@ kotlin = "2.3.10"
 ksp = "2.3.4"
 
 # core / androidx
-coreKtx = "1.17.0"
+coreKtx = "1.18.0"
 lifecycleRuntimeKtx = "2.10.0"
-activityCompose = "1.12.4"
+activityCompose = "1.13.0"
 
 # compose
-composeBom = "2026.02.01"
-foundation = "1.10.4"
+composeBom = "2026.03.00"
+foundation = "1.10.5"
 material3 = "1.4.0"
 
 # navigation / web
@@ -58,7 +58,7 @@ jsoup = "1.22.1"
 
 # local storage / DB
 room = "2.8.4"
-datastorePreferences = "1.2.0"
+datastorePreferences = "1.2.1"
 storage = "1.6.0"
 opencsv = "5.12.0"
 
