@@ -94,13 +94,14 @@ class ImportPlaylistViewModel @Inject constructor(
         try {
             CSVReader(FileReader(file)).use { reader ->
                 val allRows = reader.readAll()
+                    .map { row -> row.map { it.trim().trimStart('\uFEFF') }.toTypedArray() }
 
                 if (allRows.isEmpty()) {
                     selectedFile = null
                     return@safeLaunch
                 }
 
-                val header = allRows[0]
+                val header = allRows[0].toList()
 
                 for (expectedColumn in expectedHeader) {
                     if (!header.contains(expectedColumn)) {
@@ -112,11 +113,11 @@ class ImportPlaylistViewModel @Inject constructor(
                 for ((index, row) in allRows.withIndex()) {
                     if (index == 0 || row.size < 5) continue
 
-                    val trackName = row[0].trim()
-                    val artistName = row[1].trim()
-                    val album = row[2].trim()
-                    val playlistName = row[3].trim()
-                    val type = row[4].trim()
+                    val trackName = row[0]
+                    val artistName = row[1]
+                    val album = row[2]
+                    val playlistName = row[3]
+                    val type = row[4]
 
                     if (artistName.isBlank() || album.isBlank()) continue
                     if (type != "Playlist" && type != "Favorite") continue

@@ -11,7 +11,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.jakewharton.processphoenix.ProcessPhoenix
-import com.rizwansayyed.zene.datastore.DataStorageManager.openEntView
 import com.rizwansayyed.zene.ui.main.ent.view.EntertainmentScreenTopView
 import com.rizwansayyed.zene.ui.main.home.EntSectionSelector.BUZZ
 import com.rizwansayyed.zene.ui.main.home.EntSectionSelector.DATING
@@ -75,9 +74,6 @@ fun EntertainmentView(viewModel: NavigationViewModel) {
         entViewModel.entDiscoverLifeStyle()
         entViewModel.storiesLists()
         context?.let { InterstitialAdsUtils(it) }
-
-        delay(5.seconds)
-        openEntView = flowOf(true)
     }
 
     DisposableEffect(Unit) {

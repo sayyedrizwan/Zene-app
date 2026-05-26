@@ -79,7 +79,7 @@ class TrueCallerUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface)
 
     fun invoke(activity: FragmentActivity) {
         info = ResponseResult.Loading
-        TcSdk.getInstance().getAuthorizationCode(activity)
+//        TcSdk.getInstance().getAuthorizationCode(activity)
     }
 
     private fun oauth() {

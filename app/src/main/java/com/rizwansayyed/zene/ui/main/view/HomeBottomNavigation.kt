@@ -44,7 +44,6 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.rizwansayyed.zene.R
 import com.rizwansayyed.zene.datastore.DataStorageManager
-import com.rizwansayyed.zene.datastore.DataStorageManager.openEntView
 import com.rizwansayyed.zene.datastore.model.YoutubePlayerState
 import com.rizwansayyed.zene.service.player.PlayerForegroundService.Companion.getPlayerS
 import com.rizwansayyed.zene.ui.main.home.HomeNavSelector
@@ -100,8 +99,7 @@ fun MusicPlayerMiniView(openPlayer: () -> Unit) {
         Modifier
             .clickable(
                 indication = null,
-                interactionSource = remember { MutableInteractionSource() }
-            ) { openPlayer() }
+                interactionSource = remember { MutableInteractionSource() }) { openPlayer() }
             .padding(5.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(5.dp))
@@ -141,8 +139,7 @@ fun MusicPlayerMiniView(openPlayer: () -> Unit) {
                 .padding(end = 10.dp)
                 .clickable(
                     indication = null,
-                    interactionSource = remember { MutableInteractionSource() }
-                ) {
+                    interactionSource = remember { MutableInteractionSource() }) {
                     if (player?.isPlaying() == true) getPlayerS()?.pause()
                     else getPlayerS()?.play()
                 }, Alignment.Center
@@ -160,8 +157,7 @@ fun MusicPlayerMiniView(openPlayer: () -> Unit) {
 
     LaunchedEffect(player?.data?.thumbnail) {
         Glide.with(context).asBitmap().load(player?.data?.thumbnail)
-            .apply(RequestOptions.skipMemoryCacheOf(true))
-            .into(object : CustomTarget<Bitmap>() {
+            .apply(RequestOptions.skipMemoryCacheOf(true)).into(object : CustomTarget<Bitmap>() {
                 override fun onResourceReady(resource: Bitmap, p1: Transition<in Bitmap>?) {
                     Palette.from(resource).generate { palette ->
                         palette?.let {
@@ -182,13 +178,11 @@ fun MusicPlayerMiniView(openPlayer: () -> Unit) {
 
 @Composable
 fun HomeBottomNavItems(icon: Int, txt: Int, nav: HomeNavSelector, vm: NavigationViewModel) {
-    val isOpenedNewEntView by openEntView.collectAsState(null)
     Box(
         Modifier
             .padding(horizontal = 5.dp)
             .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null
+                interactionSource = remember { MutableInteractionSource() }, indication = null
             ) {
                 NavigationUtils.triggerHomeNav(NAV_MAIN_PAGE)
                 vm.setHomeNavSections(nav)
@@ -204,16 +198,6 @@ fun HomeBottomNavItems(icon: Int, txt: Int, nav: HomeNavSelector, vm: Navigation
                 Spacer(Modifier.height(4.dp))
                 TextViewSemiBold(stringResource(txt), 14, Color.Gray, line = 1)
             }
-        }
-
-        if (nav == HomeNavSelector.ENT && isOpenedNewEntView != null) {
-            if (isOpenedNewEntView == false) Box(
-                Modifier
-                    .size(13.dp)
-                    .clip(RoundedCornerShape(13.dp))
-                    .background(Color.Red)
-                    .padding(horizontal = 2.dp)
-            )
         }
     }
 }
