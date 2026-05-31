@@ -1,5 +1,6 @@
 package com.rizwansayyed.zene.di.modules
 
+import com.rizwansayyed.zene.data.AuthInterceptor
 import com.rizwansayyed.zene.data.IPAPIService
 import com.rizwansayyed.zene.data.ZeneAPIService
 import com.rizwansayyed.zene.utils.MainUtils.moshi
@@ -24,7 +25,9 @@ object APIRequests {
     @Provides
     fun zeneAPIService(): ZeneAPIService {
         val okHttpClient = OkHttpClient.Builder().readTimeout(60, TimeUnit.SECONDS)
-            .connectTimeout(60, TimeUnit.SECONDS).build()
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .addInterceptor(AuthInterceptor())
+            .build()
 
         return Retrofit.Builder().baseUrl(ZENE_BASE_URL_API).client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create(moshi)).build()

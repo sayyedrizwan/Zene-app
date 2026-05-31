@@ -6,8 +6,8 @@ packagename = "com.rizwansayyed.zene"
 compilesdk = "37"
 minsdk = "24"
 
-appversion = "279"
-versionname = "5.15.210"
+appversion = "280"
+versionname = "5.17.003"
 
 agp = "9.2.1"
 

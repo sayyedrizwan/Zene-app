@@ -53,9 +53,9 @@ object URLSUtils {
     const val LIKED_SONGS_ON_ZENE = "_liked_songs_on_zene"
 
     val ZENE_BASE_URL_SOCKET = BuildConfig.API_ZENE_MUSIC_BASE_URL
-//        if (BuildConfig.DEBUG) "http://192.168.0.107:4102" else BuildConfig.API_ZENE_MUSIC_BASE_URL
+//        if (BuildConfig.DEBUG) "http://192.168.0.100:4102" else BuildConfig.API_ZENE_MUSIC_BASE_URL
     val ZENE_BASE_URL_API = BuildConfig.API_ZENE_MUSIC_BASE_URL
-//        if (BuildConfig.DEBUG) "http://192.168.0.107:4100" else BuildConfig.API_ZENE_MUSIC_BASE_URL
+//        if (BuildConfig.DEBUG) "http://192.168.0.100:4100" else BuildConfig.API_ZENE_MUSIC_BASE_URL
 
     const val ZENE_RECENT_HOME_MUSIC_API = "recent/home-music"
     const val ZENE_RECENT_HOME_PODCAST_API = "recent/home-podcast"
@@ -133,6 +133,7 @@ object URLSUtils {
     const val ZENE_AI_MUSIC_INFO_API = "ai/ai-music-info"
 
     const val ZENE_USER_LOGIN_API = "users/user-login"
+    const val ZENE_USER_REFRESH_TOKEN_API = "users/refresh-token"
     const val ZENE_USER_UPDATE_API = "users/user-update"
     const val ZENE_USER_UPDATE_CONNECT_STATUS_API = "users/update-connect-status"
     const val ZENE_USER_UPDATE_TRUE_CALLER_API = "users/update-truecaller"
@@ -190,7 +191,8 @@ object URLSUtils {
     const val ZENE_USER_UPDATE_PLAYLIST_NAME_API = "users-playlists/update-playlist-name"
     const val ZENE_USER_UPDATE_PLAYLIST_IMAGE_API = "users-playlists/update-playlist-image"
     const val ZENE_USER_MY_PLAYLISTS_SONGS_API = "users-playlists/my-playlists-songs"
-    const val ZENE_USER_MY_PLAYLISTS_SONGS_REORDER_API = "users-playlists/my-playlists-songs-reorder"
+    const val ZENE_USER_MY_PLAYLISTS_SONGS_REORDER_API =
+        "users-playlists/my-playlists-songs-reorder"
     const val ZENE_USER_PLAYLIST_LIKE_COUNT_API = "users-playlists/like-count"
     const val ZENE_USER_PLAYLIST_IMPORT_LIKE_API = "users-playlists/import-songs-to-like"
     const val ZENE_USER_PLAYLIST_REMOVE_MEDIA_PLAYLISTS_API =

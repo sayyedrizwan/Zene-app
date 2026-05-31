@@ -9,6 +9,7 @@ data class UserInfoResponse(
     val phoneNumber: String?,
     var status: String?,
     val authToken: String?,
+    val refreshToken: String? = null,
     val isError: Boolean?,
     val logout: Boolean?,
 ) {
