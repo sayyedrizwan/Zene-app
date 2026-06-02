@@ -177,6 +177,14 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
                 playerInfo?.currentDuration = currentTS
                 playerInfo?.totalDuration = duration
 
+                // Don't persist a null player back to the DB — saveEmpty() may not have
+                // committed yet, and overwriting with null wipes the song data and hides
+                // the MusicPlayerMiniView.
+                if (playerInfo?.data?.id == null) {
+                    if (isActive) cancel()
+                    return@safeLaunch
+                }
+
                 ServiceStopTimerManager.cancelTimer()
                 if (state == YoutubePlayerState.PAUSE) {
                     ServiceStopTimerManager.startTimer {
@@ -192,6 +200,21 @@ class PlayerForegroundService : Service(), PlayerServiceInterface {
                 withContext(Dispatchers.IO) {
                     musicPlayerDB = flowOf(playerInfo)
                 }
+                if (isActive) cancel()
+            }
+        }
+
+        @JavascriptInterface
+        fun videoInfo(title: String, author: String, videoId: String) {
+            // The YT WebView player (yt_music_player.html) invokes Zene.videoInfo(...)
+            // inside onPlayerReady(). This method MUST exist on the injected interface,
+            // otherwise the JS call throws "Zene.videoInfo is not a function" and aborts
+            // the ready callback — which is why SONGS/AI_MUSIC failed to play while the
+            // ExoPlayer-based RADIO/PODCAST_AUDIO worked fine.
+            CoroutineScope(Dispatchers.IO).safeLaunch {
+                val playerInfo = musicPlayerDB.firstOrNull() ?: return@safeLaunch
+                if (playerInfo.data?.id == null) return@safeLaunch
+                musicPlayerDB = flowOf(playerInfo)
                 if (isActive) cancel()
             }
         }

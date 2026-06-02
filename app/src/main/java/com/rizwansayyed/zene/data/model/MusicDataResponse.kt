@@ -30,6 +30,8 @@ data class AIDataResponse(
 data class SearchTrendingResponse(
     val artists: List<ZeneMusicData?>?,
     val songs: List<ZeneMusicData?>?,
+    val videos: List<ZeneMusicData?>?,
+    val globalVideos: List<ZeneMusicData?>?,
     val globalSongs: List<ZeneMusicData?>?,
     val keywords: List<ZeneMusicData?>?
 )

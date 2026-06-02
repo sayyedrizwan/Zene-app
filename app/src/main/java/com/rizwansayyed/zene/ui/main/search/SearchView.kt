@@ -57,6 +57,7 @@ import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import java.util.Locale
+import androidx.compose.ui.platform.LocalLocale
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -425,6 +426,30 @@ fun SearchView(homeViewModel: HomeViewModel) {
             }
 
             is ResponseResult.Success -> {
+                item { Spacer(Modifier.height(20.dp)) }
+
+                if (v.data.globalVideos?.isNotEmpty() == true) item {
+                    Spacer(Modifier.height(30.dp))
+                    Box(Modifier.padding(horizontal = 6.dp)) {
+                        TextViewBold(stringResource(R.string.global_trending_videos), 19)
+                    }
+                }
+
+                items(v.data.globalVideos?.chunked(25) ?: emptyList()) {
+                    Spacer(Modifier.height(15.dp))
+                    LazyRow(Modifier.fillMaxWidth()) {
+                        itemsIndexed(it) { i, z ->
+                            VideoCardView(z)
+
+                            if (!isPremium) {
+                                if (i == 1) NativeViewAdsCard(z?.id)
+                                if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
+                            }
+                        }
+                    }
+                }
+
+
                 if (v.data.globalSongs?.isNotEmpty() == true) item {
                     Spacer(Modifier.height(30.dp))
                     Box(Modifier.padding(horizontal = 6.dp)) {
@@ -448,17 +473,45 @@ fun SearchView(homeViewModel: HomeViewModel) {
 
                 item { Spacer(Modifier.height(20.dp)) }
 
+                if (v.data.videos?.isNotEmpty() == true) item {
+                    Spacer(Modifier.height(30.dp))
+                    Box(Modifier.padding(horizontal = 6.dp)) {
+                        TextViewBold(
+                            String.format(
+                                LocalLocale.current.platformLocale,
+                                stringResource(R.string.trending_videos),
+                                inInfo?.country
+                            ), 19
+                        )
+                    }
+                }
+
+                items(v.data.videos?.chunked(25) ?: emptyList()) {
+                    Spacer(Modifier.height(15.dp))
+                    LazyRow(Modifier.fillMaxWidth()) {
+                        itemsIndexed(it) { i, z ->
+                            VideoCardView(z)
+
+                            if (!isPremium) {
+                                if (i == 1) NativeViewAdsCard(z?.id)
+                                if ((i + 1) % 6 == 0) NativeViewAdsCard(z?.id)
+                            }
+                        }
+                    }
+                }
+
+                item { Spacer(Modifier.height(20.dp)) }
+
                 if (v.data.songs?.isNotEmpty() == true) item {
                     Spacer(Modifier.height(30.dp))
                     Box(Modifier.padding(horizontal = 6.dp)) {
 
                         TextViewBold(
                             String.format(
-                                Locale.getDefault(),
+                                LocalLocale.current.platformLocale,
                                 stringResource(R.string.trending_songs),
                                 inInfo?.country
-                            ),
-                            19
+                            ), 19
                         )
                     }
                 }
@@ -476,6 +529,7 @@ fun SearchView(homeViewModel: HomeViewModel) {
                         }
                     }
                 }
+
 
                 item { Spacer(Modifier.height(20.dp)) }
 
