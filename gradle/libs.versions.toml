@@ -6,17 +6,17 @@ packagename = "com.rizwansayyed.zene"
 compilesdk = "37"
 minsdk = "24"
 
-appversion = "281"
-versionname = "5.17.008"
+appversion = "283"
+versionname = "5.17.009"
 
 agp = "9.2.1"
 
 # kotlin / tooling
-kotlin = "2.3.21"
+kotlin = "2.4.0"
 ksp = "2.3.4"
 
 # core / androidx
-coreKtx = "1.18.0"
+coreKtx = "1.19.0"
 lifecycleRuntimeKtx = "2.10.0"
 activityCompose = "1.13.0"
 
@@ -35,7 +35,7 @@ hiltAndroid = "2.59.2"
 hiltNavigationCompose = "1.3.0"
 
 # firebase & google
-firebaseBom = "34.14.0"
+firebaseBom = "34.14.1"
 googleServices = "4.4.4"
 appUpdate = "2.1.0"
 appReview = "2.0.2"
@@ -47,12 +47,12 @@ credentials = "1.6.0"
 googleid = "1.2.0"
 playandroidservice = "21.6.0"
 facebookLogin = "18.2.3"
-truecaller = "3.2.1"
+truecaller = "3.3.0"
 
 # networking / serialization
 retrofit = "3.0.0"
 moshiKotlin = "1.15.2"
-okhttpBom = "5.3.2"
+okhttpBom = "5.4.0"
 gson = "2.14.0"
 jsoup = "1.22.2"
 
@@ -77,7 +77,7 @@ playServicesLocation = "21.3.0"
 
 # UI extras
 emoji = "1.6.0"
-colorpickerCompose = "1.1.4"
+colorpickerCompose = "1.2.0"
 konfettiCompose = "2.0.5"
 reorderable = "3.1.0"
 glanceAppwidget = "1.1.1"

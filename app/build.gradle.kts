@@ -132,6 +132,9 @@ dependencies {
 // --- Dependency Injection : Hilt ---
     implementation(libs.hilt.android)
     ksp(libs.hilt.android.compiler)
+    // Hilt's bundled kotlin-metadata-jvm maxes out below Kotlin 2.4 metadata;
+    // supply the one matching our Kotlin version on the processor classpath.
+    ksp("org.jetbrains.kotlin:kotlin-metadata-jvm:${libs.versions.kotlin.get()}")
     implementation(libs.hilt.navigation.compose)
 
 

@@ -34,7 +34,7 @@ class ContentNotificationRecommender(
         if (pushNewsLetterDB.firstOrNull() == false) return@safeLaunch
 
         zeneAPI.notificationRecommendation().catch { }.collectLatest {
-            if (it.title == null && it.body == null) return@collectLatest
+            if (it.title == null || it.body == null) return@collectLatest
 
             try {
                 registerEvents(FirebaseEventsParams.GENERATED_CUSTOM_NOTIFICATION)

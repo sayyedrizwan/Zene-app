@@ -29,6 +29,7 @@ import kotlinx.coroutines.isActive
 import java.math.BigInteger
 import java.security.SecureRandom
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 class TrueCallerUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface) {
 
@@ -54,6 +55,9 @@ class TrueCallerUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface)
             info = ResponseResult.Error(Throwable(tcOAuthError?.errorMessage))
         }
 
+        override fun onSdkReady() {
+        }
+
         override fun onFailure(tcOAuthError: TcOAuthError) {
             info = ResponseResult.Error(Throwable(tcOAuthError.errorMessage))
         }
@@ -71,9 +75,9 @@ class TrueCallerUtils @Inject constructor(private val zeneAPI: ZeneAPIInterface)
                 .footerType(TcSdkOptions.FOOTER_TYPE_SKIP).consentTitleOption(R.string.home)
                 .sdkOptions(TcSdkOptions.OPTION_VERIFY_ONLY_TC_USERS).build()
 
-        TcSdk.init(tcSdkOptions)
+//        TcSdk.init(tcSdkOptions)
 
-        delay(500)
+        delay(500.milliseconds)
         oauth()
     }
 
