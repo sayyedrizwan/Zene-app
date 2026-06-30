@@ -27,7 +27,7 @@ import com.rizwansayyed.zene.data.model.PlayerVideoForSongsResponse
 import com.rizwansayyed.zene.data.model.PodcastDataResponse
 import com.rizwansayyed.zene.data.model.PodcastPlaylistResponse
 import com.rizwansayyed.zene.data.model.RadioDataResponse
-import com.rizwansayyed.zene.data.model.RecommendationNotificationResponse
+import com.rizwansayyed.zene.data.model.NotificationDeviceResponse
 import com.rizwansayyed.zene.data.model.SavedPlaylistsPodcastsResponse
 import com.rizwansayyed.zene.data.model.SearchDataResponse
 import com.rizwansayyed.zene.data.model.SearchPlacesDataResponse
@@ -183,7 +183,9 @@ interface ZeneAPIInterface {
     suspend fun updateSubscription(purchaseToken: String, subscriptionId: String?): Flow<StatusTypeResponse>
     suspend fun isUserPremium(): Flow<StatusTypeResponse>
     suspend fun updateCoupon(code: String?): Flow<StatusCouponResponse>
-    suspend fun notificationRecommendation(): Flow<RecommendationNotificationResponse>
+    suspend fun registerNotificationDevice(): Flow<NotificationDeviceResponse>
+    suspend fun updateNotificationPreferences(value: Boolean): Flow<NotificationDeviceResponse>
+    suspend fun recordNotificationEvent(notificationId: String?, event: String = "opened"): Flow<NotificationDeviceResponse>
     suspend fun sponsorAds(): Flow<SponsorAdsResponse>
     suspend fun deleteAccount(): Flow<StatusTypeResponse>
     suspend fun deleteAccountInfo(): Flow<DeleteAccountInfoResponse>

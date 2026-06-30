@@ -6,8 +6,8 @@ packagename = "com.rizwansayyed.zene"
 compilesdk = "37"
 minsdk = "24"
 
-appversion = "283"
-versionname = "5.17.009"
+appversion = "284"
+versionname = "5.17.012"
 
 agp = "9.2.1"
 
@@ -17,12 +17,12 @@ ksp = "2.3.4"
 
 # core / androidx
 coreKtx = "1.19.0"
-lifecycleRuntimeKtx = "2.10.0"
+lifecycleRuntimeKtx = "2.11.0"
 activityCompose = "1.13.0"
 
 # compose
-composeBom = "2026.05.01"
-foundation = "1.11.2"
+composeBom = "2026.06.00"
+foundation = "1.11.3"
 material3 = "1.4.0"
 
 # navigation / web
@@ -31,12 +31,12 @@ browser = "1.10.0"
 webkit = "1.16.0"
 
 # dependency injection
-hiltAndroid = "2.59.2"
+hiltAndroid = "2.60"
 hiltNavigationCompose = "1.3.0"
 
 # firebase & google
-firebaseBom = "34.14.1"
-googleServices = "4.4.4"
+firebaseBom = "34.15.0"
+googleServices = "4.5.0"
 appUpdate = "2.1.0"
 appReview = "2.0.2"
 firebasePerformance = "2.0.2"
@@ -46,7 +46,7 @@ firebaseCrash = "3.0.7"
 credentials = "1.6.0"
 googleid = "1.2.0"
 playandroidservice = "21.6.0"
-facebookLogin = "18.2.3"
+facebookLogin = "18.3.0"
 truecaller = "3.3.0"
 
 # networking / serialization
@@ -73,7 +73,7 @@ paletteKtx = "1.0.0"
 
 # maps / location
 mapsCompose = "8.3.0"
-playServicesLocation = "21.3.0"
+playServicesLocation = "21.4.0"
 
 # UI extras
 emoji = "1.6.0"
@@ -85,12 +85,12 @@ glanceAppwidget = "1.1.1"
 # other utilities
 hashids = "1.0.3"
 customQrGenerator = "2.0.0-alpha01"
-clarity = "3.8.2"
+clarity = "3.8.3"
 processPhoenix = "3.0.0"
 
 # ads / billing
-playServicesAds = "25.3.0"
-billing = "9.0.0"
+playServicesAds = "25.4.0"
+billing = "9.1.0"
 
 # realtime / sockets
 socketIoClient = "2.1.2"

@@ -2,17 +2,19 @@ package com.rizwansayyed.zene.data.implementation
 
 import android.net.Uri
 import android.util.Log
+import com.rizwansayyed.zene.BuildConfig
 import com.rizwansayyed.zene.data.IPAPIService
 import com.rizwansayyed.zene.data.ZeneAPIService
 import com.rizwansayyed.zene.data.model.ConnectFeedDataResponse
 import com.rizwansayyed.zene.data.model.MusicDataTypes
+import com.rizwansayyed.zene.data.model.IPResponse
 import com.rizwansayyed.zene.data.model.PodcastPlaylistResponse
 import com.rizwansayyed.zene.data.model.StatusTypeResponse
+import com.rizwansayyed.zene.data.model.UserInfoResponse
 import com.rizwansayyed.zene.data.model.ZeneMusicData
 import com.rizwansayyed.zene.datastore.DataStorageManager.ipDB
-import com.rizwansayyed.zene.datastore.DataStorageManager.lastNotificationGeneratedTSDB
-import com.rizwansayyed.zene.datastore.DataStorageManager.lastNotificationSuggestedType
 import com.rizwansayyed.zene.datastore.DataStorageManager.pauseHistorySettings
+import com.rizwansayyed.zene.datastore.DataStorageManager.pushNewsLetterDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.sortMyPlaylistTypeDB
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
 import com.rizwansayyed.zene.datastore.model.MusicPlayerData
@@ -38,6 +40,8 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
 import java.io.File
+import java.util.Locale
+import java.util.TimeZone
 import javax.inject.Inject
 
 
@@ -62,7 +66,9 @@ class ZeneAPIImplementation @Inject constructor(
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
-        emit(zeneAPI.loginUser(body))
+        val response = zeneAPI.loginUser(body)
+        emit(response)
+        registerNotificationDeviceAsync(response, ip, json.getString("fcm_token"))
     }
 
     override suspend fun updateUser() = flow {
@@ -87,7 +93,39 @@ class ZeneAPIImplementation @Inject constructor(
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
-        emit(zeneAPI.updateUser(token, body))
+        val response = zeneAPI.updateUser(token, body)
+        emit(response)
+        registerNotificationDeviceAsync(response, ip, json.getString("fcm_token"))
+    }
+
+    private fun registerNotificationDeviceAsync(info: UserInfoResponse?, ip: IPResponse, fcmToken: String) {
+        if (info?.isLoggedIn() != true || info.authToken.isNullOrBlank() || fcmToken.isBlank()) return
+
+        CoroutineScope(Dispatchers.IO).safeLaunch {
+            val enabled = pushNewsLetterDB.firstOrNull() ?: true
+            val body = notificationDeviceJson(info, ip, fcmToken, enabled)
+                .toString()
+                .toRequestBody("application/json".toMediaTypeOrNull())
+            zeneAPI.registerNotificationDevice(info.authToken, body)
+        }
+    }
+
+    private fun notificationDeviceJson(
+        info: UserInfoResponse?,
+        ip: IPResponse?,
+        fcmToken: String,
+        notificationsEnabled: Boolean
+    ) = JSONObject().apply {
+        put("email", info?.email ?: "")
+        put("device_id", getUniqueDeviceId())
+        put("platform", "android")
+        put("fcm_token", fcmToken)
+        put("notifications_enabled", notificationsEnabled)
+        put("timezone", ip?.timezone ?: TimeZone.getDefault().id)
+        put("country", ip?.countryCode ?: Locale.getDefault().country)
+        put("locale", Locale.getDefault().toLanguageTag())
+        put("app_version", BuildConfig.VERSION_NAME)
+        put("device_model", "Android ${getDeviceInfo()}")
     }
 
     override suspend fun updateSubscription(purchaseToken: String, subscriptionId: String?) = flow {
@@ -1578,26 +1616,51 @@ class ZeneAPIImplementation @Inject constructor(
         emit(zeneAPI.updateCoupon(token, body))
     }
 
-    override suspend fun notificationRecommendation() = flow {
-        val info = userInfo.firstOrNull()
-        val lastTS = lastNotificationGeneratedTSDB.firstOrNull()
-        val lastType = lastNotificationSuggestedType.firstOrNull()
+    override suspend fun registerNotificationDevice() = flow {
         val ip = ipAPI.get()
-        CoroutineScope(Dispatchers.IO).safeLaunch {
-            ipDB = flowOf(ip)
-        }
+        CoroutineScope(Dispatchers.IO).safeLaunch { ipDB = flowOf(ip) }
+        val info = userInfo.firstOrNull()
+        val token = info?.authToken ?: ""
+        val fcmToken = getDeviceFcmToken()
+        val body = notificationDeviceJson(info, ip, fcmToken, pushNewsLetterDB.firstOrNull() ?: true)
+            .toString()
+            .toRequestBody("application/json".toMediaTypeOrNull())
 
+        emit(zeneAPI.registerNotificationDevice(token, body))
+    }
+
+    override suspend fun updateNotificationPreferences(value: Boolean) = flow {
+        val info = userInfo.firstOrNull()
+        val token = info?.authToken ?: ""
+        val fcmToken = getDeviceFcmToken()
         val json = JSONObject().apply {
             put("email", info?.email ?: "")
-            put("name", info?.name ?: "")
-            put("last_ts", lastTS)
-            put("type", lastType)
-            put("country", ip.countryCode)
-            put("timezone", ip.timezone)
+            put("device_id", getUniqueDeviceId())
+            put("fcm_token", fcmToken)
+            put("notifications_enabled", value)
+            put("timezone", TimeZone.getDefault().id)
+            put("country", ipDB.firstOrNull()?.countryCode ?: Locale.getDefault().country)
+            put("locale", Locale.getDefault().toLanguageTag())
         }
 
         val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
-        emit(zeneAPI.notificationRecommendation(body))
+        emit(zeneAPI.updateNotificationPreferences(token, body))
+    }
+
+    override suspend fun recordNotificationEvent(notificationId: String?, event: String) = flow {
+        val info = userInfo.firstOrNull()
+        val token = info?.authToken ?: ""
+        val json = JSONObject().apply {
+            put("email", info?.email ?: "")
+            put("device_id", getUniqueDeviceId())
+            put("fcm_token", getDeviceFcmToken())
+            put("notification_id", notificationId ?: "")
+            put("event", event)
+            put("platform", "android")
+        }
+
+        val body = json.toString().toRequestBody("application/json".toMediaTypeOrNull())
+        emit(zeneAPI.recordNotificationEvent(token, body))
     }
 
     override suspend fun sponsorAds() = flow {

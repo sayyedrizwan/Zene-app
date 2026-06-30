@@ -79,6 +79,7 @@ fun NotificationAlertSettingsView(close: () -> Unit) {
                         coroutine.safeLaunch {
                             pushNewsLetterDB = flowOf(it)
                         }
+                        homeViewModel.updateNotificationPreferences(it)
                     })
 
 

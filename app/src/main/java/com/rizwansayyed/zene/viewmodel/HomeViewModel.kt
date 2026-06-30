@@ -539,6 +539,15 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun updateNotificationPreferences(v: Boolean) = viewModelScope.safeLaunch {
+        zeneAPI.updateNotificationPreferences(v).catch {}.collectLatest { }
+    }
+
+    fun recordNotificationOpened(notificationId: String?) = viewModelScope.safeLaunch {
+        if (notificationId.isNullOrBlank()) return@safeLaunch
+        zeneAPI.recordNotificationEvent(notificationId).catch {}.collectLatest { }
+    }
+
 
     fun askUserForReview() = viewModelScope.safeLaunch {
         delay(5.seconds)

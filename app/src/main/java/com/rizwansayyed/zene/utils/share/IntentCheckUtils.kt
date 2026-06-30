@@ -5,6 +5,7 @@ import android.content.Intent.CATEGORY_APP_MUSIC
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.util.Base64
 import android.util.Log
+import androidx.core.net.toUri
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.rizwansayyed.zene.datastore.DataStorageManager.userInfo
@@ -16,10 +17,13 @@ import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.CONNE
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_BODY
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_EMAIL
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_ID
+import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_LINK
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_LAT
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_LON
+import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_NOTIFICATION_ID
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_TITLE
 import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_TYPE
+import com.rizwansayyed.zene.service.FirebaseAppMessagingService.Companion.FCM_URL
 import com.rizwansayyed.zene.service.notification.NavigationUtils.LIKED_SONGS_ZENE_ID
 import com.rizwansayyed.zene.service.notification.NavigationUtils.MY_PLAYLIST_ID
 import com.rizwansayyed.zene.service.notification.NavigationUtils.NAV_ARTIST_PAGE
@@ -60,6 +64,7 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_VIDEO
 import com.rizwansayyed.zene.utils.safeLaunch
 import com.rizwansayyed.zene.viewmodel.NavigationViewModel
 import com.rizwansayyed.zene.viewmodel.PlayerViewModel
+import com.rizwansayyed.zene.viewmodel.HomeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
@@ -78,7 +83,8 @@ class IntentCheckUtils(
     private val intent: Intent,
     private val navViewModel: NavigationViewModel,
     private val viewModel: PlayerViewModel,
-    private val loginViewModel: LoginManagerViewModel
+    private val loginViewModel: LoginManagerViewModel,
+    private val homeViewModel: HomeViewModel
 ) {
 
     fun call() = CoroutineScope(Dispatchers.IO).safeLaunch {
@@ -91,6 +97,9 @@ class IntentCheckUtils(
 
         val userInfo = userInfo.firstOrNull()
         if (userInfo?.isLoggedIn() == false) return@safeLaunch
+
+        val notificationId = intent.getStringExtra(FCM_NOTIFICATION_ID)
+        if (!notificationId.isNullOrBlank()) homeViewModel.recordNotificationOpened(notificationId)
 
         withContext(Dispatchers.Main) {
             if (intent.getStringExtra(FCM_TYPE) == CONNECT_LOCATION_SHARING_TYPE) {
@@ -144,7 +153,10 @@ class IntentCheckUtils(
         }
 
         withContext(Dispatchers.Main) {
-            val data = intent.data ?: return@withContext
+            val data = intent.data
+                ?: intent.getStringExtra(FCM_LINK)?.toUri()
+                ?: intent.getStringExtra(FCM_URL)?.toUri()
+                ?: return@withContext
 
             if (getPathFromUrl(data.toString()) == ZENE_URL_CONNECT) {
                 navViewModel.setHomeNavSections(HomeNavSelector.CONNECT)

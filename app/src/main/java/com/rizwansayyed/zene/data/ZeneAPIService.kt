@@ -27,7 +27,7 @@ import com.rizwansayyed.zene.data.model.PlayerVideoForSongsResponse
 import com.rizwansayyed.zene.data.model.PodcastDataResponse
 import com.rizwansayyed.zene.data.model.PodcastPlaylistResponse
 import com.rizwansayyed.zene.data.model.RadioDataResponse
-import com.rizwansayyed.zene.data.model.RecommendationNotificationResponse
+import com.rizwansayyed.zene.data.model.NotificationDeviceResponse
 import com.rizwansayyed.zene.data.model.SavedPlaylistsPodcastsResponse
 import com.rizwansayyed.zene.data.model.SearchDataResponse
 import com.rizwansayyed.zene.data.model.SearchPlacesDataResponse
@@ -95,7 +95,9 @@ import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_ARTIST_FOLLOW_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_MOVIE_SHOW_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_PLAYLISTS_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_INFO_SEASON_MOVIE_SHOW_INFO_API
-import com.rizwansayyed.zene.utils.URLSUtils.ZENE_NOTIFICATION_RECOMMENDATION_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_NOTIFICATION_DEVICE_PREFERENCES_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_NOTIFICATION_DEVICE_REGISTER_API
+import com.rizwansayyed.zene.utils.URLSUtils.ZENE_NOTIFICATION_EVENT_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_IS_PLAYLIST_ADDED_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_PODCAST_INFO_API
 import com.rizwansayyed.zene.utils.URLSUtils.ZENE_PLAYER_RADIO_INFO_API
@@ -750,10 +752,22 @@ interface ZeneAPIService {
     ): StatusCouponResponse
 
     @Headers("Content-Type: application/json")
-    @POST(ZENE_NOTIFICATION_RECOMMENDATION_API)
-    suspend fun notificationRecommendation(
-        @Body data: RequestBody
-    ): RecommendationNotificationResponse
+    @POST(ZENE_NOTIFICATION_DEVICE_REGISTER_API)
+    suspend fun registerNotificationDevice(
+        @Header("token") token: String, @Body data: RequestBody
+    ): NotificationDeviceResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_NOTIFICATION_DEVICE_PREFERENCES_API)
+    suspend fun updateNotificationPreferences(
+        @Header("token") token: String, @Body data: RequestBody
+    ): NotificationDeviceResponse
+
+    @Headers("Content-Type: application/json")
+    @POST(ZENE_NOTIFICATION_EVENT_API)
+    suspend fun recordNotificationEvent(
+        @Header("token") token: String, @Body data: RequestBody
+    ): NotificationDeviceResponse
 
     @Headers("Content-Type: application/json")
     @POST(ZENE_SPONSOR_ADS_API)

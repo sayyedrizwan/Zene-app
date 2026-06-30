@@ -8,13 +8,11 @@ data class DeleteAccountInfoResponse(
     val ts: Long?,
 )
 
-data class RecommendationNotificationResponse(
-    val type: String?,
-    val title: String?,
-    val body: String?,
-    val ts: Long?,
-    val img: String?,
-    val url: String?
+data class NotificationDeviceResponse(
+    val ok: Boolean?,
+    val device_id: Long?,
+    val token_status: String?,
+    val updated: Int?
 )
 
 data class MediaStatusTypeResponse(

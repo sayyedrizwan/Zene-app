@@ -2,6 +2,7 @@ package com.rizwansayyed.zene.service
 
 import android.content.Context
 import android.content.Intent
+import androidx.core.net.toUri
 import com.google.firebase.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -61,17 +62,20 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
         const val CONNECT_PARTY_CALL = "CONNECT_PARTY_CALL"
         const val CONNECT_UNFRIEND_REQUEST = "CONNECT_UNFRIEND_REQUEST"
         const val CONNECT_PLAYLISTS_INFO = "CONNECT_PLAYLISTS_INFO"
-        const val CONTENT_NOTIFICATION_SUGGESTION = "CONTENT_NOTIFICATION_SUGGESTION"
         const val FCM_NAME = "name"
         const val FCM_TITLE = "title"
         const val FCM_ID = "id"
         const val FCM_BODY = "body"
         const val FCM_IMAGE = "image"
+        const val FCM_IMG = "img"
         const val FCM_EMAIL = "email"
         const val FCM_CODE = "code"
         const val FCM_TYPE = "type"
         const val FCM_LAT = "lat"
         const val FCM_LON = "lon"
+        const val FCM_LINK = "link"
+        const val FCM_URL = "url"
+        const val FCM_NOTIFICATION_ID = "notification_id"
 
         fun subscribeToTopicAll() = CoroutineScope(Dispatchers.IO).safeLaunch {
             Firebase.messaging.subscribeToTopic(FCM_TOPIC_ALL).await()
@@ -104,16 +108,32 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
-        
+
         message.notification?.let {
             it.title ?: return@let
             it.body ?: return@let
             NotificationUtils(it.title!!, it.body!!).apply {
+                val link = message.data[FCM_LINK] ?: message.data[FCM_URL]
+                val notificationId = message.data[FCM_NOTIFICATION_ID]
+                val intent = Intent(c, MainActivity::class.java).apply {
+                    link?.let { url ->
+                        data = url.toUri()
+                        putExtra(FCM_LINK, url)
+                    }
+                    notificationId?.let { id -> putExtra(FCM_NOTIFICATION_ID, id) }
+                    message.data[FCM_URL]?.let { url -> putExtra(FCM_URL, url) }
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                }
+
                 channel(OTHER_NOTIFICATION, OTHER_NOTIFICATION_DESC)
-                setSmallImage(it.imageUrl?.toString())
+                setIntent(intent)
+                setSmallImage(
+                    it.imageUrl?.toString() ?: message.data[FCM_IMAGE] ?: message.data[FCM_IMG]
+                )
                 generate()
             }
         }
+
         message.data.let {
             val type = message.data[FCM_TYPE]
             accessNewToken()
@@ -124,8 +144,6 @@ class FirebaseAppMessagingService : FirebaseMessagingService() {
             if (type == CONNECT_UNFRIEND_REQUEST) connectUnFriendAlert(message.data)
             if (type == CONNECT_SEND_CHAT_MESSAGE) connectChatMessageAlert(message.data)
             if (type == CONNECT_PLAYLISTS_INFO) connectPlaylistMessage(message.data)
-            if (type == CONTENT_NOTIFICATION_SUGGESTION)
-                ContentNotificationRecommender(this, zeneAPI)
             if (type == CONNECT_PARTY_CALL_DECLINE) {
                 try {
                     val email = it[FCM_EMAIL]

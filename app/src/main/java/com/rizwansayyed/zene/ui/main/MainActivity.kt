@@ -244,7 +244,7 @@ class MainActivity : FragmentActivity() {
 
                     LaunchedEffect(Unit) {
                         IntentCheckUtils(
-                            intent, navigationViewModel, playerViewModel, loginViewModel
+                            intent, navigationViewModel, playerViewModel, loginViewModel, homeViewModel
                         ).call()
                         initThe()
 
@@ -302,7 +302,7 @@ class MainActivity : FragmentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        IntentCheckUtils(intent, navigationViewModel, playerViewModel, loginViewModel).call()
+        IntentCheckUtils(intent, navigationViewModel, playerViewModel, loginViewModel, homeViewModel).call()
     }
 
     override fun onStart() {
